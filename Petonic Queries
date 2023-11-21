@@ -1,0 +1,188 @@
+select * from user_login;
+
+-- "login" page queries below
+
+-- below gets executed but nothing gets printed
+DO $$
+DECLARE
+	user_email text := 'johndoe@example.com';
+	user_role text := 'initiator';
+	user_password text := 'password1';
+BEGIN
+	perform * from user_login where user_id = user_role || '_' || user_email;
+END $$;
+
+-- below is the modified version of above that prints the data
+DO $$
+DECLARE
+    user_email text := 'johndoe@example.com';
+    user_role text := 'initiator';
+    user_password text := 'password1';
+    row_data user_login%ROWTYPE;
+BEGIN
+    -- Declare a cursor to fetch the data
+    FOR row_data IN (SELECT * FROM user_login WHERE user_id = user_role || '_' || user_email) 
+    LOOP
+        -- You can access the columns of the result row using row_data.column_name
+        RAISE NOTICE 'User ID: %, Email: %, Role: %', row_data.user_id, row_data.email, row_data.role;
+    END LOOP;
+END $$;
+
+-- I decided to get the variables in python, then do string concatenation in
+-- python, send the query, and then get the results
+-- below is the example login query of python
+
+select count(*)
+from user_login as ul
+join validation as v
+on ul.user_id = v.user_id
+where ul.user_id = 'initiator_michaelclark@example.com' and ul.password = 'password10' and v.user_id = 'initiator_michaelclark@example.com';
+
+
+select count(*)
+from user_login as ul
+join validation as v
+on ul.user_id = v.user_id
+where ul.user_id = 'initiator_michaelclark@example.com' and ul.password = 'wrong_password' and v.user_id = 'initiator_michaelclark@example.com';
+-- if the count is 1, allow authentication
+-- if count is 0, do not allow
+-- if count is more than 1, something wrong with database, alert IT team (generate helpText)
+
+
+/* Below queries remove a particular row that have been added below again during signup
+select * from user_login where company_id = 10;
+select * from validation;
+select * from user_signup where user_id = 'initiator_michaelclark@example.com';
+delete from validation where user_id = 'initiator_michaelclark@example.com';
+delete from user_signup where user_id = 'initiator_michaelclark@example.com';
+delete from user_login where company_id = 10;
+*/
+
+-- below are sample signup query
+INSERT INTO "user_login" ("user_id", "company_id", "email", "password", "role")
+VALUES ('initiator_michaelclark@example.com', 10, 'michaelclark@example.com', 'password10', 'initiator');
+
+INSERT INTO user_signup ("f_name", "l_name", "user_id")
+VALUES ('Michael', 'Clark', 'initiator_michaelclark@example.com');
+
+-- below is sample validation query
+INSERT INTO "validation" ("user_id")
+VALUES ('initiator_michaelclark@example.com');
+
+-- test query:
+-- select * from user_login where email = 'michaelclark@example.com';
+
+-- modifying validation table
+-- select * from validation;
+-- ALTER TABLE validation
+-- DROP COLUMN validation_flag;
+
+-- below are sample forgot password queries
+select count(*) from validation where user_id = 'initiator_michaelclark@example.com';
+
+UPDATE user_login
+SET password = 'password100'
+WHERE user_id = 'initiator_michaelclark@example.com';
+
+select * from user_login where user_id = 'initiator_michaelclark@example.com';
+
+
+-------------------------------------------
+-------- testing with my login_id ---------
+-------------------------------------------
+
+delete from validation where user_id = 'initiator_jitendra.nayak@petonic.in';
+delete from user_signup where user_id = 'initiator_jitendra.nayak@petonic.in';
+delete from user_login where company_id = 10;
+
+-- below are sample signup query
+INSERT INTO "user_login" ("user_id", "company_id", "email", "password", "role")
+VALUES ('initiator_jitendra.nayak@petonic.in', 10, 'jitendra.nayak@petonic.in', 'password10', 'initiator');
+
+INSERT INTO user_signup ("f_name", "l_name", "user_id")
+VALUES ('Michael', 'Clark', 'initiator_jitendra.nayak@petonic.in');
+
+-- below is sample validation query
+INSERT INTO "validation" ("user_id")
+VALUES ('initiator_jitendra.nayak@petonic.in');
+
+-- test query:
+-- select * from user_login where email = 'michaelclark@example.com';
+
+-- modifying validation table
+-- select * from validation;
+-- ALTER TABLE validation
+-- DROP COLUMN validation_flag;
+
+-- below are sample forgot password queries
+select count(*) from validation where user_id = 'initiator_jitendra.nayak@petonic.in';
+
+UPDATE user_login
+SET password = 'password100'
+WHERE user_id = 'initiator_jitendra.nayak@petonic.in';
+
+select * from user_login where user_id = 'initiator_jitendra.nayak@petonic.in';
+
+
+-- change-password
+select count(*)
+from user_login as ul
+inner join validation as v
+on ul.user_id = v.user_id
+where ul.user_id = 'initiator_johndoe@example.com' and ul.password = 'password1';
+
+select count(*)
+from user_login as ul
+inner join validation as v
+on ul.user_id = v.user_id
+where ul.user_id = 'initiator_jitendra.nayak@petonic.in' and ul.password = '9SNSmUCI';
+
+select * from user_login;
+select * from validation;
+select * from user_login where user_id = 'initiator_jitendra.nayak@petonic.in';
+
+
+-- updating the table names
+-- ALTER TABLE industry_name
+-- RENAME TO industry_list;
+
+-- ALTER TABLE domain_name
+-- RENAME TO domain_list;
+
+-- ALTER TABLE process_name
+-- RENAME TO process_list;
+
+
+-- business scenario
+select *
+from industry_list;
+
+select *
+from domain_list;
+
+select domain_id,name
+from domain_list
+where industry_id = 1;
+
+select *
+from process_list;
+
+select process_id,name
+from process_list
+where domain_id = 2;
+
+select *
+from industry_list as il
+join domain_list as dl
+on il.industry_id = dl.industry_id
+join process_list as pl
+on dl.domain_id = pl.domain_id;
+
+
+select il.name as industry, dl.name as domain, pl.name as process
+from industry_list as il
+join domain_list as dl
+on il.industry_id = dl.industry_id
+join process_list as pl
+on dl.domain_id = pl.domain_id;
+
