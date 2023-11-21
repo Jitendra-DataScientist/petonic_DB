@@ -206,10 +206,100 @@ def generate_random_string(str_len):
     return rand_str
 
 
+# Defining a function to send mail
+
+
+def send_email(subject, body, to_email, sender_email, sender_password, smtp_server, image_path=None):      # pylint: disable=line-too-long,too-many-arguments
+    """mail sender function"""
+    # Set up the SMTP server
+    smtp_port = 587
+
+    # Create the email message
+    msg = MIMEMultipart()
+    msg["From"] = "Petonic Automail <" + sender_email + ">"
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    # Attach the email body as HTML
+    msg.attach(MIMEText(body, "html"))
+
+    # Attach the image if provided
+    if image_path:
+        with open(image_path, "rb") as image_file:
+            image_data = image_file.read()
+            image = MIMEImage(image_data, name=os.path.basename(image_path))
+            # Set the Content-ID header
+            image.add_header("Content-ID", "<company_logo>")
+            msg.attach(image)
+
+    # Set up the SMTP connection
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        # Start TLS for security
+        server.starttls()
+
+        # Login to the email server
+        server.login(sender_email, sender_password)
+
+        # Send the email
+        server.sendmail(sender_email, to_email, msg.as_string())
+
+
+# Defining a function to trigger send_mail
+# Below function forms the mail body, gets the SMTP server
+# details (loads from .env, if error then uses default).
+
+
+def send_mail_trigger_signup(to_email, first_password):
+    """mail sender trigger function"""
+    subject = "Innovation.ai SignUp"
+    try:
+        logo_url = os.getenv("logo_url")
+        body = (
+                f"""<p>Hello,<br>
+                An account has been created on Innovation.ai, the password for which
+                is <strong>{first_password}</strong>.<br>
+                Please log in using this password to set a new password.</p>
+                <p>If you do not recognise this activity, please ignore this email.</p>
+                <p>Best regards,<br>
+                Petonic Team</p>
+                <img src={logo_url} alt="Petonic Company Logo">"""
+            )
+
+    except Exception as mail_error:  # pylint: disable=broad-exception-caught
+        logger.critical("Failed to load logo_url from .env: %s", mail_error)
+        body = (
+                f"""<p>Hello,<br>
+                An account has been created on Innovation.ai, the password for which
+                is <strong>{first_password}</strong>.<br>
+                Please log in using this password to set a new password.</p>
+                <p>If you do not recognise this activity, please ignore this email.</p>
+                <p>Best regards,<br>
+                Petonic Team</p>"""
+            )
+
+    # SMTP server details
+    smtp_server = "smtp.gmail.com"
+    try:
+        sender_email = os.getenv("sender_email")
+        sender_password = os.getenv("sender_password")
+    except Exception as mail_error1:     # pylint: disable=broad-exception-caught
+        logger.critical("Failed to fetch auto-mail creds from env: %s", mail_error1)
+        sender_email = "automail.petonic@gmail.com"
+        sender_password = "efvumbcfgryjachh"
+
+    try:
+        send_email(subject, body, to_email, sender_email, sender_password, smtp_server)
+        logger.info("mail sent !!")
+        return True
+    except Exception as mail_error2:   # pylint: disable=broad-exception-caught
+        logger.critical("Mail sending error: %s", mail_error2)
+        return False
+
+
 # Defining a function for processing (a) query (queries) that do(does) not return any response(s)
 
 
-def execute_query(req_body, action):         # pylint: disable=too-many-return-statements,too-many-branches,inconsistent-return-statements
+def execute_query(req_body, action):         # pylint: disable=too-many-return-statements,too-many-branches,inconsistent-return-statements,too-many-statements
     """function for processing (a) query (queries) that
     do(does) not return any response(s) from database"""
     try:
@@ -221,6 +311,8 @@ def execute_query(req_body, action):         # pylint: disable=too-many-return-s
 
         # Queries Formation
         if action == "signup":
+            first_password = generate_random_string(str_len=8)
+
             queries_list = [
                 "INSERT INTO user_login (user_id, company_id, email, password, role) VALUES (%s, %s, %s, %s, %s);",  # pylint: disable=line-too-long
                 "INSERT INTO user_signup (f_name, l_name, user_id) VALUES (%s, %s, %s);",
@@ -231,7 +323,7 @@ def execute_query(req_body, action):         # pylint: disable=too-many-return-s
                     req_body["role"] + "_" + req_body["email"],
                     req_body["company_id"],
                     req_body["email"],
-                    req_body["password"],
+                    first_password,
                     req_body["role"],
                 ),
                 (
@@ -269,7 +361,11 @@ def execute_query(req_body, action):         # pylint: disable=too-many-return-s
             connection.commit()
 
             if action == "signup":          # pylint: disable=no-else-return
-                return {"user_creation": True}, 201
+                if send_mail_trigger_signup(req_body["email"], first_password):          # pylint: disable=no-else-return
+                    return {"user_creation": True}, 201
+                else:
+                    return {"user_creation": False,
+                            "helpText": "Failed to send email"}, 500
             elif action == "validation":
                 return {"validation": True}, 200
             elif action == "forgot_password":
@@ -363,50 +459,12 @@ async def data_api_validation(payload: Request):
     return JSONResponse(content=validation_response, status_code=status_code)
 
 
-# Defining a function to send mail
-
-
-def send_email(subject, body, to_email, sender_email, sender_password, smtp_server, image_path=None):      # pylint: disable=line-too-long,too-many-arguments
-    """mail sender function"""
-    # Set up the SMTP server
-    smtp_port = 587
-
-    # Create the email message
-    msg = MIMEMultipart()
-    msg["From"] = "Petonic Automail <" + sender_email + ">"
-    msg["To"] = to_email
-    msg["Subject"] = subject
-
-    # Attach the email body as HTML
-    msg.attach(MIMEText(body, "html"))
-
-    # Attach the image if provided
-    if image_path:
-        with open(image_path, "rb") as image_file:
-            image_data = image_file.read()
-            image = MIMEImage(image_data, name=os.path.basename(image_path))
-            # Set the Content-ID header
-            image.add_header("Content-ID", "<company_logo>")
-            msg.attach(image)
-
-    # Set up the SMTP connection
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        # Start TLS for security
-        server.starttls()
-
-        # Login to the email server
-        server.login(sender_email, sender_password)
-
-        # Send the email
-        server.sendmail(sender_email, to_email, msg.as_string())
-
-
 # Defining a function to trigger send_mail
 # Below function forms the mail body, gets the SMTP server
 # details (loads from .env, if error then uses default).
 
 
-def send_mail_trigger(to_email, new_password):
+def send_mail_trigger_forgot_pass(to_email, new_password):
     """mail sender trigger function"""
     subject = "Password Reset"
     try:
@@ -423,14 +481,12 @@ def send_mail_trigger(to_email, new_password):
     except Exception as mail_error:  # pylint: disable=broad-exception-caught
         logger.critical("Failed to load logo_url from .env: %s", mail_error)
         body = (
-            """<p>Hello,<br>
-        Your password has been reset to <strong>"""
-            + new_password
-            + """</strong>.<br>
-        Please log in using this password to reset your password.</p>
-        <p>Best regards,<br>
-        Petonic Team</p>"""
-        )
+                f"""<p>Hello,<br>
+                Your password has been reset to <strong>{new_password}</strong>.<br>
+                Please log in using this password to reset your password.</p>
+                <p>Best regards,<br>
+                Petonic Team</p>"""
+            )
 
     # SMTP server details
     smtp_server = "smtp.gmail.com"
@@ -438,10 +494,9 @@ def send_mail_trigger(to_email, new_password):
         sender_email = os.getenv("sender_email")
         sender_password = os.getenv("sender_password")
     except Exception as mail_error1:     # pylint: disable=broad-exception-caught
-        logger.warning("Failed to fetch auto-mail creds from env: %s", mail_error1)
+        logger.critical("Failed to fetch auto-mail creds from env: %s", mail_error1)
         sender_email = "automail.petonic@gmail.com"
         sender_password = "efvumbcfgryjachh"
-        logger.critical("failed to load env, using default sender_email and sender_password")
 
     try:
         send_email(subject, body, to_email, sender_email, sender_password, smtp_server)
@@ -472,7 +527,7 @@ async def data_api_forgot_password(payload: Request):         # pylint: disable=
                 try:
                     logger.info(                 # pylint: disable=logging-too-many-args
                         "In function: ",
-                        send_mail_trigger(
+                        send_mail_trigger_forgot_pass(
                             req_body["email"], reset_action["new_password"]
                         ),
                     )
@@ -504,10 +559,10 @@ async def data_api_forgot_password(payload: Request):         # pylint: disable=
             if reset_action["reset"]:
                 try:
                     logger.info(
-                                "In function: send_mail_trigger(email=%s, new_password=%s) returned: %s",       # pylint: disable=line-too-long
+                                "In function: send_mail_trigger_forgot_pass(email=%s, new_password=%s) returned: %s",       # pylint: disable=line-too-long
                                 req_body["email"],
                                 reset_action["new_password"],
-                                send_mail_trigger(req_body["email"], reset_action["new_password"]),
+                                send_mail_trigger_forgot_pass(req_body["email"], reset_action["new_password"]),       # pylint: disable=line-too-long
                             )
 
                     return JSONResponse(
