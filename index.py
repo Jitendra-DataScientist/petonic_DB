@@ -1,3 +1,4 @@
+# pylint: disable=too-many-lines
 """
     data-api routes
     primarily for connecting with the postgres database
@@ -10,6 +11,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+import json
 import logging
 import pandas as pd
 import psycopg2
@@ -709,3 +711,320 @@ async def data_api_business_scenario_complete_dropdown():
                 data_frame[(data_frame["Business"] == business) & (data_frame["Domain"] == domain)]["Process"]  # pylint: disable=line-too-long
             )
     return JSONResponse(content=dct, status_code=200)
+
+
+# Defining a function adding/updating an entry in the challenge_status table
+
+
+def update_challenge_status(req_body):
+    """function adding/updating an entry in the challenge_status table"""
+    try:
+        # Connect to the PostgreSQL database
+        connection = psycopg2.connect(**db_params)
+
+        # Create a cursor object to interact with the database
+        cursor = connection.cursor()
+
+        # Queries Formation
+        query = "INSERT INTO challenge_status (challenge_id, challenge_status)\
+                    VALUES (%s, %s)\
+                    ON CONFLICT (challenge_id) DO UPDATE SET challenge_status = %s;"
+        query_data = (req_body["challenge_id"], req_body["challenge_status"], req_body["challenge_status"])   # pylint: disable=line-too-long
+
+        try:
+            # Execute the query
+            cursor.execute(query, query_data)
+
+            # Print a success message
+            logger.info("Query executed successfully")
+
+            # Commit the transaction
+            connection.commit()
+
+            return {"update": True}, 201
+
+        except Exception as db_error:       # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "update": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",   # pylint: disable=line-too-long
+            }, 500
+
+    except Exception as db_error:       # pylint: disable=broad-exception-caught
+        exception_type, _, exception_traceback = sys.exc_info()
+        filename = exception_traceback.tb_frame.f_code.co_filename
+        line_number = exception_traceback.tb_lineno
+        logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+        return {
+            "update": False,
+            "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
+        }, 500
+    # except Error as e:
+    #     logger.error(f"Error: {e}")
+
+    finally:
+        # Close the cursor and the database connection
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+# Defining a route and a request handler function
+# for adding/updating entry of challenge_status table
+
+
+@app.post("/data-api/challenge-status")
+async def challenge_status(payload: Request):
+    """Route function for fetching data for adding/updating entry of challenge_status table"""
+
+    req_body = await payload.json()
+    response, status_code = update_challenge_status(req_body)
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+# Defining a function adding/updating an entry in the challenge_json_data table
+
+
+def update_challenge_json(req_body):
+    """function adding/updating an entry in the challenge_json_data table"""
+    try:
+        # Connect to the PostgreSQL database
+        connection = psycopg2.connect(**db_params)
+
+        # Create a cursor object to interact with the database
+        cursor = connection.cursor()
+
+        # Queries Formation
+        query = "INSERT INTO challenge_json_data (challenge_identifier, json_data)\
+                    VALUES (%s, %s)\
+                    ON CONFLICT (challenge_identifier) DO UPDATE SET json_data = %s;"
+        query_data = (
+                        req_body["challenge_identifier"],
+                        json.dumps(req_body["json_data"]),
+                        json.dumps(req_body["json_data"])
+                      )
+
+        try:
+            # Execute the query
+            cursor.execute(query, query_data)
+
+            # Print a success message
+            logger.info("Query executed successfully")
+
+            # Commit the transaction
+            connection.commit()
+
+            return {"update": True}, 201
+
+        except Exception as db_error:       # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "update": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",   # pylint: disable=line-too-long
+            }, 500
+
+    except Exception as db_error:       # pylint: disable=broad-exception-caught
+        exception_type, _, exception_traceback = sys.exc_info()
+        filename = exception_traceback.tb_frame.f_code.co_filename
+        line_number = exception_traceback.tb_lineno
+        logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+        return {
+            "update": False,
+            "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
+        }, 500
+    # except Error as e:
+    #     logger.error(f"Error: {e}")
+
+    finally:
+        # Close the cursor and the database connection
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+# Defining a route and a request handler function
+# for adding/updating entry of/in challenge_json_data table
+
+
+@app.post("/data-api/challenge-json-data-write")
+async def challenge_json_data_write(payload: Request):
+    """Route function for adding/updating entry of/in challenge_json_data table"""
+
+    req_body = await payload.json()
+    response, status_code = update_challenge_json(req_body)
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+# Defining a function fetchting an entry from the challenge_status table
+
+
+def fetch_challenge_json(req_body):
+    """function fetchting an entry from the challenge_status table"""
+    try:
+        # Connect to the PostgreSQL database
+        connection = psycopg2.connect(**db_params)
+
+        # Create a cursor object to interact with the database
+        cursor = connection.cursor()
+
+        # Queries Formation
+        query = "select * from challenge_json_data where challenge_identifier=%s;"
+        query_data = (req_body["challenge_identifier"],)
+
+        try:
+            # Execute the query
+            cursor.execute(query, query_data)
+
+            # Print a success message
+            logger.info("Query executed successfully")
+
+            # Commit the transaction
+            connection.commit()
+
+            try:
+                return {"fetch": True,
+                        "json_data": cursor.fetchall()[0][1]}, 200
+            except IndexError:
+                return {"fetch": False,
+                        "json_data": {},
+                        "helpText": "challenge_identifier not found"}, 400
+
+        except Exception as db_error:       # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "fetch": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",   # pylint: disable=line-too-long
+            }, 500
+
+    except Exception as db_error:       # pylint: disable=broad-exception-caught
+        exception_type, _, exception_traceback = sys.exc_info()
+        filename = exception_traceback.tb_frame.f_code.co_filename
+        line_number = exception_traceback.tb_lineno
+        logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+        return {
+            "fetch": False,
+            "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
+        }, 500
+    # except Error as e:
+    #     logger.error(f"Error: {e}")
+
+    finally:
+        # Close the cursor and the database connection
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+# Defining a route and a request handler function
+# for fetchting entry of challenge_json_data table
+
+
+@app.post("/data-api/challenge-json-data-fetch")
+async def challenge_json_data_fetch(payload: Request):
+    """Route function for fetching data for fetchtinging entry of challenge_status table"""
+
+    req_body = await payload.json()
+    response, status_code = fetch_challenge_json(req_body)
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+# Defining a function for challenge creation (an entry in challenge table)
+
+
+def challenge_creation(req_body):
+    """function for challenge creation (an entry in challenge table)"""
+    try:
+        # Connect to the PostgreSQL database
+        connection = psycopg2.connect(**db_params)
+
+        # Create a cursor object to interact with the database
+        cursor = connection.cursor()
+
+        # Queries Formation
+        query = "INSERT INTO challenge\
+                (challenge_id, initiator_id, date, industry, process, domain, background)\
+                VALUES (%s, %s,%s,%s,%s,%s,%s);"
+        query_data = (
+                        req_body["challenge_id"],
+                        req_body["initiator_id"],
+                        req_body["date"],
+                        req_body["industry"],
+                        req_body["process"],
+                        req_body["domain"],
+                        req_body["background"]
+                      )
+
+        try:
+            # Execute the query
+            try:
+                cursor.execute(query, query_data)
+            except psycopg2.errors.UniqueViolation:           # pylint: disable=no-member
+                logger.warning("challenge_id already present")
+                return {"creation": False,
+                        "helpText": "challenge_id already present"}, 400
+
+            # Print a success message
+            logger.info("Query executed successfully")
+
+            # Commit the transaction
+            connection.commit()
+
+            return {"creation": True}, 201
+
+        except Exception as db_error:       # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "creation": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",   # pylint: disable=line-too-long
+            }, 500
+
+    except Exception as db_error:       # pylint: disable=broad-exception-caught
+        exception_type, _, exception_traceback = sys.exc_info()
+        filename = exception_traceback.tb_frame.f_code.co_filename
+        line_number = exception_traceback.tb_lineno
+        logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+        return {
+            "creation": False,
+            "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
+        }, 500
+    # except Error as e:
+    #     logger.error(f"Error: {e}")
+
+    finally:
+        # Close the cursor and the database connection
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+# Defining a route and a request handler function
+# for challenge creation in challenge table
+
+
+@app.post("/data-api/challenge-creation")
+async def challenge_creation_api(payload: Request):
+    """Route function for challenge creation in challenge table"""
+
+    req_body = await payload.json()
+    response, status_code = challenge_creation(req_body)
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
