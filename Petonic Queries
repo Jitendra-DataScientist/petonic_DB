@@ -186,3 +186,60 @@ on il.industry_id = dl.industry_id
 join process_list as pl
 on dl.domain_id = pl.domain_id;
 
+
+-- adding/updating status of challenge
+select * from challenge;
+
+select * from challenge_status;
+
+select * from user_login;
+
+INSERT INTO challenge (challenge_id, initiator_id)
+VALUES (1234,'initiator_jitendra.nayak@petonic.in');
+
+INSERT INTO challenge_status (challenge_id, challenge_status)
+VALUES (1234, 'UD');
+
+UPDATE challenge_status
+SET challenge_status = 'RS'
+WHERE challenge_id = 1234;
+
+delete from challenge_status where challenge_id = 1234;
+
+
+-- adding/updating json object of challenge
+
+-- DROP TABLE challenge_json_data;
+
+CREATE TABLE challenge_json_data (
+    challenge_identifier serial PRIMARY KEY,
+    json_data JSON
+);
+
+select * from challenge_json_data;
+
+INSERT INTO challenge_json_data (challenge_identifier, json_data)
+VALUES (1234, '{"question1":"What is the challenge?", "question2":"what is the severity?"}');
+
+UPDATE challenge_json_data
+SET json_data = '{"question1":"What is the challenge?", "question2":"what is your issue?"}'
+WHERE challenge_identifier = 1234;
+
+delete from challenge_json_data where challenge_identifier = 1234;
+
+
+--fetching json object of challenge
+
+select * from challenge_json_data;
+select * from challenge_json_data where challenge_identifier=1234;
+select * from challenge_json_data where challenge_identifier=12345;
+
+
+-- challenge creation
+
+select * from challenge;
+
+INSERT INTO challenge (challenge_id, initiator_id, date, industry, process, domain, background)
+VALUES (143, 'initiator_jitendra.nayak@petonic.in','2023-01-31','BFS','Retail','KuchBhi','KuchBhi');
+
+delete from challenge where challenge_id = 143;
