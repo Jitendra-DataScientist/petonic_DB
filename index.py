@@ -935,7 +935,7 @@ def fetch_challenge_json(req_body):
 
 @app.post("/data-api/challenge-json-data-fetch")
 async def challenge_json_data_fetch(payload: Request):
-    """Route function for fetching data for fetchtinging entry of challenge_status table"""
+    """Route function for fetching data for fetchting entry of challenge_status table"""
 
     req_body = await payload.json()
     response, status_code = fetch_challenge_json(req_body)
