@@ -935,7 +935,7 @@ def fetch_challenge_json(req_body):
 
 @app.post("/data-api/challenge-json-data-fetch")
 async def challenge_json_data_fetch(payload: Request):
-    """Route function for fetching data for fetchtinging entry of challenge_status table"""
+    """Route function for fetching data for fetchting entry of challenge_status table"""
 
     req_body = await payload.json()
     response, status_code = fetch_challenge_json(req_body)
@@ -1026,5 +1026,83 @@ async def challenge_creation_api(payload: Request):
 
     req_body = await payload.json()
     response, status_code = challenge_creation(req_body)
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+# Defining a function for counting the number of challenges corresponding to a user_id
+
+
+def challenge_count(req_body):
+    """function for counting the number of challenges corresponding to a user_id"""
+    try:
+        # Connect to the PostgreSQL database
+        connection = psycopg2.connect(**db_params)
+
+        # Create a cursor object to interact with the database
+        cursor = connection.cursor()
+
+        # Queries Formation
+        query = "select count(*) from challenge where initiator_id=%s;"
+        query_data = (
+                        req_body["initiator_id"],
+                      )
+
+        try:
+            # Execute the query
+            cursor.execute(query, query_data)
+
+            # Print a success message
+            logger.info("Query executed successfully")
+
+            # Commit the transaction
+            connection.commit()
+
+            # Fetch data
+            ret_data = cursor.fetchall()
+
+            return {"count_fetch": True,
+                    "count": ret_data[0][0]}, 200
+
+        except Exception as db_error:       # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "count_fetch": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",   # pylint: disable=line-too-long
+            }, 500
+
+    except Exception as db_error:       # pylint: disable=broad-exception-caught
+        exception_type, _, exception_traceback = sys.exc_info()
+        filename = exception_traceback.tb_frame.f_code.co_filename
+        line_number = exception_traceback.tb_lineno
+        logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+        return {
+            "count_fetch": False,
+            "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
+        }, 500
+    # except Error as e:
+    #     logger.error(f"Error: {e}")
+
+    finally:
+        # Close the cursor and the database connection
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+# Defining a route and a request handler function for counting
+# the number of challenges corresponding to a user_id
+
+
+@app.post("/data-api/challenge-count")
+async def challenge_count_api(payload: Request):
+    """Route function for counting the number of challenges corresponding to a user_id"""
+
+    req_body = await payload.json()
+    response, status_code = challenge_count(req_body)
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)

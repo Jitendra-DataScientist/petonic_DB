@@ -243,3 +243,11 @@ INSERT INTO challenge (challenge_id, initiator_id, date, industry, process, doma
 VALUES (143, 'initiator_jitendra.nayak@petonic.in','2023-01-31','BFS','Retail','KuchBhi','KuchBhi');
 
 delete from challenge where challenge_id = 143;
+
+
+-- challenge count
+
+select * from challenge;
+
+select count(*) from challenge where initiator_id='initiator_jitendra.nayak@petonic.in';
+select count(*) from challenge where initiator_id='initiator_jitendra.nayak@petonic.i';
