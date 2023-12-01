@@ -1,0 +1,7 @@
+httptools==0.1.*
+uvicorn>=0.14.0
+uvloop>=0.14.0
+pandas
+psycopg2
+fastapi
+python-dotenv
