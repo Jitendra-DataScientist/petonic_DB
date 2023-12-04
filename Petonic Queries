@@ -251,3 +251,8 @@ select * from challenge;
 
 select count(*) from challenge where initiator_id='initiator_jitendra.nayak@petonic.in';
 select count(*) from challenge where initiator_id='initiator_jitendra.nayak@petonic.i';
+
+
+-- fetch challenge-status
+
+select challenge_status from challenge_status where challenge_id=1234;
