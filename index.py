@@ -777,12 +777,90 @@ def update_challenge_status(req_body):
 # for adding/updating entry of challenge_status table
 
 
-@app.post("/data-api/challenge-status")
-async def challenge_status(payload: Request):
-    """Route function for fetching data for adding/updating entry of challenge_status table"""
+@app.post("/data-api/update-challenge-status")
+async def update_challenge_status_api(payload: Request):
+    """Route function for adding/updating entry of challenge_status table"""
 
     req_body = await payload.json()
     response, status_code = update_challenge_status(req_body)
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+# Defining a function fetchting an entry from the challenge_status table
+
+
+def fetch_challenge_status(req_body):
+    """function fetchting an entry from the challenge_status table"""
+    try:
+        # Connect to the PostgreSQL database
+        connection = psycopg2.connect(**db_params)
+
+        # Create a cursor object to interact with the database
+        cursor = connection.cursor()
+
+        # Queries Formation
+        query = "select challenge_status from challenge_status where challenge_id=%s;"
+        query_data = (req_body["challenge_id"],)
+
+        try:
+            # Execute the query
+            cursor.execute(query, query_data)
+
+            # Print a success message
+            logger.info("Query executed successfully")
+
+            # Commit the transaction
+            connection.commit()
+
+            try:
+                return {"fetch": True,
+                        "status": cursor.fetchall()[0][0]}, 200
+            except IndexError:
+                return {"fetch": False,
+                        "status": None,
+                        "helpText": "challenge_id not found"}, 400
+
+        except Exception as db_error:       # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "fetch": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",   # pylint: disable=line-too-long
+            }, 500
+
+    except Exception as db_error:       # pylint: disable=broad-exception-caught
+        exception_type, _, exception_traceback = sys.exc_info()
+        filename = exception_traceback.tb_frame.f_code.co_filename
+        line_number = exception_traceback.tb_lineno
+        logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+        return {
+            "fetch": False,
+            "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
+        }, 500
+    # except Error as e:
+    #     logger.error(f"Error: {e}")
+
+    finally:
+        # Close the cursor and the database connection
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+# Defining a route and a request handler function
+# for fetching an entry of challenge_status table
+
+
+@app.post("/data-api/fetch-challenge-status")
+async def fetch_challenge_status_api(payload: Request):
+    """Route function for fetching an entry of challenge_status table"""
+
+    req_body = await payload.json()
+    response, status_code = fetch_challenge_status(req_body)
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
