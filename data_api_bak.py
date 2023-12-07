@@ -1,5 +1,6 @@
 """
-    this script hosts data-api routes
+    Legacy script that use DB_psycopg2_bak.py
+    This script hosts data-api routes
     that are written on FASTAPI
 """
 import os
