@@ -205,6 +205,7 @@ SET challenge_status = 'RS'
 WHERE challenge_id = 1234;
 
 delete from challenge_status where challenge_id = 1234;
+delete from challenge where challenge_id = 1234;
 
 
 -- adding/updating json object of challenge
