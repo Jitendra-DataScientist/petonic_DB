@@ -42,8 +42,8 @@ except Error as env_error:
     sys.exit()
 
 
-class DB_update:
-    def db_update(self, queries_list, query_data):         # pylint: disable=too-many-return-statements,too-many-branches,inconsistent-return-statements,too-many-statements
+class DB_create_update:
+    def db_create_update(self, queries_list, query_data):         # pylint: disable=too-many-return-statements,too-many-branches,inconsistent-return-statements,too-many-statements
         """function for processing (a) query (queries) that
         do(does) not return any response(s) from database"""
         try:
@@ -72,8 +72,8 @@ class DB_update:
                 line_number = exception_traceback.tb_lineno
                 logger.error("%s||||%s||||%d", exception_type, filename, line_number)
                 return {
-                        "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}",
-                    }
+                    "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",   # pylint: disable=line-too-long
+                }
 
         except Exception as db_error:           # pylint: disable=broad-exception-caught
             exception_type, _, exception_traceback = sys.exc_info()
@@ -81,10 +81,8 @@ class DB_update:
             line_number = exception_traceback.tb_lineno
             logger.error("%s||||%s||||%d", exception_type, filename, line_number)
             return {
-                    "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}",
-                }
-        # except Error as e:
-        #     logger.error(f"Error: {e}")
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",   # pylint: disable=line-too-long
+            }
 
         finally:
             # Close the cursor and the database connection
