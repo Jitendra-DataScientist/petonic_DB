@@ -243,7 +243,7 @@ select * from challenge;
 INSERT INTO challenge (challenge_id, initiator_id, date, industry, process, domain, background)
 VALUES (143, 'initiator_jitendra.nayak@petonic.in','2023-01-31','BFS','Retail','KuchBhi','KuchBhi');
 
-delete from challenge where challenge_id = 143;
+delete from challenge where challenge_id = 1234;
 
 
 -- challenge count
