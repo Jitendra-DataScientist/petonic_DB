@@ -1,14 +1,12 @@
 """
     this script hosts data-api routes
-    that are written on FASTAPI
+    that are written using FASTAPI
 """
 import logging
 import pandas as pd
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from dotenv import load_dotenv
-from DB_main import DB_main
-from utils import utils
+from db_main import DBMain
 
 
 # Configure logging
@@ -22,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-db_main_inst = DB_main()
+db_main_inst = DBMain()
 
 
 # Create a FastAPI instance
@@ -47,7 +45,7 @@ async def data_api_login(payload: Request):
     # data[0] = ("qw",0)
     # data[0] = (12,0)
     if isinstance(data[0][0], int):
-        if data[0][0] == 1:                             # pylint: disable=no-else-return
+        if data[0][0] == 1:                  # pylint: disable=no-else-return
             return JSONResponse(content={"login": True}, status_code=200)
         elif data[0][0] == 0:
             return JSONResponse(content={"login": False}, status_code=401)
@@ -57,7 +55,8 @@ async def data_api_login(payload: Request):
             )
     else:
         return JSONResponse(
-            content={"helpText": {"data": data}, "login": False}, status_code=401
+            content={"helpText": {"data": data}, "login": False},
+            status_code=401
         )
 
 
@@ -80,7 +79,7 @@ async def data_api_validation(payload: Request):
 
 
 @app.post("/data-api/forgot-password")
-async def data_api_forgot_password(payload: Request):         # pylint: disable=too-many-return-statements
+async def data_api_forgot_password(payload: Request):
     """Route function for forgot-password action"""
 
     req_body = await payload.json()
@@ -99,7 +98,9 @@ async def data_api_change_password(payload: Request):
 
 @app.get("/data-api/business-scenario/industry-dropdown")
 async def data_api_business_scenario_industry_dropdown():
-    """Route function for fetching data for the Industry dropdown in the Business Scenario tab"""
+    """Route function for fetching data for the
+       Industry dropdown in the Business Scenario tab
+    """
 
     data = db_main_inst.business_scenario_industry_dropdown()
     logger.info(data)
@@ -108,7 +109,9 @@ async def data_api_business_scenario_industry_dropdown():
 
 @app.post("/data-api/business-scenario/domain-dropdown")
 async def data_api_business_scenario_domain_dropdown(payload: Request):
-    """Route function for fetching data for the Domain dropdown in the Business Scenario tab"""
+    """Route function for fetching data for the
+       Domain dropdown in the Business Scenario tab
+    """
 
     req_body = await payload.json()
     data = db_main_inst.business_scenario_domain_dropdown(req_body)
@@ -118,7 +121,9 @@ async def data_api_business_scenario_domain_dropdown(payload: Request):
 
 @app.post("/data-api/business-scenario/process-dropdown")
 async def data_api_business_scenario_process_dropdown(payload: Request):
-    """Route function for fetching data for the Process dropdown in the Business Scenario tab"""
+    """Route function for fetching data for the
+       Process dropdown in the Business Scenario tab
+    """
 
     req_body = await payload.json()
     data = db_main_inst.business_scenario_process_dropdown(req_body)
@@ -128,7 +133,9 @@ async def data_api_business_scenario_process_dropdown(payload: Request):
 
 @app.get("/data-api/business-scenario/complete-dropdown")
 async def data_api_business_scenario_complete_dropdown():
-    """Route function for fetching data of all 3 dropdowns in the Business Scenario tab"""
+    """Route function for fetching data of all
+       3 dropdowns in the Business Scenario tab
+    """
 
     data_frame = pd.DataFrame(
         db_main_inst.business_scenario_complete_dropdown(),
@@ -145,7 +152,8 @@ async def data_api_business_scenario_complete_dropdown():
         data_frame1 = data_frame[data_frame["Business"] == business]
         for domain in data_frame1["Domain"].unique():
             dct[business][domain] = list(
-                data_frame[(data_frame["Business"] == business) & (data_frame["Domain"] == domain)]["Process"]  # pylint: disable=line-too-long
+                data_frame[(data_frame["Business"] == business) &
+                           (data_frame["Domain"] == domain)]["Process"]
             )
     return JSONResponse(content=dct, status_code=200)
 
@@ -172,7 +180,9 @@ async def fetch_challenge_status_api(payload: Request):
 
 @app.post("/data-api/challenge-json-data-write")
 async def challenge_json_data_write(payload: Request):
-    """Route function for adding/updating entry of/in challenge_json_data table"""
+    """Route function for adding/updating entry
+       in/of challenge_json_data table
+    """
 
     req_body = await payload.json()
     response, status_code = db_main_inst.update_challenge_json(req_body)
@@ -182,7 +192,9 @@ async def challenge_json_data_write(payload: Request):
 
 @app.post("/data-api/challenge-json-data-fetch")
 async def challenge_json_data_fetch(payload: Request):
-    """Route function for fetching data for fetchting entry of challenge_status table"""
+    """Route function for fetching data for fetchting
+       entry of challenge_status table
+    """
 
     req_body = await payload.json()
     response, status_code = db_main_inst.fetch_challenge_json(req_body)
@@ -202,7 +214,9 @@ async def challenge_creation_api(payload: Request):
 
 @app.post("/data-api/challenge-count")
 async def challenge_count_api(payload: Request):
-    """Route function for counting the number of challenges corresponding to a user_id"""
+    """Route function for counting the number
+       of challenges corresponding to a user_id
+    """
 
     req_body = await payload.json()
     response, status_code = db_main_inst.challenge_count(req_body)

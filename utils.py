@@ -1,6 +1,6 @@
 """
-    utilities other than database related like random string
-    generator, send mail etc.
+    utilities other than the database related
+    like random string generator, send mail etc.
 """
 import os
 import sys
@@ -25,17 +25,21 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# CAUTION : the python script and .env file need to be in the same path for below line.
+# CAUTION : the python script and .env file
+# need to be in the same path for below line.
 dotenv_path = os.path.join(os.getcwd(), ".env")
 # below dotenv_path for local test in Downloads folder
 # dotenv_path = os.path.join(os.path.expanduser("~"), "Downloads", ".env")
 load_dotenv(dotenv_path)
 
 
-class utils:
+class Utils:
+    """this class has the attributes for utilites used
+       in APIs other than the DB related ones
+    """
     def generate_random_string(self, str_len):
         """funtion to generate random set of characters
-        for passwords, IDs etc."""
+           for passwords, IDs etc."""
         # Define character sets
         digits = string.digits
         lowercase_letters = string.ascii_lowercase
@@ -53,7 +57,8 @@ class utils:
         return rand_str
 
 
-    def send_email(self, subject, body, to_email, sender_email, sender_password, smtp_server, image_path=None):      # pylint: disable=line-too-long,too-many-arguments
+    def send_email(self, subject, body, to_email, sender_email,            # pylint: disable=too-many-arguments
+                   sender_password, smtp_server, image_path=None):
         """mail sender function"""
         # Set up the SMTP server
         smtp_port = 587
@@ -90,6 +95,7 @@ class utils:
 
     def send_mail_trigger_signup(self, to_email, first_password):
         """mail sender trigger function"""
+
         subject = "Innovation.ai SignUp"
         try:
             logo_url = os.getenv("logo_url")
@@ -104,7 +110,7 @@ class utils:
                     <img src={logo_url} alt="Petonic Company Logo">"""
                 )
 
-        except Exception as mail_error:  # pylint: disable=broad-exception-caught
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
             logger.critical("Failed to load logo_url from .env: %s", mail_error)
             body = (
                     f"""<p>Hello,<br>
@@ -121,22 +127,24 @@ class utils:
         try:
             sender_email = os.getenv("sender_email")
             sender_password = os.getenv("sender_password")
-        except Exception as mail_error1:     # pylint: disable=broad-exception-caught
+        except Exception as mail_error1:             # pylint: disable=broad-exception-caught
             logger.critical("Failed to fetch auto-mail creds from env: %s", mail_error1)
             sender_email = "automail.petonic@gmail.com"
             sender_password = "efvumbcfgryjachh"
 
         try:
-            self.send_email(subject, body, to_email, sender_email, sender_password, smtp_server)
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
             logger.info("mail sent !!")
             return True
-        except Exception as mail_error2:   # pylint: disable=broad-exception-caught
+        except Exception as mail_error2:             # pylint: disable=broad-exception-caught
             logger.critical("Mail sending error: %s", mail_error2)
             return False
 
 
     def send_mail_trigger_forgot_pass(self, to_email, new_password):
         """mail sender trigger function"""
+
         subject = "Password Reset"
         try:
             logo_url = os.getenv("logo_url")
@@ -149,7 +157,7 @@ class utils:
                     <img src={logo_url} alt="Petonic Company Logo">"""
                 )
 
-        except Exception as mail_error:  # pylint: disable=broad-exception-caught
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
             logger.critical("Failed to load logo_url from .env: %s", mail_error)
             body = (
                     f"""<p>Hello,<br>
@@ -164,14 +172,15 @@ class utils:
         try:
             sender_email = os.getenv("sender_email")
             sender_password = os.getenv("sender_password")
-        except Exception as mail_error1:     # pylint: disable=broad-exception-caught
+        except Exception as mail_error1:             # pylint: disable=broad-exception-caught
             logger.critical("Failed to fetch auto-mail creds from env: %s", mail_error1)
             sys.exit()
 
         try:
-            self.send_email(subject, body, to_email, sender_email, sender_password, smtp_server)
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
             logger.info("mail sent !!")
             return "mail sent !!"
-        except Exception as mail_error2:   # pylint: disable=broad-exception-caught
+        except Exception as mail_error2:             # pylint: disable=broad-exception-caught
             logger.critical("Mail sending error: %s", mail_error2)
             return "Mail sending error: ", mail_error2
