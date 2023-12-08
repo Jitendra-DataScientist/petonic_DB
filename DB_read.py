@@ -68,10 +68,7 @@ class DB_read:
             else:
                 cursor.execute(query)
 
-            # Fetch data
-            ret_data = cursor.fetchall()
-
-            return ret_data
+            return cursor.fetchall()
 
         except Exception as db_error:  # pylint: disable=broad-exception-caught
             exception_type, _, exception_traceback = sys.exc_info()

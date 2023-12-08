@@ -11,8 +11,7 @@ import psycopg2
 from psycopg2 import Error
 from dotenv import load_dotenv
 from DB_read import DB_read
-from DB_create import DB_create
-from DB_update import DB_update
+from DB_create_update import DB_create_update
 from utils import utils
 
 
@@ -47,8 +46,7 @@ except Error as env_error:
 
 
 DB_read_inst = DB_read()
-DB_create_inst = DB_create()
-DB_update_inst = DB_update()
+DB_create_update_inst = DB_create_update()
 utils = utils()
 
 
@@ -111,9 +109,9 @@ class DB_main:
             ]
 
             try:
-                res, status_code = DB_create_inst.db_create(queries_list,query_data)
+                res = DB_create_update_inst.db_create_update(queries_list,query_data)
 
-                if  status_code == 200:
+                if  res == "success":
                     if utils.send_mail_trigger_signup(req_body["email"], first_password):          # pylint: disable=no-else-return
                         return {"user_creation": True}, 201
                     else:
@@ -121,7 +119,7 @@ class DB_main:
                                 "helpText": "Failed to send email"}, 500
                 else:
                     res.update({"user_creation": False})
-                    return res, status_code
+                    return res, 400
 
             except Exception as db_error:   # pylint: disable=broad-exception-caught
                 exception_type, _, exception_traceback = sys.exc_info()
@@ -154,13 +152,13 @@ class DB_main:
             query_data = [(req_body["role"] + "_" + req_body["email"],)]
 
             try:
-                res, status_code = DB_create_inst.db_create(queries_list,query_data)
+                res = DB_create_update_inst.db_create_update(queries_list,query_data)
 
-                if  status_code == 200:
+                if  res == "success":
                     return {"validation": True}, 200
                 else:
                     res.update({"validation": False})
-                    return res, status_code
+                    return res, 400
 
             except Exception as db_error:   # pylint: disable=broad-exception-caught
                 exception_type, _, exception_traceback = sys.exc_info()
@@ -197,7 +195,7 @@ class DB_main:
             query_data = [(new_password, req_body["role"] + "_" + req_body["email"])]
 
             try:
-                res = DB_update_inst.db_update(queries_list, query_data)
+                res = DB_create_update_inst.db_create_update(queries_list, query_data)
 
                 if res == "success":
                     return {"reset": True, "new_password": new_password}
@@ -515,29 +513,26 @@ class DB_main:
     def update_challenge_status(self,req_body):
         """function adding/updating an entry in the challenge_status table"""
         try:
-            # Connect to the PostgreSQL database
-            connection = psycopg2.connect(**db_params)
-
-            # Create a cursor object to interact with the database
-            cursor = connection.cursor()
-
             # Queries Formation
-            query = "INSERT INTO challenge_status (challenge_id, challenge_status)\
-                    VALUES (%s, %s)\
-                    ON CONFLICT (challenge_id) DO UPDATE SET challenge_status = %s;"
-            query_data = (req_body["challenge_id"], req_body["challenge_status"], req_body["challenge_status"])   # pylint: disable=line-too-long
-
+            query = [
+                        "INSERT INTO challenge_status (challenge_id, challenge_status)\
+                        VALUES (%s, %s)\
+                        ON CONFLICT (challenge_id) DO UPDATE SET challenge_status = %s;",
+                ]
+            query_data = [
+                            (
+                                req_body["challenge_id"],
+                                req_body["challenge_status"],
+                                req_body["challenge_status"]
+                            )
+                        ]
             try:
-                # Execute the query
-                cursor.execute(query, query_data)
-
-                # Print a success message
-                logger.info("Query executed successfully")
-
-                # Commit the transaction
-                connection.commit()
-
-                return {"update": True}, 201
+                res = DB_create_update_inst.db_create_update(query, query_data)
+                if res == "success":
+                    return {"update": True}, 201
+                else:
+                    res.update({"update": False})
+                    return res, 400
 
             except Exception as db_error:       # pylint: disable=broad-exception-caught
                 exception_type, _, exception_traceback = sys.exc_info()
@@ -558,43 +553,21 @@ class DB_main:
                 "update": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
             }, 500
-        # except Error as e:
-        #     logger.error(f"Error: {e}")
-
-        finally:
-            # Close the cursor and the database connection
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
 
 
     def fetch_challenge_status(self,req_body):
         """function fetchting an entry from the challenge_status table"""
         try:
-            # Connect to the PostgreSQL database
-            connection = psycopg2.connect(**db_params)
-
-            # Create a cursor object to interact with the database
-            cursor = connection.cursor()
-
             # Queries Formation
             query = "select challenge_status from challenge_status where challenge_id=%s;"
             query_data = (req_body["challenge_id"],)
 
             try:
-                # Execute the query
-                cursor.execute(query, query_data)
-
-                # Print a success message
-                logger.info("Query executed successfully")
-
-                # Commit the transaction
-                connection.commit()
+                res = DB_read_inst.db_read(query, query_data)
 
                 try:
                     return {"fetch": True,
-                            "status": cursor.fetchall()[0][0]}, 200
+                            "status": res[0][0]}, 200
                 except IndexError:
                     return {"fetch": False,
                             "status": None,
@@ -619,47 +592,33 @@ class DB_main:
                 "fetch": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
             }, 500
-        # except Error as e:
-        #     logger.error(f"Error: {e}")
-
-        finally:
-            # Close the cursor and the database connection
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
 
 
     def update_challenge_json(self, req_body):
         """function adding/updating an entry in the challenge_json_data table"""
         try:
-            # Connect to the PostgreSQL database
-            connection = psycopg2.connect(**db_params)
-
-            # Create a cursor object to interact with the database
-            cursor = connection.cursor()
-
             # Queries Formation
-            query = "INSERT INTO challenge_json_data (challenge_identifier, json_data)\
+            query = [
+                        "INSERT INTO challenge_json_data (challenge_identifier, json_data)\
                         VALUES (%s, %s)\
-                        ON CONFLICT (challenge_identifier) DO UPDATE SET json_data = %s;"
-            query_data = (
-                            req_body["challenge_identifier"],
-                            json.dumps(req_body["json_data"]),
+                        ON CONFLICT (challenge_identifier) DO UPDATE SET json_data = %s;",
+                ]
+            query_data = [
+                            (
+                                req_body["challenge_identifier"],
+                                json.dumps(req_body["json_data"]),
                             json.dumps(req_body["json_data"])
-                        )
+                            ),
+                        ]
 
             try:
-                # Execute the query
-                cursor.execute(query, query_data)
+                res = DB_create_update_inst.db_create_update(query, query_data)
 
-                # Print a success message
-                logger.info("Query executed successfully")
-
-                # Commit the transaction
-                connection.commit()
-
-                return {"update": True}, 201
+                if res == "success":
+                    return {"update": True}, 201
+                else:
+                    res.update({"update": False})
+                    return res, 400
 
             except Exception as db_error:       # pylint: disable=broad-exception-caught
                 exception_type, _, exception_traceback = sys.exc_info()
@@ -680,43 +639,20 @@ class DB_main:
                 "update": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
             }, 500
-        # except Error as e:
-        #     logger.error(f"Error: {e}")
-
-        finally:
-            # Close the cursor and the database connection
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
 
 
     def fetch_challenge_json(self, req_body):
         """function fetchting an entry from the challenge_status table"""
         try:
-            # Connect to the PostgreSQL database
-            connection = psycopg2.connect(**db_params)
-
-            # Create a cursor object to interact with the database
-            cursor = connection.cursor()
-
-            # Queries Formation
             query = "select * from challenge_json_data where challenge_identifier=%s;"
             query_data = (req_body["challenge_identifier"],)
 
             try:
-                # Execute the query
-                cursor.execute(query, query_data)
-
-                # Print a success message
-                logger.info("Query executed successfully")
-
-                # Commit the transaction
-                connection.commit()
+                res = DB_read_inst.db_read(query, query_data)
 
                 try:
                     return {"fetch": True,
-                            "json_data": cursor.fetchall()[0][1]}, 200
+                            "json_data": res[0][1]}, 200
                 except IndexError:
                     return {"fetch": False,
                             "json_data": {},
@@ -741,56 +677,37 @@ class DB_main:
                 "fetch": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
             }, 500
-        # except Error as e:
-        #     logger.error(f"Error: {e}")
-
-        finally:
-            # Close the cursor and the database connection
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
 
 
     def challenge_creation(self,req_body):
         """function for challenge creation (an entry in challenge table)"""
         try:
-            # Connect to the PostgreSQL database
-            connection = psycopg2.connect(**db_params)
-
-            # Create a cursor object to interact with the database
-            cursor = connection.cursor()
-
             # Queries Formation
-            query = "INSERT INTO challenge\
-                    (challenge_id, initiator_id, date, industry, process, domain, background)\
-                    VALUES (%s, %s,%s,%s,%s,%s,%s);"
-            query_data = (
-                            req_body["challenge_id"],
-                            req_body["initiator_id"],
-                            req_body["date"],
-                            req_body["industry"],
-                            req_body["process"],
-                            req_body["domain"],
-                            req_body["background"]
-                        )
+            query = ["INSERT INTO challenge\
+                     (challenge_id, initiator_id, date, industry, process, domain, background)\
+                     VALUES (%s, %s,%s,%s,%s,%s,%s);",]
+            query_data = [
+                            (
+                                req_body["challenge_id"],
+                                req_body["initiator_id"],
+                                req_body["date"],
+                                req_body["industry"],
+                                req_body["process"],
+                                req_body["domain"],
+                                req_body["background"]
+                            ),
+                        ]
 
             try:
-                # Execute the query
-                try:
-                    cursor.execute(query, query_data)
-                except psycopg2.errors.UniqueViolation:           # pylint: disable=no-member
+                res = DB_create_update_inst.db_create_update(query, query_data)
+
+                if res == "success":
+                    return {"creation": True}, 201
+                else:
                     logger.warning("challenge_id already present")
                     return {"creation": False,
                             "helpText": "challenge_id already present"}, 400
-
-                # Print a success message
-                logger.info("Query executed successfully")
-
-                # Commit the transaction
-                connection.commit()
-
-                return {"creation": True}, 201
+                
 
             except Exception as db_error:       # pylint: disable=broad-exception-caught
                 exception_type, _, exception_traceback = sys.exc_info()
@@ -811,26 +728,11 @@ class DB_main:
                 "creation": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
             }, 500
-        # except Error as e:
-        #     logger.error(f"Error: {e}")
-
-        finally:
-            # Close the cursor and the database connection
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
 
 
     def challenge_count(self, req_body):
         """function for counting the number of challenges corresponding to a user_id"""
         try:
-            # Connect to the PostgreSQL database
-            connection = psycopg2.connect(**db_params)
-
-            # Create a cursor object to interact with the database
-            cursor = connection.cursor()
-
             # Queries Formation
             query = "select count(*) from challenge where initiator_id=%s;"
             query_data = (
@@ -838,17 +740,7 @@ class DB_main:
                         )
 
             try:
-                # Execute the query
-                cursor.execute(query, query_data)
-
-                # Print a success message
-                logger.info("Query executed successfully")
-
-                # Commit the transaction
-                connection.commit()
-
-                # Fetch data
-                ret_data = cursor.fetchall()
+                ret_data = DB_read_inst.db_read(query, query_data)
 
                 return {"count_fetch": True,
                         "count": ret_data[0][0]}, 200
@@ -872,12 +764,3 @@ class DB_main:
                 "count_fetch": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",
             }, 500
-        # except Error as e:
-        #     logger.error(f"Error: {e}")
-
-        finally:
-            # Close the cursor and the database connection
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
