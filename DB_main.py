@@ -695,8 +695,8 @@ class DBMain:
                     return {"creation": True}, 201
                 else:
                     logger.warning("challenge_id already present")
-                    return {"creation": False,
-                            "helpText": "challenge_id already present"}, 400
+                    res.update({"creation": False})
+                    return res, 400
 
             except Exception as db_error:  # pylint: disable=broad-exception-caught
                 exception_type, _, exception_traceback = sys.exc_info()
