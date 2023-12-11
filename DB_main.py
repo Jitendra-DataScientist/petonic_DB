@@ -108,7 +108,7 @@ class DBMain:
                 exception_type, _, exception_traceback = sys.exc_info()
                 filename = exception_traceback.tb_frame.f_code.co_filename
                 line_number = exception_traceback.tb_lineno
-                logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+                logger.error("%s||||%s||||%d||||%s", exception_type, filename, line_number, db_error)      # pylint: disable=line-too-long
                 return {
                     "user_creation": False,
                     "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
@@ -118,7 +118,7 @@ class DBMain:
             exception_type, _, exception_traceback = sys.exc_info()
             filename = exception_traceback.tb_frame.f_code.co_filename
             line_number = exception_traceback.tb_lineno
-            logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+            logger.error("%s||||%s||||%d||||%s", exception_type, filename, line_number, db_error)
             return {
                 "user_creation": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
