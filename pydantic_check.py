@@ -4,9 +4,9 @@ rules for email addresses, passwords, user roles, etc.
 These models provide a structured and validated way to
 handle incoming JSON payloads in FastAPI routes.
 """
-# from pydantic import BaseModel, EmailStr, constr, Union, PositiveInt, ValidationError, validator
-from pydantic import BaseModel, EmailStr, constr, PositiveInt, ValidationError, validator
 from typing import Any
+# from pydantic import BaseModel, EmailStr, constr, Union, PositiveInt, ValidationError, validator
+from pydantic import BaseModel, EmailStr, constr, PositiveInt
 
 
 class LoginRequest(BaseModel):
@@ -137,21 +137,14 @@ class ChallengeCreationRequest(BaseModel):
         background (str): The background information for the challenge.
     """
     challenge_id: PositiveInt
-    initiator_id: constr(pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$')
+    initiator_id: constr(
+        pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
+        )
     date: constr(pattern=r'\d{4}-\d{2}-\d{2}')
     industry: str
     process: str
     domain: str
     background: str
-
-
-class ChallengeCountRequest(BaseModel):
-    """Pydantic model for the challenge-count request payload.
-
-    Attributes:
-        initiator_id (str): The initiator ID, a combination of role and email.
-    """
-    initiator_id: constr(pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$')
 
 
 # class ChallengeCountRequest(BaseModel):
@@ -162,8 +155,19 @@ class ChallengeCountRequest(BaseModel):
 #         parts = value.split("_", 1)
 #         if len(parts) != 2:
 #             raise ValidationError("Invalid initiator_id format")
-        
+
 #         role, email = parts
 #         if role not in ["initiator", "stakeholder", "contributor"]:
 #             raise ValidationError("Invalid role")
 #         return value
+
+
+class ChallengeCountRequest(BaseModel):
+    """Pydantic model for the challenge-count request payload.
+
+    Attributes:
+        initiator_id (str): The initiator ID, a combination of role and email.
+    """
+    initiator_id: constr(
+        pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
+        )

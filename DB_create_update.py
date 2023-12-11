@@ -64,6 +64,16 @@ def db_create_update(queries_list, query_data):
 
             return "success"
 
+        except psycopg2.errors.UniqueViolation:     # pylint: disable=no-member
+            return {
+                "helpText": "Primary-key Violation Error",
+            }
+
+        except psycopg2.errors.ForeignKeyViolation:     # pylint: disable=no-member
+            return {
+                "helpText": "Foreign-key Violation Error",
+            }
+
         except Exception as db_error:     # pylint: disable=broad-exception-caught
             exception_type, _, exception_traceback = sys.exc_info()
             filename = exception_traceback.tb_frame.f_code.co_filename

@@ -115,7 +115,7 @@ async def data_api_business_scenario_domain_dropdown(payload: pydantic_check.Dom
 
 
 @app.post("/data-api/business-scenario/process-dropdown")
-async def data_api_business_scenario_process_dropdown(payload: pydantic_check.ProcessDropdownRequest):
+async def data_api_business_scenario_process_dropdown(payload: pydantic_check.ProcessDropdownRequest):             # pylint: disable=line-too-long
     """Route function for fetching data for the
        Process dropdown in the Business Scenario tab
     """
