@@ -7,6 +7,7 @@ import sys
 import json
 import logging
 from psycopg2 import Error
+import pandas as pd
 from db_read import db_read
 from db_create_update import db_create_update
 from utils import Utils
@@ -480,7 +481,7 @@ class DBMain:
         """
 
         try:
-            return db_read(query = "select il.name as industry,\
+            data_frame_data = db_read(query = "select il.name as industry,\
                                     dl.name as domain, pl.name as process\
                                     from industry_list as il\
                                     join domain_list as dl\
@@ -488,6 +489,26 @@ class DBMain:
                                     join process_list as pl\
                                     on dl.domain_id = pl.domain_id;",
                             query_data = None)
+            data_frame = pd.DataFrame(
+                data_frame_data,
+                columns=["Business", "Domain", "Process"],
+            )
+            dct = {}
+            for business in data_frame["Business"].unique():
+                dct[business] = {}
+            for business in data_frame["Business"].unique():
+                data_frame1 = data_frame[data_frame["Business"] == business]
+                for domain in data_frame1["Domain"].unique():
+                    dct[business][domain] = []
+            for business in data_frame["Business"].unique():
+                data_frame1 = data_frame[data_frame["Business"] == business]
+                for domain in data_frame1["Domain"].unique():
+                    dct[business][domain] = list(
+                        data_frame[(data_frame["Business"] == business) &
+                                (data_frame["Domain"] == domain)]["Process"]
+                    )
+
+            return dct
 
         except Exception as db_error:  # pylint: disable=broad-exception-caught
             exception_type, _, exception_traceback = sys.exc_info()
