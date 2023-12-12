@@ -3,9 +3,16 @@
     that are written using FASTAPI
 """
 import logging
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import JSONResponse
-from db_main import DBMain
+# from db_main import DBMain
+from user_profile import UserProfile
+from forgot_password import ForgotPassword
+from change_password import ChangePassword
+from business_scenario_dropdowns import BSD
+from challenge_status import CS
+from challenge_json import CJ
+from challenge_generic import CG
 import pydantic_check
 
 
@@ -20,7 +27,14 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-db_main_inst = DBMain()
+# db_main_inst = DBMain()
+user_profile_inst = UserProfile()
+forgot_pass_inst = ForgotPassword()
+change_pass_inst = ChangePassword()
+BSD_inst = BSD()
+CS_inst = CS()
+CJ_inst = CJ()
+challenge_generic_inst = CG()
 
 
 # Create a FastAPI instance
@@ -39,7 +53,7 @@ async def data_api_login(payload: pydantic_check.LoginRequest):
     """Route function for user login action"""
 
     # req_body = await payload.json()
-    response, status_code = db_main_inst.login_trigger(payload.dict())
+    response, status_code = user_profile_inst.login_trigger(vars(payload))
     logger.info(response, status_code)
     return JSONResponse( content = response, status_code = status_code )
 
@@ -48,15 +62,23 @@ async def data_api_login(payload: pydantic_check.LoginRequest):
 async def data_api_signup(payload: pydantic_check.SignupRequest):
     """Route function for user signup action"""
 
-    signup_response, status_code = db_main_inst.signup(payload.dict())
+    signup_response, status_code = user_profile_inst.signup(vars(payload))
     return JSONResponse(content=signup_response, status_code=status_code)
+
+
+@app.post("/data-api/resend-mail-signup")
+async def data_api_resend_signup_mail(payload: pydantic_check.ResendSignupMailRequest):
+    """Route function for user signup action"""
+
+    resend_response, status_code = user_profile_inst.resend_mail_signup(vars(payload))
+    return JSONResponse(content=resend_response, status_code=status_code)
 
 
 @app.post("/data-api/validation")
 async def data_api_validation(payload: pydantic_check.ValidationRequest):
     """Route function for user validation action"""
 
-    validation_response, status_code = db_main_inst.validation(payload.dict())
+    validation_response, status_code = user_profile_inst.validation(vars(payload))
     return JSONResponse(content=validation_response, status_code=status_code)
 
 
@@ -64,7 +86,7 @@ async def data_api_validation(payload: pydantic_check.ValidationRequest):
 async def data_api_forgot_password(payload: pydantic_check.ForgotPasswordRequest):
     """Route function for forgot-password action"""
 
-    forgot_pass_response, status_code = db_main_inst.forgot_password_main(payload.dict())
+    forgot_pass_response, status_code = forgot_pass_inst.forgot_password_main(payload.dict())
     return JSONResponse(content=forgot_pass_response, status_code=status_code)
 
 
@@ -72,7 +94,7 @@ async def data_api_forgot_password(payload: pydantic_check.ForgotPasswordRequest
 async def data_api_change_password(payload: pydantic_check.ChangePasswordRequest):
     """Route function for change-password action"""
 
-    change_pass_response, status_code = db_main_inst.change_password_main(payload.dict())
+    change_pass_response, status_code = change_pass_inst.change_password_main(vars(payload))
     return JSONResponse(content=change_pass_response, status_code=status_code)
 
 
@@ -82,7 +104,7 @@ async def data_api_business_scenario_industry_dropdown():
        Industry dropdown in the Business Scenario tab
     """
 
-    data = db_main_inst.business_scenario_industry_dropdown()
+    data = BSD_inst.business_scenario_industry_dropdown()
     logger.info(data)
     return JSONResponse(content=data, status_code=200)
 
@@ -93,7 +115,7 @@ async def data_api_business_scenario_domain_dropdown(payload: pydantic_check.Dom
        Domain dropdown in the Business Scenario tab
     """
 
-    data = db_main_inst.business_scenario_domain_dropdown(payload.dict())
+    data = BSD_inst.business_scenario_domain_dropdown(vars(payload))
     logger.info(data)
     return JSONResponse(content=data, status_code=200)
 
@@ -104,7 +126,7 @@ async def data_api_business_scenario_process_dropdown(payload: pydantic_check.Pr
        Process dropdown in the Business Scenario tab
     """
 
-    data = db_main_inst.business_scenario_process_dropdown(payload.dict())
+    data = BSD_inst.business_scenario_process_dropdown(vars(payload))
     logger.info(data)
     return JSONResponse(content=data, status_code=200)
 
@@ -115,7 +137,7 @@ async def data_api_business_scenario_complete_dropdown():
        3 dropdowns in the Business Scenario tab
     """
 
-    data = db_main_inst.business_scenario_complete_dropdown()
+    data = BSD_inst.business_scenario_complete_dropdown()
     logger.info(data)
     return JSONResponse(content=data, status_code=200)
 
@@ -124,7 +146,7 @@ async def data_api_business_scenario_complete_dropdown():
 async def update_challenge_status_api(payload: pydantic_check.UpdateChallengeStatusRequest):
     """Route function for adding/updating entry of challenge_status table"""
 
-    response, status_code = db_main_inst.update_challenge_status(payload.dict())
+    response, status_code = CS_inst.update_challenge_status(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
@@ -133,19 +155,19 @@ async def update_challenge_status_api(payload: pydantic_check.UpdateChallengeSta
 async def fetch_challenge_status_api(payload: pydantic_check.FetchChallengeStatusRequest):
     """Route function for fetching an entry of challenge_status table"""
 
-    response, status_code = db_main_inst.fetch_challenge_status(payload.dict())
+    response, status_code = CS_inst.fetch_challenge_status(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
 
 @app.post("/data-api/challenge-json-data-write")
-async def challenge_json_data_write(payload: Request):
+async def challenge_json_data_write(payload: pydantic_check.ChallengeJsonDataWriteRequest):
     """Route function for adding/updating entry
        in/of challenge_json_data table
     """
 
-    req_body = await payload.json()
-    response, status_code = db_main_inst.update_challenge_json(req_body)
+    # req_body = await payload.json()
+    response, status_code = CJ_inst.update_challenge_json(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
@@ -156,7 +178,7 @@ async def challenge_json_data_fetch(payload: pydantic_check.ChallengeJsonDataFet
        entry of challenge_status table
     """
 
-    response, status_code = db_main_inst.fetch_challenge_json(payload.dict())
+    response, status_code = CJ_inst.fetch_challenge_json(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
@@ -165,7 +187,7 @@ async def challenge_json_data_fetch(payload: pydantic_check.ChallengeJsonDataFet
 async def challenge_creation_api(payload: pydantic_check.ChallengeCreationRequest):
     """Route function for challenge creation in challenge table"""
 
-    response, status_code = db_main_inst.challenge_creation(payload.dict())
+    response, status_code = challenge_generic_inst.challenge_creation(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
@@ -176,6 +198,6 @@ async def challenge_count_api(payload: pydantic_check.ChallengeCountRequest):
        of challenges corresponding to a user_id
     """
 
-    response, status_code = db_main_inst.challenge_count(payload.dict())
+    response, status_code = challenge_generic_inst.challenge_count(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
