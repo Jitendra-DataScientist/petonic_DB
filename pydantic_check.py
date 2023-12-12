@@ -4,7 +4,7 @@ rules for email addresses, passwords, user roles, etc.
 These models provide a structured and validated way to
 handle incoming JSON payloads in FastAPI routes.
 """
-from typing import Any
+from typing import Dict, Union, Any
 # from pydantic import BaseModel, EmailStr, constr, Union, PositiveInt, ValidationError, validator
 from pydantic import BaseModel, EmailStr, constr, PositiveInt
 
@@ -38,6 +38,17 @@ class SignupRequest(BaseModel):
     l_name: str
     # company_id: Union[str, int]
     company_id: Any
+
+
+class ResendSignupMailRequest(BaseModel):
+    """Pydantic model for the resend signup mail request payload.
+
+    Attributes:
+        email (EmailStr): The user's email address.
+        role (str): The user's role, should be one of "initiator", "contributor", or "stakeholder".
+    """
+    email: EmailStr
+    role: constr(pattern="^(initiator|contributor|stakeholder)$")
 
 
 class ValidationRequest(BaseModel):
@@ -113,6 +124,16 @@ class FetchChallengeStatusRequest(BaseModel):
         challenge_id (int): The ID of the challenge to fetch the status for.
     """
     challenge_id: PositiveInt
+
+
+class ChallengeJsonDataWriteRequest(BaseModel):
+    """Pydantic model for the challenge-json-data-write request payload.
+
+    Attributes:
+        challenge_identifier (Any): The identifier of the challenge, which can be any type.
+    """
+    challenge_identifier: PositiveInt
+    json_data: Dict[Union[str, int], Any]
 
 
 class ChallengeJsonDataFetchRequest(BaseModel):
