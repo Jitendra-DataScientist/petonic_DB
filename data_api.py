@@ -39,25 +39,9 @@ async def data_api_login(payload: pydantic_check.LoginRequest):
     """Route function for user login action"""
 
     # req_body = await payload.json()
-    data = db_main_inst.login(payload.dict())
-    logger.info(data)
-    # below 2 lines for testing
-    # data[0] = ("qw",0)
-    # data[0] = (12,0)
-    if isinstance(data[0][0], int):
-        if data[0][0] == 1:                  # pylint: disable=no-else-return
-            return JSONResponse(content={"login": True}, status_code=200)
-        elif data[0][0] == 0:
-            return JSONResponse(content={"login": False}, status_code=401)
-        else:
-            return JSONResponse(
-                content={"login": True, "IT_alert": True}, status_code=202
-            )
-    else:
-        return JSONResponse(
-            content={"helpText": {"data": data}, "login": False},
-            status_code=401
-        )
+    response, status_code = db_main_inst.login_trigger(payload.dict())
+    logger.info(response, status_code)
+    return JSONResponse( content = response, status_code = status_code )
 
 
 @app.post("/data-api/signup")

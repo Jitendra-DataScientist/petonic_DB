@@ -65,6 +65,37 @@ class DBMain:
             }
 
 
+    def login_trigger(self, req_body):
+        """Function to trigger above login
+           funtion, and return response
+        """
+
+        try:
+            data = self.login(req_body)
+            logger.info(data)
+            # below 2 lines for testing
+            # data[0] = ("qw",0)
+            # data[0] = (12,0)
+            if isinstance(data[0][0], int):
+                if data[0][0] == 1:                  # pylint: disable=no-else-return
+                    return {"login": True}, 200
+                elif data[0][0] == 0:
+                    return {"login": False}, 401
+                else:
+                    return {"login": True, "IT_alert": True}, 202
+            else:
+                return {"helpText": {"data": data}, "login": False}, 401
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%s||||%s", exception_type, filename, line_number, db_error)
+            return {"login": False,
+                    "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}"    # pylint: disable=line-too-long
+                    }, 500
+
+
     def signup(self, req_body):
         """function for signup funtionality"""
         try:
