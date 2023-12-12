@@ -156,6 +156,53 @@ class DBMain:
             }, 500
 
 
+    def resend_mail_signup(self, req_body):
+        """funtionality to resend signup mail with a
+           different password, rest creds remain the same"""
+        try:
+            new_password = utils.generate_random_string(str_len=8)
+            queries_list = [
+                "UPDATE user_login \
+                SET password = %s \
+                WHERE user_id = %s;"
+            ]
+
+            query_data = [(new_password, req_body["role"] + "_" + req_body["email"])]
+
+            try:
+                res = db_create_update(queries_list, query_data)
+
+                if res == "success":   # pylint: disable=no-else-return
+                    if utils.send_mail_trigger_signup(req_body["email"], new_password):     # pylint: disable=no-else-return
+                        return {"resend": True}, 201
+                    else:
+                        return {"resend": False,
+                                "helpText": "Failed to send email"}, 500
+                else:
+                    res.update({"resend": False})
+                    return res, 400
+
+            except Exception as db_error:  # pylint: disable=broad-exception-caught
+                exception_type, _, exception_traceback = sys.exc_info()
+                filename = exception_traceback.tb_frame.f_code.co_filename
+                line_number = exception_traceback.tb_lineno
+                logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+                return {
+                        "resend": False,
+                        "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+                    }, 500
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+            return {
+                    "resend": False,
+                    "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+                }, 500
+
+
     def validation(self, req_body):
         """function for email-validation funtionality
            after user signup
