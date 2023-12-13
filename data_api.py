@@ -183,11 +183,11 @@ async def challenge_json_data_fetch(payload: pydantic_check.ChallengeJsonDataFet
     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.post("/data-api/challenge-creation")
-async def challenge_creation_api(payload: pydantic_check.ChallengeCreationRequest):
+@app.post("/data-api/challenge-initiation")
+async def challenge_initiation_api(payload: pydantic_check.ChallengeInitiationRequest):
     """Route function for challenge creation in challenge table"""
 
-    response, status_code = challenge_generic_inst.challenge_creation(vars(payload))
+    response, status_code = challenge_generic_inst.challenge_initiation(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
@@ -199,5 +199,14 @@ async def challenge_count_api(payload: pydantic_check.ChallengeCountRequest):
     """
 
     response, status_code = challenge_generic_inst.challenge_count(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/challenge-creation")
+async def challenge_creation_api(payload: pydantic_check.ChallengeCreationRequest):
+    """Route function for updating challenge creation date in challenge table"""
+
+    response, status_code = challenge_generic_inst.challenge_creation(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)

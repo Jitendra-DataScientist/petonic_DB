@@ -145,27 +145,25 @@ class ChallengeJsonDataFetchRequest(BaseModel):
     challenge_identifier: Any
 
 
-class ChallengeCreationRequest(BaseModel):
+class ChallengeInitiationRequest(BaseModel):
     """Pydantic model for the challenge-creation request payload.
 
     Attributes:
         challenge_id (PositiveInt): The ID of the challenge.
         initiator_id (str): The initiator ID, a combination of role and email.
-        date (str): The date of the challenge in the format 'YYYY-MM-DD'.
+        initiation_timestamp (str): The initiation date of the challenge in the format 'YYYY-MM-DD'.
         industry (str): The industry associated with the challenge.
         process (str): The process associated with the challenge.
         domain (str): The domain associated with the challenge.
-        background (str): The background information for the challenge.
     """
     challenge_id: PositiveInt
     initiator_id: constr(
         pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
         )
-    date: constr(pattern=r'\d{4}-\d{2}-\d{2}')
+    initiation_timestamp: constr(pattern=r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')
     industry: str
     process: str
     domain: str
-    background: str
 
 
 # class ChallengeCountRequest(BaseModel):
@@ -192,3 +190,18 @@ class ChallengeCountRequest(BaseModel):
     initiator_id: constr(
         pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
         )
+
+
+class ChallengeCreationRequest(BaseModel):
+    """Pydantic model for the challenge-creation request payload.
+
+    Attributes:
+        challenge_id (PositiveInt): The ID of the challenge.
+        creation_timestamp (str): The initiator ID, a combination of role and email.
+        name (str): Name of the challenge.
+        description (str): Description of the challenge.
+    """
+    challenge_id: PositiveInt
+    creation_timestamp: constr(pattern=r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')
+    name: str
+    description: str
