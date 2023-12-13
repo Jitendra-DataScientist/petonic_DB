@@ -30,23 +30,22 @@ class CG:
        funtions to connect python code to PostgreSQL database by
        calling relevant pyscopg2 operation files (CRUD)
     """
-    def challenge_creation(self, req_body):
-        """function for challenge creation (an entry in challenge table)"""
+    def challenge_initiation(self, req_body):
+        """function for challenge initiation (an entry added in challenge table)"""
         try:
             # Queries Formation
             query = ["INSERT INTO challenge\
-                     (challenge_id, initiator_id, date,\
-                     industry, process, domain, background)\
-                     VALUES (%s, %s,%s,%s,%s,%s,%s);",]
+                     (challenge_id, initiator_id, initiation_timestamp,\
+                     industry, process, domain)\
+                     VALUES (%s, %s,%s,%s,%s,%s);",]
             query_data = [
                             (
                                 req_body["challenge_id"],
                                 req_body["initiator_id"],
-                                req_body["date"],
+                                req_body["initiation_timestamp"],
                                 req_body["industry"],
                                 req_body["process"],
                                 req_body["domain"],
-                                req_body["background"]
                             ),
                         ]
 
@@ -115,5 +114,54 @@ class CG:
             logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
             return {
                 "count_fetch": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
+
+
+    def challenge_creation(self, req_body):
+        """function for updating challenge creation date, name and description in challenge table"""
+        try:
+            # Queries Formation
+            query = ["UPDATE challenge\
+                      SET \
+                      creation_timestamp = %s,\
+                      name = %s,\
+                      description = %s\
+                      WHERE challenge_id = %s;",]
+            query_data = [
+                            (
+                                req_body["creation_timestamp"],
+                                req_body["name"],
+                                req_body["description"],
+                                req_body["challenge_id"],
+                            ),
+                        ]
+
+            try:
+                res = db_create_update(query, query_data)
+
+                if res == "success":   # pylint: disable=no-else-return
+                    return {"update": True}, 201
+                else:
+                    res.update({"update": False})
+                    return res, 400
+
+            except Exception as db_error:  # pylint: disable=broad-exception-caught
+                exception_type, _, exception_traceback = sys.exc_info()
+                filename = exception_traceback.tb_frame.f_code.co_filename
+                line_number = exception_traceback.tb_lineno
+                logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)    # pylint: disable=line-too-long
+                return {
+                    "update": False,
+                    "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+                }, 500
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "update": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
