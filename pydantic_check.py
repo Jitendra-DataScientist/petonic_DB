@@ -132,7 +132,7 @@ class ChallengeJsonDataWriteRequest(BaseModel):
     Attributes:
         challenge_identifier (Any): The identifier of the challenge, which can be any type.
     """
-    challenge_identifier: PositiveInt
+    challenge_identifier: Any
     json_data: Dict[Union[str, int], Any]
 
 
