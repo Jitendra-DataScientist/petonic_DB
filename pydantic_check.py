@@ -149,14 +149,12 @@ class ChallengeInitiationRequest(BaseModel):
     """Pydantic model for the challenge-creation request payload.
 
     Attributes:
-        challenge_id (PositiveInt): The ID of the challenge.
         initiator_id (str): The initiator ID, a combination of role and email.
         initiation_timestamp (str): The initiation date of the challenge in the format 'YYYY-MM-DD'.
         industry (str): The industry associated with the challenge.
         process (str): The process associated with the challenge.
         domain (str): The domain associated with the challenge.
     """
-    challenge_id: PositiveInt
     initiator_id: constr(
         pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
         )
