@@ -33,6 +33,12 @@ class CG:
     def challenge_initiation(self, req_body):
         """function for challenge initiation (an entry added in challenge table)"""
         try:
+            # challenge_id for this new challenge would be 1 plus
+            # the count of challenges created by the same initiator
+            challenge_id = self.challenge_count(
+                {"initiator_id": req_body["initiator_id"]}
+                )[0]['count'] + 1
+
             # Queries Formation
             query = ["INSERT INTO challenge\
                      (challenge_id, initiator_id, initiation_timestamp,\
@@ -40,7 +46,7 @@ class CG:
                      VALUES (%s, %s,%s,%s,%s,%s);",]
             query_data = [
                             (
-                                req_body["challenge_id"],
+                                challenge_id,
                                 req_body["initiator_id"],
                                 req_body["initiation_timestamp"],
                                 req_body["industry"],
