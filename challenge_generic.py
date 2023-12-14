@@ -92,10 +92,16 @@ class CG:
         """
         try:
             # Queries Formation
-            query = "select count(*) from challenge where initiator_id=%s;"
-            query_data = (
-                            req_body["initiator_id"],
-                        )
+            if "initiator_id" in req_body:
+                query = "select count(*) from challenge where initiator_id=%s;"
+                query_data = (
+                                req_body["initiator_id"],
+                            )
+            else:
+                query = "select count(*) from challenge where challenge_id=%s;"
+                query_data = (
+                                req_body["challenge_id"],
+                            )
 
             try:
                 ret_data = db_read(query, query_data)
@@ -127,6 +133,17 @@ class CG:
     def challenge_creation(self, req_body):
         """function for updating challenge creation date, name and description in challenge table"""
         try:
+            # check if the challenge_id is present in challenge table
+            challenge_check = self.challenge_count(
+                {"challenge_id": req_body["challenge_id"]}
+                )[0]['count']
+
+            if challenge_check == 0:
+                return {
+                        "update": False,
+                        "helpText": "Invalid challenge_id"
+                    }, 400
+
             # Queries Formation
             query = ["UPDATE challenge\
                       SET \
