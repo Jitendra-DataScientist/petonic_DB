@@ -236,8 +236,8 @@ delete from challenge_json_data where challenge_identifier = 1234;
 --fetching json object of challenge
 
 select * from challenge_json_data;
-delete from challenge_json_data where challenge_identifier=1234;
-delete from challenge_json_data where challenge_identifier=12345;
+delete from challenge_json_data where challenge_identifier='1234_bst';
+delete from challenge_json_data where challenge_identifier='34';
 
 
 -- challenge creation
@@ -247,8 +247,8 @@ select * from challenge;
 INSERT INTO challenge (challenge_id, initiator_id, date, industry, process, domain, background)
 VALUES (143, 'initiator_jitendra.nayak@petonic.in','2023-01-31','BFS','Retail','KuchBhi','KuchBhi');
 
-delete from challenge_status where challenge_id = 1234;
-delete from challenge where challenge_id = 1234;
+delete from challenge_status where challenge_id = 1;
+delete from challenge where challenge_id = 1;
 
 
 -- challenge count
