@@ -78,9 +78,9 @@ class ForgotPassword:
 
 
     def forgot_password_response_from_query(self, req_body):
-        """function to check if user validated email after
-           after signup. This funtion is part of stack invoked
-           after user chooses forgot-password funtionality
+        """function to check if front-end provided valid creds
+           before proceeding to set a new password for the
+           corresponding account
         """
 
         try:
