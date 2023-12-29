@@ -77,7 +77,7 @@ class ChangePassword:
 
 
     def change_password_response_from_query(self, req_body):
-        """function to check if user provided valid creds
+        """function to check if front-end provided valid creds
            before proceeding to set a new password for the
            corresponding account
         """
