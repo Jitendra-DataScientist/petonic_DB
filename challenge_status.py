@@ -152,6 +152,8 @@ class CS:
                 logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)    # pylint: disable=line-too-long
                 return {
                     "fetch": False,
+                    "status": None,
+                    "json_data": None,
                     "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
                 }, 500
 
@@ -162,5 +164,7 @@ class CS:
             logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
             return {
                 "fetch": False,
+                "status": None,
+                "json_data": None,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
