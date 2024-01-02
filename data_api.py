@@ -160,8 +160,8 @@ async def fetch_challenge_status_api(payload: pydantic_check.FetchChallengeStatu
     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.post("/data-api/challenge-json-data-write")
-async def challenge_json_data_write(payload: pydantic_check.ChallengeJsonDataWriteRequest):
+@app.post("/data-api/challenge-json-data-update")
+async def challenge_json_data_update(payload: pydantic_check.ChallengeJsonDataWriteRequest):
     """Route function for adding/updating entry
        in/of challenge_json_data table
     """
