@@ -129,7 +129,7 @@ class CS:
         """function fetchting an entry from the challenge_status table"""
         try:
             # Queries Formation
-            query = "select challenge_status from challenge_status where challenge_id=%s;"
+            query = "select challenge_status, json_data from challenge_status where challenge_id=%s;"
             query_data = (req_body["challenge_id"],)
 
             try:
@@ -137,10 +137,12 @@ class CS:
 
                 try:
                     return {"fetch": True,
-                            "status": res[0][0]}, 200
+                            "status": res[0][0],
+                            "json_data": res[0][1]}, 200
                 except IndexError:
                     return {"fetch": False,
                             "status": None,
+                            "json_data": None,
                             "helpText": "challenge_id not found"}, 400
 
             except Exception as db_error:  # pylint: disable=broad-exception-caught
