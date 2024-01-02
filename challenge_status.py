@@ -4,7 +4,9 @@
     calling relevant pyscopg2 operation files (CRUD)
 """
 import sys
+import time
 import logging
+import json
 from db_read import db_read
 from db_create_update import db_create_update
 from utils import Utils
@@ -33,19 +35,67 @@ class CS:
     def update_challenge_status(self, req_body):
         """function adding/updating an entry in the challenge_status table"""
         try:
+            # read the json (if present) for the corresponding
+            # challenge_id from challenge_status table
+            query = "select json_data from challenge_status where challenge_id=%s;"
+            query_data = (req_body["challenge_id"],)
+            json_res = db_read(query, query_data)
+
             # Queries Formation
-            query = [
-                        "INSERT INTO challenge_status (challenge_id, challenge_status)\
-                        VALUES (%s, %s)\
-                        ON CONFLICT (challenge_id) DO UPDATE SET challenge_status = %s;",
+            # query = [
+            #     "INSERT INTO challenge_status (challenge_id, challenge_status, json_data) \
+            #     VALUES (%s, %s, jsonb_build_object(%s, %s)) \
+            #     ON CONFLICT (challenge_id) DO UPDATE \
+            #     SET challenge_status = %s, \
+            #     json_data = jsonb_build_object(%s, %s);",
+            # ]
+            # query_data = [
+            #     (
+            #         req_body["challenge_id"],
+            #         req_body["challenge_status"],
+            #         req_body["challenge_status"],
+            #         time.time(),
+            #         req_body["challenge_status"],
+            #         req_body["challenge_status"],
+            #         time.time(),
+            #     )
+            # ]
+
+            if json_res and json_res[0][0] is not None:
+                json_res[0][0].update({req_body["challenge_status"]: time.time()})
+                query = [
+                    "UPDATE challenge_status \
+                    SET challenge_status = %s, \
+                    json_data = %s \
+                    WHERE challenge_id = %s;",
                 ]
-            query_data = [
-                            (
-                                req_body["challenge_id"],
-                                req_body["challenge_status"],
-                                req_body["challenge_status"]
-                            )
-                        ]
+                query_data = [
+                    (
+                        req_body["challenge_status"],
+                        json.dumps(json_res[0][0]),
+                        req_body["challenge_id"],
+                    )
+                ]
+            else:
+                query = [
+                    "INSERT INTO challenge_status (challenge_id, challenge_status, json_data) \
+                    VALUES (%s, %s, jsonb_build_object(%s, %s)) \
+                    ON CONFLICT (challenge_id) DO UPDATE \
+                    SET challenge_status = %s, \
+                    json_data = jsonb_build_object(%s, %s);",
+                ]
+                query_data = [
+                    (
+                        req_body["challenge_id"],
+                        req_body["challenge_status"],
+                        req_body["challenge_status"],
+                        time.time(),
+                        req_body["challenge_status"],
+                        req_body["challenge_status"],
+                        time.time(),
+                    )
+                ]
+
             try:
                 res = db_create_update(query, query_data)
                 if res == "success":   # pylint: disable=no-else-return
