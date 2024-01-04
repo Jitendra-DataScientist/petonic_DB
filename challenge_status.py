@@ -129,7 +129,9 @@ class CS:
         """function fetchting an entry from the challenge_status table"""
         try:
             # Queries Formation
-            query = "select challenge_status, json_data from challenge_status where challenge_id=%s;"
+            query = "SELECT challenge_status, json_data\
+                    FROM challenge_status\
+                    WHERE challenge_id=%s;"
             query_data = (req_body["challenge_id"],)
 
             try:
