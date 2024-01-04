@@ -15,11 +15,11 @@ class LoginRequest(BaseModel):
     Attributes:
         email (EmailStr): The user's email address.
         password (str): The user's password.
-        role (str): The user's role, should be one of "initiator", "contributor", or "stakeholder".
+        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
     password: str
-    role: constr(pattern="^(initiator|contributor|stakeholder)$")
+    role: constr(pattern="^(initiator|contributor|approver)$")
 
 
 class SignupRequest(BaseModel):
@@ -27,13 +27,13 @@ class SignupRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "stakeholder".
+        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
         f_name (str): The user's first name.
         l_name (str): The user's last name.
         company_id (Union[str, int]): The user's company ID, can be either a string or an integer.
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|stakeholder)$")
+    role: constr(pattern="^(initiator|contributor|approver)$")
     f_name: str
     l_name: str
     # company_id: Union[str, int]
@@ -45,10 +45,10 @@ class ResendSignupMailRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "stakeholder".
+        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|stakeholder)$")
+    role: constr(pattern="^(initiator|contributor|approver)$")
 
 
 class ValidationRequest(BaseModel):
@@ -56,10 +56,10 @@ class ValidationRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "stakeholder".
+        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|stakeholder)$")
+    role: constr(pattern="^(initiator|contributor|approver)$")
 
 
 class ForgotPasswordRequest(BaseModel):
@@ -67,10 +67,10 @@ class ForgotPasswordRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "stakeholder".
+        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|stakeholder)$")
+    role: constr(pattern="^(initiator|contributor|approver)$")
 
 
 class ChangePasswordRequest(BaseModel):
@@ -78,12 +78,12 @@ class ChangePasswordRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "stakeholder".
+        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
         current_password (str): The user's current password.
         new_password (str): The new password to set.
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|stakeholder)$")
+    role: constr(pattern="^(initiator|contributor|approver)$")
     current_password: str
     new_password: str
 
@@ -156,7 +156,7 @@ class ChallengeInitiationRequest(BaseModel):
         domain (str): The domain associated with the challenge.
     """
     initiator_id: constr(
-        pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
+        pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
         )
     initiation_timestamp: constr(pattern=r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')
     industry: str
@@ -174,7 +174,7 @@ class ChallengeInitiationRequest(BaseModel):
 #             raise ValidationError("Invalid initiator_id format")
 
 #         role, email = parts
-#         if role not in ["initiator", "stakeholder", "contributor"]:
+#         if role not in ["initiator", "approver", "contributor"]:
 #             raise ValidationError("Invalid role")
 #         return value
 
@@ -186,7 +186,7 @@ class ChallengeCountRequest(BaseModel):
         initiator_id (str): The initiator ID, a combination of role and email.
     """
     initiator_id: constr(
-        pattern=r'^(initiator|stakeholder|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
+        pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
         )
 
 
