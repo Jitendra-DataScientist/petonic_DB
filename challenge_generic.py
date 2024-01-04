@@ -93,10 +93,15 @@ class CG:
         try:
             # Queries Formation
             if "initiator_id" in req_body:
-                query = "select count(*) from challenge where initiator_id=%s;"
-                query_data = (
-                                req_body["initiator_id"],
-                            )
+                # query = "select count(*) from challenge where initiator_id=%s;"
+                # query_data = (
+                #                 req_body["initiator_id"],
+                #             )
+                query = "select count(*) from challenge;"
+                # query_data = (
+                #                 req_body["initiator_id"],
+                #             )
+                query_data = None
             else:
                 query = "select count(*) from challenge where challenge_id=%s;"
                 query_data = (
