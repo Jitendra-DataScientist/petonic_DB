@@ -203,3 +203,15 @@ class ChallengeCreationRequest(BaseModel):
     creation_timestamp: constr(pattern=r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')
     name: str
     description: str
+
+
+class ViewListRequest(BaseModel):
+    """Pydantic model for the view-list request payload.
+       Note this is only for the post request.
+
+    Attributes:
+        initiator_id (str): initiator_id, for eg., initiator_johndoe@example.com
+    """
+    initiator_id: constr(
+        pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
+        )

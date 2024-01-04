@@ -4,7 +4,11 @@
     calling relevant pyscopg2 operation files (CRUD)
 """
 import sys
+import json
+# from bson import json_util
+# from pymongo import json_util
 import logging
+from django.core.serializers.json import DjangoJSONEncoder
 from db_read import db_read
 from db_create_update import db_create_update
 from utils import Utils
@@ -191,5 +195,67 @@ class CG:
             logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
             return {
                 "update": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
+
+
+    def view_list(self, req_body=None):
+        """function for view-list page for all roles"""
+        try:
+            # Queries Formation based on request method payload
+            if req_body:
+                query = "select * from challenge\
+                        join challenge_status\
+                        on (challenge.challenge_id = challenge_status.challenge_id)\
+                        where initiator_id = %s;"
+                query_data = (
+                                req_body["initiator_id"],
+                            )
+            else:
+                query = "select * from challenge\
+                        join challenge_status\
+                        on (challenge.challenge_id = challenge_status.challenge_id);"
+                query_data = None
+
+            try:
+                ret_data = db_read(query, query_data)
+                # print ("\n\n\n\n")
+                # # print (json.dumps(ret_data,indent=4, default=json_util.default))
+                # print (json.dumps(ret_data,indent=4, cls=DjangoJSONEncoder))
+                # print ("\n\n\n\n")
+                if ret_data:   # pylint: disable=no-else-return
+                    return {"fetch": True,
+                            "data": json.loads(
+                                            json.dumps(ret_data, cls=DjangoJSONEncoder)
+                                            ),
+                            "headers": ["challenge_id","initiator_id","initiation_timestamp",
+                                        "industry","process","domain","creation_timestamp","name",
+                                        "description","contributor_id","approver_id","challenge_id",
+                                        "challenge_status","json_data"]
+                            }, 200
+                else:
+                    return {"fetch": False,
+                            "data": [],
+                            "helpText": "No Challenge Found"}, 400
+
+            except Exception as db_error:  # pylint: disable=broad-exception-caught
+                exception_type, _, exception_traceback = sys.exc_info()
+                filename = exception_traceback.tb_frame.f_code.co_filename
+                line_number = exception_traceback.tb_lineno
+                logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)    # pylint: disable=line-too-long
+                return {
+                    "fetch": False,
+                    "data": None,
+                    "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+                }, 500
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "fetch": False,
+                "data": None,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500

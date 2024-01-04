@@ -3,7 +3,7 @@
     that are written using FASTAPI
 """
 import logging
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Depends
 from fastapi.responses import JSONResponse
 # from db_main import DBMain
 from user_profile import UserProfile
@@ -208,5 +208,42 @@ async def challenge_creation_api(payload: pydantic_check.ChallengeCreationReques
     """Route function for updating challenge creation date in challenge table"""
 
     response, status_code = challenge_generic_inst.challenge_creation(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+# @app.route("/data-api/view-list", methods=["GET", "POST"])
+# async def challenge_creation_api(request: Request = Depends(),
+#                                  payload: pydantic_check.ViewListRequest = None):
+#     """Route function for view-list page for all roles"""
+
+#     if request.method == "GET":
+#         response, status_code = challenge_generic_inst.view_list()
+#     elif request.method == "POST":
+#         if payload is None:
+#             return JSONResponse(content={"error": "Payload is required for POST requests"},
+#                                 status_code=400)
+#         response, status_code = challenge_generic_inst.view_list(vars(payload))
+#     logger.info(response)
+#     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.route("/data-api/view-list", methods=["GET", "POST"])
+async def view_list_api(request: Request = Depends()):
+    """Route function for view-list page for all roles"""
+
+    if request.method == "GET":
+        response, status_code = challenge_generic_inst.view_list()
+    elif request.method == "POST":
+        try:
+            payload = pydantic_check.ViewListRequest(**await request.json())
+        except ValueError:
+            return JSONResponse(content={"fetch": False,
+                                         "data": None,
+                                         "helpText":"Invalid JSON format in the request body"},
+                                status_code=400)
+
+        response, status_code = challenge_generic_inst.view_list(vars(payload))
+
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
