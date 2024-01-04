@@ -39,9 +39,7 @@ class CG:
         try:
             # challenge_id for this new challenge would be 1 plus
             # the count of challenges created by the same initiator
-            challenge_id = self.challenge_count(
-                {"initiator_id": req_body["initiator_id"]}
-                )[0]['count'] + 1
+            challenge_id = self.challenge_count("total_count")[0]['count'] + 1
 
             # Queries Formation
             query = ["INSERT INTO challenge\
@@ -96,16 +94,17 @@ class CG:
         """
         try:
             # Queries Formation
-            if "initiator_id" in req_body:
-                # query = "select count(*) from challenge where initiator_id=%s;"
-                # query_data = (
-                #                 req_body["initiator_id"],
-                #             )
+            if req_body == "total_count":
                 query = "select count(*) from challenge;"
-                # query_data = (
-                #                 req_body["initiator_id"],
-                #             )
                 query_data = None
+            elif "initiator_id" in req_body:
+                query = "select count(*) from challenge where initiator_id=%s;"
+                query_data = (
+                                req_body["initiator_id"],
+                            )
+                query_data = (
+                                req_body["initiator_id"],
+                            )
             else:
                 query = "select count(*) from challenge where challenge_id=%s;"
                 query_data = (
