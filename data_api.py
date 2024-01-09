@@ -54,8 +54,8 @@ async def data_api_login(payload: pydantic_check.LoginRequest):
 
     # req_body = await payload.json()
     response, status_code = user_profile_inst.login_trigger(vars(payload))
-    logger.info(response, status_code)
-    return JSONResponse( content = response, status_code = status_code )
+    logger.info("Response: %s, Status Code: %s", response, status_code)
+    return JSONResponse(content=response, status_code=status_code)
 
 
 @app.post("/data-api/signup")
