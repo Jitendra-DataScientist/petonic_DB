@@ -222,3 +222,14 @@ class ViewListRequest(BaseModel):
     #     pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
     #     )
     initiator_id: EmailStr
+
+
+class FlipUserStatusRequest(BaseModel):
+    """Pydantic model for the flip_user_status
+       request payload.
+       Note this is only for the post request.
+
+    Attributes:
+        email (str): The email ID of user.
+    """
+    email: EmailStr

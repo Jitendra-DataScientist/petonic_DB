@@ -31,5 +31,14 @@ delete from user_signup where email='jitendra.nayak@petonic.in';
 
 delete from validation where email='jitendra.nayak@petonic.in';
 
+select * from user_login;
+
+select * from user_signup;
+
+select * from validation;
+
+UPDATE validation
+SET active = NOT active
+where email = 'jitendra.nayak@petonic.in';
 
 
