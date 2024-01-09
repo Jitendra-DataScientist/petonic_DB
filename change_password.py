@@ -42,10 +42,10 @@ class ChangePassword:
             queries_list = [
                 "UPDATE user_login \
                 SET password = %s \
-                WHERE user_id = %s;"
+                WHERE email = %s;"
             ]
 
-            query_data = [(req_body["new_password"], req_body["role"] + "_" + req_body["email"])]
+            query_data = [(req_body["new_password"], req_body["email"])]
 
             try:
                 res = db_create_update(queries_list, query_data)
@@ -86,10 +86,10 @@ class ChangePassword:
             query = "select count(*)\
                     from user_login as ul\
                     inner join validation as v\
-                    on ul.user_id = v.user_id\
-                    where ul.user_id = %s and ul.password = %s;"
+                    on ul.email = v.email\
+                    where ul.email = %s and ul.password = %s;"
             query_data = (
-                req_body["role"] + "_" + req_body["email"],
+                req_body["email"],
                 req_body["current_password"],
             )
 
