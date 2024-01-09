@@ -14,6 +14,7 @@ from challenge_status import CS
 from challenge_json import CJ
 from challenge_generic import CG
 import pydantic_check
+from user_status import flip_user_status
 
 
 # Configure logging
@@ -245,5 +246,14 @@ async def view_list_api(request: Request = Depends()):
 
         response, status_code = challenge_generic_inst.view_list(vars(payload))
 
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/flip-user-status")
+async def flip_user_status_api(payload: pydantic_check.FlipUserStatusRequest):
+    """Route function for deactivating a user account from User Management page"""
+
+    response, status_code = flip_user_status(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
