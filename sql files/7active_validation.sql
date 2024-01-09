@@ -1,5 +1,7 @@
 select * from user_login;
 
+select * from user_signup;
+
 select * from validation;
 
 ALTER TABLE validation
@@ -12,4 +14,22 @@ WHERE email='johndoe@example.com';
 select * from user_signup;
 
 select * from validation;
+
+select * from challenge;
+
+select * from challenge_json_data;
+
+delete from challenge;
+
+delete from challenge_status;
+
+select * from challenge_status;
+
+delete from user_login where email='jitendra.nayak@petonic.in';
+
+delete from user_signup where email='jitendra.nayak@petonic.in';
+
+delete from validation where email='jitendra.nayak@petonic.in';
+
+
 

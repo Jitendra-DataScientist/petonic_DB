@@ -152,6 +152,22 @@ class CG:
                         "helpText": "Invalid challenge_id"
                     }, 400
 
+            # check if challenge already created
+            query = "SELECT creation_timestamp\
+                    FROM challenge\
+                    WHERE challenge_id = %s;"
+            query_data = (
+                            req_body["challenge_id"],
+                        )
+
+            ret_data = db_read(query, query_data)
+
+            if ret_data[0][0] is not None:
+                return {
+                        "update": False,
+                        "helpText": "Challenge already created"
+                    }, 400
+
             # Queries Formation
             query = ["UPDATE challenge\
                       SET \
