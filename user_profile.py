@@ -39,12 +39,11 @@ class UserProfile:
             query = "select count(*) \
                     from user_login as ul \
                     join validation as v \
-                    on ul.user_id = v.user_id \
-                    where ul.user_id = %s and ul.password = %s and v.user_id = %s;"
+                    on ul.email = v.email \
+                    where ul.email = %s and ul.password = %s and v.active = 'true';"
             query_data = (
-                req_body["role"] + "_" + req_body["email"],
+                req_body["email"],
                 req_body["password"],
-                req_body["role"] + "_" + req_body["email"],
             )
 
             # Fetch data
@@ -100,22 +99,21 @@ class UserProfile:
             first_password = utils.generate_random_string(str_len=8)
 
             queries_list = [
-                "INSERT INTO user_login (user_id, company_id, email, password, role) VALUES (%s, %s, %s, %s, %s);",    # pylint: disable=line-too-long
-                "INSERT INTO user_signup (f_name, l_name, user_id) VALUES (%s, %s, %s);",
+                "INSERT INTO user_login (email, employee_id, email, password, role) VALUES (%s, %s, %s, %s);",    # pylint: disable=line-too-long
+                "INSERT INTO user_signup (f_name, l_name, email) VALUES (%s, %s, %s);",
             ]
 
             query_data = [
                 (
-                    req_body["role"] + "_" + req_body["email"],
-                    req_body["company_id"],
                     req_body["email"],
+                    req_body["employee_id"],
                     first_password,
                     req_body["role"],
                 ),
                 (
                     req_body["f_name"],
                     req_body["l_name"],
-                    req_body["role"] + "_" + req_body["email"],
+                    req_body["email"],
                 ),
             ]
 
@@ -161,10 +159,10 @@ class UserProfile:
             queries_list = [
                 "UPDATE user_login \
                 SET password = %s \
-                WHERE user_id = %s;"
+                WHERE email = %s;"
             ]
 
-            query_data = [(new_password, req_body["role"] + "_" + req_body["email"])]
+            query_data = [(new_password, req_body["email"])]
 
             try:
                 res = db_create_update(queries_list, query_data)
@@ -206,9 +204,9 @@ class UserProfile:
         """
         try:
             # Queries Formation
-            queries_list = ["INSERT INTO validation (user_id) VALUES (%s);"]
+            queries_list = ["INSERT INTO validation (email, active) VALUES (%s, %s);"]
 
-            query_data = [(req_body["role"] + "_" + req_body["email"],)]
+            query_data = [(req_body["email"], True)]
 
             try:
                 res = db_create_update(queries_list, query_data)

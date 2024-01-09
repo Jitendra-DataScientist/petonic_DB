@@ -227,7 +227,7 @@ class CG:
                             "data": json.loads(
                                             json.dumps(ret_data, cls=DjangoJSONEncoder)
                                             ),
-                            "headers": ["challenge_id","initiator_id","initiation_timestamp",
+                            "fields": ["challenge_id","initiator_id","initiation_timestamp",
                                         "industry","process","domain","creation_timestamp","name",
                                         "description","contributor_id","approver_id","challenge_id",
                                         "challenge_status","json_data"]
