@@ -42,10 +42,10 @@ class ForgotPassword:
             queries_list = [
                 "UPDATE user_login \
                 SET password = %s \
-                WHERE user_id = %s;"
+                WHERE email = %s;"
             ]
 
-            query_data = [(new_password, req_body["role"] + "_" + req_body["email"])]
+            query_data = [(new_password, req_body["email"])]
 
             try:
                 res = db_create_update(queries_list, query_data)
@@ -86,8 +86,8 @@ class ForgotPassword:
         try:
             query = "select count(*) \
                     from validation \
-                    where user_id = %s;"
-            query_data = (req_body["role"] + "_" + req_body["email"],)
+                    where email = %s;"
+            query_data = (req_body["email"],)
 
             return db_read(query, query_data)
 
