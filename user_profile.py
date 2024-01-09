@@ -99,21 +99,24 @@ class UserProfile:
             first_password = utils.generate_random_string(str_len=8)
 
             queries_list = [
-                "INSERT INTO user_login (email, employee_id, email, password, role) VALUES (%s, %s, %s, %s);",    # pylint: disable=line-too-long
-                "INSERT INTO user_signup (f_name, l_name, email) VALUES (%s, %s, %s);",
+                "INSERT INTO user_login (email, password)\
+                VALUES (%s, %s);",
+                "INSERT INTO user_signup\
+                (f_name, l_name, email, role, employee_id)\
+                VALUES (%s, %s, %s, %s, %s);",
             ]
 
             query_data = [
                 (
                     req_body["email"],
-                    req_body["employee_id"],
                     first_password,
-                    req_body["role"],
                 ),
                 (
                     req_body["f_name"],
                     req_body["l_name"],
                     req_body["email"],
+                    req_body["role"],
+                    req_body["employee_id"],
                 ),
             ]
 

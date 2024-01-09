@@ -15,11 +15,11 @@ class LoginRequest(BaseModel):
     Attributes:
         email (EmailStr): The user's email address.
         password (str): The user's password.
-        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
+        # role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
     password: str
-    role: constr(pattern="^(initiator|contributor|approver)$")
+    # role: constr(pattern="^(initiator|contributor|approver)$")
 
 
 class SignupRequest(BaseModel):
@@ -30,14 +30,15 @@ class SignupRequest(BaseModel):
         role (str): The user's role, should be one of "initiator", "contributor", or "approver".
         f_name (str): The user's first name.
         l_name (str): The user's last name.
-        company_id (Union[str, int]): The user's company ID, can be either a string or an integer.
+        employee_id (Union[str, int]): The user's employee ID, can be either a string
+                                       or an integer, or a combination of both.
     """
     email: EmailStr
     role: constr(pattern="^(initiator|contributor|approver)$")
     f_name: str
     l_name: str
     # company_id: Union[str, int]
-    company_id: Any
+    employee_id: Any
 
 
 class ResendSignupMailRequest(BaseModel):
@@ -45,10 +46,10 @@ class ResendSignupMailRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
+        # role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|approver)$")
+    # role: constr(pattern="^(initiator|contributor|approver)$")
 
 
 class ValidationRequest(BaseModel):
@@ -56,10 +57,10 @@ class ValidationRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
+        # role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|approver)$")
+    # role: constr(pattern="^(initiator|contributor|approver)$")
 
 
 class ForgotPasswordRequest(BaseModel):
@@ -67,10 +68,10 @@ class ForgotPasswordRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
+        # role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|approver)$")
+    # role: constr(pattern="^(initiator|contributor|approver)$")
 
 
 class ChangePasswordRequest(BaseModel):
@@ -78,12 +79,12 @@ class ChangePasswordRequest(BaseModel):
 
     Attributes:
         email (EmailStr): The user's email address.
-        role (str): The user's role, should be one of "initiator", "contributor", or "approver".
+        # role (str): The user's role, should be one of "initiator", "contributor", or "approver".
         current_password (str): The user's current password.
         new_password (str): The new password to set.
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|approver)$")
+    # role: constr(pattern="^(initiator|contributor|approver)$")
     current_password: str
     new_password: str
 
@@ -149,15 +150,17 @@ class ChallengeInitiationRequest(BaseModel):
     """Pydantic model for the challenge-creation request payload.
 
     Attributes:
-        initiator_id (str): The initiator ID, a combination of role and email.
+        # initiator_id (str): The initiator ID, a combination of role and email.
+        initiator_id (str): The email ID of initiator.
         initiation_timestamp (str): The initiation date of the challenge in the format 'YYYY-MM-DD'.
         industry (str): The industry associated with the challenge.
         process (str): The process associated with the challenge.
         domain (str): The domain associated with the challenge.
     """
-    initiator_id: constr(
-        pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
-        )
+    # initiator_id: constr(
+    #     pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
+    #     )
+    initiator_id: EmailStr
     initiation_timestamp: constr(pattern=r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')
     industry: str
     process: str
@@ -183,11 +186,13 @@ class ChallengeCountRequest(BaseModel):
     """Pydantic model for the challenge-count request payload.
 
     Attributes:
-        initiator_id (str): The initiator ID, a combination of role and email.
+        # initiator_id (str): The initiator ID, a combination of role and email.
+        initiator_id (str): The email ID of initiator.
     """
-    initiator_id: constr(
-        pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
-        )
+    # initiator_id: constr(
+    #     pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
+    #     )
+    initiator_id: EmailStr
 
 
 class ChallengeCreationRequest(BaseModel):
@@ -210,8 +215,10 @@ class ViewListRequest(BaseModel):
        Note this is only for the post request.
 
     Attributes:
-        initiator_id (str): initiator_id, for eg., initiator_johndoe@example.com
+        # initiator_id (str): initiator_id, for eg., initiator_johndoe@example.com
+        initiator_id (str): The email ID of initiator.
     """
-    initiator_id: constr(
-        pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
-        )
+    # initiator_id: constr(
+    #     pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
+    #     )
+    initiator_id: EmailStr
