@@ -48,7 +48,20 @@ class UserProfile:
 
             # Fetch data
             ret_data = db_read(query, query_data)
-
+            role = None
+            if isinstance(ret_data[0][0], int):
+                if ret_data[0][0] >= 1:
+                    query = "select role \
+                            from user_signup\
+                            where user_signup.email = %s;"
+                    query_data = (
+                        req_body["email"],
+                    )
+                    role = db_read(query, query_data)
+            try:
+                ret_data.append(role[0][0])
+            except KeyError:
+                ret_data.append(None)
             return ret_data
 
         except Exception as db_error:  # pylint: disable=broad-exception-caught
@@ -68,17 +81,20 @@ class UserProfile:
 
         try:
             data = self.login(req_body)
-            logger.info(data)
+            # logger.info(data)
             # below 2 lines for testing
             # data[0] = ("qw",0)
             # data[0] = (12,0)
             if isinstance(data[0][0], int):
                 if data[0][0] == 1:                  # pylint: disable=no-else-return
-                    return {"login": True}, 200
+                    return {"login": True,
+                            "role": data[1]}, 200
                 elif data[0][0] == 0:
                     return {"login": False}, 401
                 else:
-                    return {"login": True, "IT_alert": True}, 202
+                    return {"login": True,
+                            "IT_alert": True,
+                            "role": data[1]}, 202
             else:
                 return {"helpText": {"data": data}, "login": False}, 401
 
