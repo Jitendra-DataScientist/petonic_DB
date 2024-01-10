@@ -15,7 +15,7 @@ from challenge_status import CS
 from challenge_json import CJ
 from challenge_generic import CG
 import pydantic_check
-from user_status import flip_user_status
+from user_details import UserDetails
 
 
 # Configure logging
@@ -37,6 +37,7 @@ BSD_inst = BSD()
 CS_inst = CS()
 CJ_inst = CJ()
 challenge_generic_inst = CG()
+user_details_instance = UserDetails()
 
 
 # Create a FastAPI instance
@@ -266,6 +267,15 @@ async def view_list_api(request: Request = Depends()):
 async def flip_user_status_api(payload: pydantic_check.FlipUserStatusRequest):
     """Route function for deactivating a user account from User Management page"""
 
-    response, status_code = flip_user_status(vars(payload))
+    response, status_code = user_details_instance.flip_user_status(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/edit-user-details")
+async def edit_user_api(payload: pydantic_check.EditUserDetailsRequest):
+    """Route function for editing user details"""
+
+    response, status_code = user_details_instance.edit_details(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)

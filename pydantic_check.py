@@ -235,3 +235,20 @@ class FlipUserStatusRequest(BaseModel):
         email (str): The email ID of user.
     """
     email: EmailStr
+
+
+class EditUserDetailsRequest(BaseModel):
+    """Pydantic model for the edit user details request payload.
+
+    Attributes:
+        email (EmailStr): The user's email address (mandatory).
+        f_name (str): The user's first name.
+        l_name (str): The user's last name.
+        role (str): The user's role.
+        employee_id (PositiveInt): The user's employee ID.
+    """
+    email: EmailStr
+    f_name: str = None
+    l_name: str = None
+    role: str = None
+    employee_id: PositiveInt = None
