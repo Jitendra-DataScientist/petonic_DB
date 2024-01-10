@@ -36,13 +36,13 @@ class CJ:
         try:
             # Queries Formation
             query = [
-                        "INSERT INTO challenge_json_data (challenge_identifier, json_data)\
+                        "INSERT INTO challenge_json_data (challenge_id, json_data)\
                         VALUES (%s, %s)\
-                        ON CONFLICT (challenge_identifier) DO UPDATE SET json_data = %s;",
+                        ON CONFLICT (challenge_id) DO UPDATE SET json_data = %s;",
                 ]
             query_data = [
                             (
-                                req_body["challenge_identifier"],
+                                req_body["challenge_id"],
                                 json.dumps(req_body["json_data"]),
                                 json.dumps(req_body["json_data"])
                             ),
@@ -81,19 +81,19 @@ class CJ:
     def fetch_challenge_json(self, req_body):
         """function for fetchting an entry from the challenge_json_data table"""
         try:
-            query = "select * from challenge_json_data where challenge_identifier=%s;"
-            query_data = (req_body["challenge_identifier"],)
+            query = "select * from challenge_json_data where challenge_id=%s;"
+            query_data = (req_body["challenge_id"],)
 
             try:
                 res = db_read(query, query_data)
 
                 try:
                     return {"fetch": True,
-                            "json_data": res[0][1]}, 200
+                            "json_data": res[0][0]}, 200
                 except IndexError:
                     return {"fetch": False,
                             "json_data": {},
-                            "helpText": "challenge_identifier not found"}, 400
+                            "helpText": "challenge_id not found"}, 400
 
             except Exception as db_error:  # pylint: disable=broad-exception-caught
                 exception_type, _, exception_traceback = sys.exc_info()

@@ -5,6 +5,7 @@
 import logging
 from fastapi import FastAPI, Request, Depends
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 # from db_main import DBMain
 from user_profile import UserProfile
 from forgot_password import ForgotPassword
@@ -40,6 +41,17 @@ challenge_generic_inst = CG()
 
 # Create a FastAPI instance
 app = FastAPI()
+
+# Allowing all origins for now
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/data-api/health")
