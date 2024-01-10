@@ -32,31 +32,47 @@ def flip_user_status(req_body):
         admin).
     """
     try:
-        # Queries Formation
-        queries_list = ["UPDATE validation\
-                        SET active = NOT active\
-                        WHERE email = %s;",]
+        ## first check if mail-id present in DB
+        query = "select count(*) \
+                from user_login\
+                where user_login.email = %s"
+        query_data = (
+            req_body["email"],
+        )
+        ret_data = db_read(query, query_data)
+        if isinstance(ret_data[0][0], int):
+            if ret_data[0][0] >= 1:
+                # Queries Formation
+                queries_list = ["UPDATE validation\
+                                SET active = NOT active\
+                                WHERE email = %s;",]
 
-        query_data = [(req_body["email"],),]
+                query_data = [(req_body["email"],),]
 
-        try:
-            res = db_create_update(queries_list, query_data)
+                try:
+                    res = db_create_update(queries_list, query_data)
 
-            if  res == "success":   # pylint: disable=no-else-return
-                return {"update": True}, 200
+                    if  res == "success":   # pylint: disable=no-else-return
+                        return {"update": True}, 200
+                    else:
+                        res.update({"update": False})
+                        return res, 400
+
+                except Exception as db_error:  # pylint: disable=broad-exception-caught
+                    exception_type, _, exception_traceback = sys.exc_info()
+                    filename = exception_traceback.tb_frame.f_code.co_filename
+                    line_number = exception_traceback.tb_lineno
+                    logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+                    return {
+                        "update": False,
+                        "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+                    }, 400
             else:
-                res.update({"update": False})
-                return res, 400
-
-        except Exception as db_error:  # pylint: disable=broad-exception-caught
-            exception_type, _, exception_traceback = sys.exc_info()
-            filename = exception_traceback.tb_frame.f_code.co_filename
-            line_number = exception_traceback.tb_lineno
-            logger.error("%s||||%s||||%d", exception_type, filename, line_number)
-            return {
-                "update": False,
-                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
-            }, 400
+                return {"update": False,
+                        "helpText": "mail-id not found in DB"}, 400
+        else:
+            return {"update": False,
+                    "helpText": "DB error"}, 500
 
     except Exception as db_error:  # pylint: disable=broad-exception-caught
         exception_type, _, exception_traceback = sys.exc_info()
