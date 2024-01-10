@@ -131,9 +131,11 @@ class ChallengeJsonDataWriteRequest(BaseModel):
     """Pydantic model for the challenge-json-data-write request payload.
 
     Attributes:
-        challenge_identifier (Any): The identifier of the challenge, which can be any type.
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        json_data (python dictionary): the python dict can have keys that numbers, strings or
+                                       combination of both, the values could be of any type.
     """
-    challenge_identifier: Any
+    challenge_id: PositiveInt
     json_data: Dict[Union[str, int], Any]
 
 
@@ -141,9 +143,9 @@ class ChallengeJsonDataFetchRequest(BaseModel):
     """Pydantic model for the challenge-json-data-fetch request payload.
 
     Attributes:
-        challenge_identifier (Any): The identifier of the challenge, which can be any type.
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
     """
-    challenge_identifier: Any
+    challenge_id: PositiveInt
 
 
 class ChallengeInitiationRequest(BaseModel):
