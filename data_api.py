@@ -15,7 +15,7 @@ from challenge_status import CS
 from challenge_json import CJ
 from challenge_generic import CG
 import pydantic_check
-from user_details import UserDetails
+from admin import Admin
 
 
 # Configure logging
@@ -37,7 +37,7 @@ BSD_inst = BSD()
 CS_inst = CS()
 CJ_inst = CJ()
 challenge_generic_inst = CG()
-user_details_instance = UserDetails()
+user_details_instance = Admin()
 
 
 # Create a FastAPI instance
@@ -277,5 +277,14 @@ async def edit_user_api(payload: pydantic_check.EditUserDetailsRequest):
     """Route function for editing user details"""
 
     response, status_code = user_details_instance.edit_details(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.get("/data-api/admin-view-list")
+async def admin_view_list_api():
+    """Route function to fetch data for admin list view"""
+
+    response, status_code = user_details_instance.admin_view_list()
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
