@@ -1,5 +1,6 @@
 """
-This code contains the functions to edit user details
+This code contains the functions related to admin
+like functions to edit user details, view-list etc.
 """
 import sys
 import logging
@@ -22,9 +23,10 @@ logger = logging.getLogger(__name__)
 
 utils = Utils()
 
-class UserDetails:
+class Admin:
     """
-    This class contains the functions to edit user details
+    This code contains the functions related to admin
+    like functions to edit user details, view-list etc.
     """
     def flip_user_status(self, req_body):
         """
@@ -164,4 +166,31 @@ class UserDetails:
                 "update": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
-        # '''
+
+
+    def admin_view_list(self):
+        """
+            function to fetch details of all users
+            for the admin view list.
+        """
+        try:
+            # Queries Formation
+            query = "SELECT us.email,us.role,us.employee_id,us.f_name,us.l_name,v.active\
+                    FROM user_signup us\
+                    LEFT JOIN validation v ON us.email = v.email;"
+            query_data = None
+            ret_data = db_read(query, query_data)
+            return {"fetch": True,
+                    "data": ret_data,
+                    "fields":["email", "role", "employee_id", "f_name", "l_name", "active"]}, 200
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+            return {
+                "fetch": False,
+                "fields":["email", "role", "employee_id", "f_name", "l_name", "active"],
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
