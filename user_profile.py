@@ -234,7 +234,7 @@ class UserProfile:
                 res = db_create_update(queries_list, query_data)
 
                 if  res == "success":   # pylint: disable=no-else-return
-                    return {"validation": True}, 200
+                    return {"validation": True}, 201
                 else:
                     res.update({"validation": False})
                     return res, 400
