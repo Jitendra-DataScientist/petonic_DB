@@ -58,6 +58,8 @@ class UserProfile:
                         req_body["email"],
                     )
                     role = db_read(query, query_data)
+                else:
+                    role = [("not validated",)]
             try:
                 ret_data.append(role[0][0])
             except KeyError:
@@ -81,7 +83,7 @@ class UserProfile:
 
         try:
             data = self.login(req_body)
-            # logger.info(data)
+            logger.info(data)
             # below 2 lines for testing
             # data[0] = ("qw",0)
             # data[0] = (12,0)
@@ -90,7 +92,8 @@ class UserProfile:
                     return {"login": True,
                             "role": data[1]}, 200
                 elif data[0][0] == 0:
-                    return {"login": False}, 401
+                    return {"login": False,
+                            "helpText": data[1]}, 401
                 else:
                     return {"login": True,
                             "IT_alert": True,
