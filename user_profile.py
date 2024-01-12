@@ -51,7 +51,7 @@ class UserProfile:
             role = None
             if isinstance(ret_data[0][0], int):
                 if ret_data[0][0] >= 1:
-                    query = "select role \
+                    query = "select role, f_name, l_name, employee_id\
                             from user_signup\
                             where user_signup.email = %s;"
                     query_data = (
@@ -59,10 +59,19 @@ class UserProfile:
                     )
                     role = db_read(query, query_data)
                 else:
-                    role = [("not validated",)]
+                    role = [("email not found / not validated",
+                             "email not found / not validated",
+                             "email not found / not validated",
+                             "email not found / not validated",)]
             try:
                 ret_data.append(role[0][0])
+                ret_data.append(role[0][1])
+                ret_data.append(role[0][2])
+                ret_data.append(role[0][3])
             except KeyError:
+                ret_data.append(None)
+                ret_data.append(None)
+                ret_data.append(None)
                 ret_data.append(None)
             return ret_data
 
@@ -90,14 +99,20 @@ class UserProfile:
             if isinstance(data[0][0], int):
                 if data[0][0] == 1:                  # pylint: disable=no-else-return
                     return {"login": True,
-                            "role": data[1]}, 200
+                            "role": data[1],
+                            "f_name": data[2],
+                            "l_name": data[3],
+                            "employee_id": data[4]}, 200
                 elif data[0][0] == 0:
                     return {"login": False,
                             "helpText": data[1]}, 401
                 else:
                     return {"login": True,
                             "IT_alert": True,
-                            "role": data[1]}, 202
+                            "role": data[1],
+                            "f_name": data[2],
+                            "l_name": data[3],
+                            "employee_id": data[4]}, 202
             else:
                 return {"helpText": {"data": data}, "login": False}, 401
 
