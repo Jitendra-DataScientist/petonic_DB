@@ -1,6 +1,6 @@
 """
     this code contains function to fetch data
-    for "Score Settings" tab's key factors
+    for "Setting Parameters" tab's key factors
 """
 import sys
 import logging
@@ -22,8 +22,8 @@ logger = logging.getLogger(__name__)
 utils = Utils()
 
 
-def score_settings_key_factors(req_body):
-    """function to fetch data for "Score Settings"
+def setting_parameter_key_factors(req_body):
+    """function to fetch data for "Setting Parameters"
        tab's key factors
     """
 
