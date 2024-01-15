@@ -254,7 +254,7 @@ class EditUserDetailsRequest(BaseModel):
     employee_id: PositiveInt = None
 
 
-class ScoreSettingsKeyFactorsRequest(BaseModel):
+class SettinParamaterKeyFactorsRequest(BaseModel):
     """Pydantic model for the score-settings-key-factors request payload.
 
     Attributes:
