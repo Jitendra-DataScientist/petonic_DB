@@ -1,6 +1,6 @@
 """
-    this code contains function to fetch data
-    for "Setting Parameters" tab's key factors
+    this code contains function to fetch data for
+    "Setting Parameters" tab's key parameters
 """
 import sys
 import logging
@@ -22,14 +22,14 @@ logger = logging.getLogger(__name__)
 utils = Utils()
 
 
-def setting_parameter_key_factors(req_body):
-    """function to fetch data for "Setting Parameters"
-       tab's key factors
+def setting_parameter_key_parameters(req_body):
+    """function to fetch data for "Setting
+       Parameters" tab's key parameters
     """
 
     try:
-        query = "select key_factor, suggested_values, description\
-                from industry_domain_process_key_factors\
+        query = "select key_parameter, suggested_values, description\
+                from industry_domain_process_key_parameters\
                 where industry = %s\
                 and domain = %s\
                 and process = %s;"

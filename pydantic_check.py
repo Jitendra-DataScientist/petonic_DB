@@ -254,8 +254,8 @@ class EditUserDetailsRequest(BaseModel):
     employee_id: PositiveInt = None
 
 
-class SettinParamaterKeyFactorsRequest(BaseModel):
-    """Pydantic model for the score-settings-key-factors request payload.
+class SettinParamaterKeyParametersRequest(BaseModel):
+    """Pydantic model for the setting-parameter-key-parameters request payload.
 
     Attributes:
         industry (str): The industry associated with the challenge.
