@@ -39,7 +39,10 @@ class CG:
         try:
             # challenge_id for this new challenge would be 1 plus
             # the count of challenges created by the same initiator
-            challenge_id = self.challenge_count("total_count")[0]['count'] + 1
+            try:
+                challenge_id = self.challenge_count("max_of_ch_id")[0]['count'] + 1
+            except TypeError:
+                challenge_id = 1
 
             # Queries Formation
             query = ["INSERT INTO challenge\
@@ -94,8 +97,8 @@ class CG:
         """
         try:
             # Queries Formation
-            if req_body == "total_count":
-                query = "select count(*) from challenge;"
+            if req_body == "max_of_ch_id":
+                query = "select max(challenge_id) from challenge;"
                 query_data = None
             elif "initiator_id" in req_body:
                 query = "select count(*) from challenge where initiator_id=%s;"
