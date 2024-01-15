@@ -14,7 +14,7 @@ from business_scenario_dropdowns import BSD
 from challenge_status import CS
 from challenge_json import CJ
 from challenge_generic import CG
-from setting_parameter_tab import setting_parameter_key_factors
+from setting_parameter_tab import setting_parameter_key_parameters
 import pydantic_check
 from admin import Admin
 
@@ -303,12 +303,14 @@ async def admin_view_list_api():
     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.post("/data-api/setting-parameter-key-factors")
-async def setting_parameter_key_factors_api(payload: pydantic_check.SettinParamaterKeyFactorsRequest):
-    """Route function to fetch data for
-       "Setting Parameters" tab's key factors"""
+@app.post("/data-api/setting-parameter-key-parameters")
+async def setting_parameter_key_factors_api(
+    payload: pydantic_check.SettinParamaterKeyParametersRequest
+    ):
+    """Route function to fetch data for "Setting
+       Parameters" tab's key parameters"""
 
-    data = setting_parameter_key_factors(vars(payload))
+    data = setting_parameter_key_parameters(vars(payload))
     logger.info(data)
     if data:             # pylint: disable=no-else-return)
         return JSONResponse(content=data, status_code=200)
