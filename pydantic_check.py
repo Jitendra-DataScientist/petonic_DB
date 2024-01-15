@@ -252,3 +252,16 @@ class EditUserDetailsRequest(BaseModel):
     l_name: str = None
     role: str = None
     employee_id: PositiveInt = None
+
+
+class ScoreSettingsKeyFactorsRequest(BaseModel):
+    """Pydantic model for the score-settings-key-factors request payload.
+
+    Attributes:
+        industry (str): The industry associated with the challenge.
+        process (str): The process associated with the challenge.
+        domain (str): The domain associated with the challenge.
+    """
+    industry: str
+    process: str
+    domain: str

@@ -14,6 +14,7 @@ from business_scenario_dropdowns import BSD
 from challenge_status import CS
 from challenge_json import CJ
 from challenge_generic import CG
+from score_settings_tab import score_settings_key_factors
 import pydantic_check
 from admin import Admin
 
@@ -120,7 +121,10 @@ async def data_api_business_scenario_industry_dropdown():
 
     data = BSD_inst.business_scenario_industry_dropdown()
     logger.info(data)
-    return JSONResponse(content=data, status_code=200)
+    if data:             # pylint: disable=no-else-return)
+        return JSONResponse(content=data, status_code=200)
+    else:
+        return JSONResponse(content=data, status_code=500)
 
 
 @app.post("/data-api/business-scenario/domain-dropdown")
@@ -131,7 +135,10 @@ async def data_api_business_scenario_domain_dropdown(payload: pydantic_check.Dom
 
     data = BSD_inst.business_scenario_domain_dropdown(vars(payload))
     logger.info(data)
-    return JSONResponse(content=data, status_code=200)
+    if data:             # pylint: disable=no-else-return)
+        return JSONResponse(content=data, status_code=200)
+    else:
+        return JSONResponse(content=data, status_code=400)
 
 
 @app.post("/data-api/business-scenario/process-dropdown")
@@ -142,7 +149,10 @@ async def data_api_business_scenario_process_dropdown(payload: pydantic_check.Pr
 
     data = BSD_inst.business_scenario_process_dropdown(vars(payload))
     logger.info(data)
-    return JSONResponse(content=data, status_code=200)
+    if data:             # pylint: disable=no-else-return)
+        return JSONResponse(content=data, status_code=200)
+    else:
+        return JSONResponse(content=data, status_code=400)
 
 
 @app.get("/data-api/business-scenario/complete-dropdown")
@@ -153,7 +163,10 @@ async def data_api_business_scenario_complete_dropdown():
 
     data = BSD_inst.business_scenario_complete_dropdown()
     logger.info(data)
-    return JSONResponse(content=data, status_code=200)
+    if data:             # pylint: disable=no-else-return)
+        return JSONResponse(content=data, status_code=200)
+    else:
+        return JSONResponse(content=data, status_code=500)
 
 
 @app.post("/data-api/update-challenge-status")
@@ -288,3 +301,16 @@ async def admin_view_list_api():
     response, status_code = user_details_instance.admin_view_list()
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/score-settings-key-factors")
+async def score_settings_key_factors_api(payload: pydantic_check.ScoreSettingsKeyFactorsRequest):
+    """Route function to fetch data for
+       "Score Settings" tab's key factors"""
+
+    data = score_settings_key_factors(vars(payload))
+    logger.info(data)
+    if data:             # pylint: disable=no-else-return)
+        return JSONResponse(content=data, status_code=200)
+    else:
+        return JSONResponse(content=data, status_code=400)
