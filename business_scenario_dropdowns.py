@@ -109,8 +109,8 @@ def business_scenario_complete_dropdown():
         #                         on dl.domain_id = pl.domain_id;",
         #                 query_data = None)
 
-        data_frame_data = db_read(query = "select industry,\
-                                            domain,process\
+        data_frame_data = db_read(query = "select industry_name,\
+                                            domain_name,process_name\
                                             from industry_domain_process_key_parameters;",
                         query_data = None)
         data_frame = pd.DataFrame(
