@@ -113,46 +113,50 @@ async def data_api_change_password(payload: pydantic_check.ChangePasswordRequest
     return JSONResponse(content=change_pass_response, status_code=status_code)
 
 
-@app.get("/data-api/business-scenario/industry-dropdown")
-async def data_api_business_scenario_industry_dropdown():
-    """Route function for fetching data for the
-       Industry dropdown in the Business Scenario tab
-    """
+# @app.get("/data-api/business-scenario/industry-dropdown")
+# async def data_api_business_scenario_industry_dropdown():
+#     """Route function for fetching data for the
+#        Industry dropdown in the Business Scenario tab
+#     """
 
-    data = BSD_inst.business_scenario_industry_dropdown()
-    logger.info(data)
-    if data:             # pylint: disable=no-else-return)
-        return JSONResponse(content=data, status_code=200)
-    else:
-        return JSONResponse(content=data, status_code=500)
-
-
-@app.post("/data-api/business-scenario/domain-dropdown")
-async def data_api_business_scenario_domain_dropdown(payload: pydantic_check.DomainDropdownRequest):
-    """Route function for fetching data for the
-       Domain dropdown in the Business Scenario tab
-    """
-
-    data = BSD_inst.business_scenario_domain_dropdown(vars(payload))
-    logger.info(data)
-    if data:             # pylint: disable=no-else-return)
-        return JSONResponse(content=data, status_code=200)
-    else:
-        return JSONResponse(content=data, status_code=400)
+#     data = BSD_inst.business_scenario_industry_dropdown()
+#     logger.info(data)
+#     if data:             # pylint: disable=no-else-return)
+#         return JSONResponse(content=data, status_code=200)
+#     else:
+#         return JSONResponse(content=data, status_code=500)
 
 
-@app.post("/data-api/business-scenario/process-dropdown")
-async def data_api_business_scenario_process_dropdown(payload: pydantic_check.ProcessDropdownRequest):             # pylint: disable=line-too-long
-    """Route function for fetching data for the
-       Process dropdown in the Business Scenario tab
-    """
+# @app.post("/data-api/business-scenario/domain-dropdown")
+# async def data_api_business_scenario_domain_dropdown(
+#     payload: pydantic_check.DomainDropdownRequest
+#     ):
+#     """Route function for fetching data for the
+#        Domain dropdown in the Business Scenario tab
+#     """
 
-    data = BSD_inst.business_scenario_process_dropdown(vars(payload))
-    logger.info(data)
-    if data:             # pylint: disable=no-else-return)
-        return JSONResponse(content=data, status_code=200)
-    else:
-        return JSONResponse(content=data, status_code=400)
+#     data = BSD_inst.business_scenario_domain_dropdown(vars(payload))
+#     logger.info(data)
+#     if data:             # pylint: disable=no-else-return)
+#         return JSONResponse(content=data, status_code=200)
+#     else:
+#         return JSONResponse(content=data, status_code=400)
+
+
+# @app.post("/data-api/business-scenario/process-dropdown")
+# async def data_api_business_scenario_process_dropdown(
+#     payload: pydantic_check.ProcessDropdownRequest
+#     ):
+#     """Route function for fetching data for the
+#        Process dropdown in the Business Scenario tab
+#     """
+
+#     data = BSD_inst.business_scenario_process_dropdown(vars(payload))
+#     logger.info(data)
+#     if data:             # pylint: disable=no-else-return)
+#         return JSONResponse(content=data, status_code=200)
+#     else:
+#         return JSONResponse(content=data, status_code=400)
 
 
 @app.get("/data-api/business-scenario/complete-dropdown")
@@ -162,7 +166,7 @@ async def data_api_business_scenario_complete_dropdown():
     """
 
     data = BSD_inst.business_scenario_complete_dropdown()
-    logger.info(data)
+    # logger.info(data)
     if data:             # pylint: disable=no-else-return)
         return JSONResponse(content=data, status_code=200)
     else:

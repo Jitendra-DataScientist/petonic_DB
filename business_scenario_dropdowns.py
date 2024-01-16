@@ -100,18 +100,26 @@ class BSD:
         """
 
         try:
-            data_frame_data = db_read(query = "select il.name as industry,\
-                                    dl.name as domain, pl.name as process\
-                                    from industry_list as il\
-                                    join domain_list as dl\
-                                    on il.industry_id = dl.industry_id\
-                                    join process_list as pl\
-                                    on dl.domain_id = pl.domain_id;",
+            # data_frame_data = db_read(query = "select il.name as industry,\
+            #                         dl.name as domain, pl.name as process\
+            #                         from industry_list as il\
+            #                         join domain_list as dl\
+            #                         on il.industry_id = dl.industry_id\
+            #                         join process_list as pl\
+            #                         on dl.domain_id = pl.domain_id;",
+            #                 query_data = None)
+
+            data_frame_data = db_read(query = "select industry,\
+                                              domain,process\
+                                              from industry_domain_process_key_parameters;",
                             query_data = None)
             data_frame = pd.DataFrame(
                 data_frame_data,
                 columns=["Business", "Domain", "Process"],
             )
+
+            data_frame.drop_duplicates(inplace=True)
+
             dct = {}
             for business in data_frame["Business"].unique():
                 dct[business] = {}
