@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from user_profile import UserProfile
 from forgot_password import ForgotPassword
 from change_password import ChangePassword
-from business_scenario_dropdowns import BSD
+from business_scenario_dropdowns import business_scenario_complete_dropdown
 from challenge_status import CS
 from challenge_json import CJ
 from challenge_generic import CG
@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 user_profile_inst = UserProfile()
 forgot_pass_inst = ForgotPassword()
 change_pass_inst = ChangePassword()
-BSD_inst = BSD()
+# BSD_inst = BSD()
 CS_inst = CS()
 CJ_inst = CJ()
 challenge_generic_inst = CG()
@@ -165,7 +165,7 @@ async def data_api_business_scenario_complete_dropdown():
        3 dropdowns in the Business Scenario tab
     """
 
-    data = BSD_inst.business_scenario_complete_dropdown()
+    data = business_scenario_complete_dropdown()
     # logger.info(data)
     if data:             # pylint: disable=no-else-return)
         return JSONResponse(content=data, status_code=200)
