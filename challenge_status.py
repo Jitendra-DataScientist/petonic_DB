@@ -7,8 +7,8 @@ import sys
 import time
 import logging
 import json
-from db_read import db_read
-from db_create_update import db_create_update
+from db_return import db_return
+from db_no_return import db_no_return
 from utils import Utils
 
 
@@ -39,7 +39,7 @@ class CS:
             # challenge_id from challenge_status table
             query = "select challenge_status_json from challenge_status where challenge_id=%s;"
             query_data = (req_body["challenge_id"],)
-            json_res = db_read(query, query_data)
+            json_res = db_return(query, query_data)
 
             # Queries Formation
             # query = [
@@ -98,7 +98,7 @@ class CS:
                 ]
 
             try:
-                res = db_create_update(query, query_data)
+                res = db_no_return(query, query_data)
                 if res == "success":   # pylint: disable=no-else-return
                     return {"update": True}, 201
                 else:
@@ -136,7 +136,7 @@ class CS:
             query_data = (req_body["challenge_id"],)
 
             try:
-                res = db_read(query, query_data)
+                res = db_return(query, query_data)
 
                 try:
                     return {"fetch": True,

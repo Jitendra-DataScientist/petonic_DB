@@ -128,7 +128,7 @@ class FetchChallengeStatusRequest(BaseModel):
 
 
 class ChallengeJsonDataWriteRequest(BaseModel):
-    """Pydantic model for the challenge-json-data-write request payload.
+    """Pydantic model for the challenge-json-data-update request payload.
 
     Attributes:
         challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
@@ -265,3 +265,24 @@ class SettinParamaterKeyParametersRequest(BaseModel):
     industry: str
     process: str
     domain: str
+
+
+class ContributorApproverJsonDataWriteRequest(BaseModel):
+    """Pydantic model for the contributor-approver-json-data-update request payload.
+
+    Attributes:
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        json_data (python dictionary): the python dict can have keys that numbers, strings or
+                                       combination of both, the values could be of any type.
+    """
+    challenge_id: PositiveInt
+    json_data: Dict[Union[str, int], Any]
+
+
+class ContributorApproverJsonDataFetchRequest(BaseModel):
+    """Pydantic model for the contributor-approver-json-data-fetch request payload.
+
+    Attributes:
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+    """
+    challenge_id: PositiveInt

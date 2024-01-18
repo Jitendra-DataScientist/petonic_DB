@@ -5,8 +5,8 @@
 """
 import sys
 import logging
-from db_read import db_read
-from db_create_update import db_create_update
+from db_return import db_return
+from db_no_return import db_no_return
 from utils import Utils
 
 
@@ -47,7 +47,7 @@ class UserProfile:
             )
 
             # Fetch data
-            ret_data = db_read(query, query_data)
+            ret_data = db_return(query, query_data)
             role = None
             if isinstance(ret_data[0][0], int):
                 if ret_data[0][0] >= 1:
@@ -57,7 +57,7 @@ class UserProfile:
                     query_data = (
                         req_body["email"],
                     )
-                    role = db_read(query, query_data)
+                    role = db_return(query, query_data)
                 else:
                     role = [("incorrect creds / email not validated",
                              "incorrect creds / email not validated",
@@ -155,7 +155,7 @@ class UserProfile:
             ]
 
             try:
-                res = db_create_update(queries_list, query_data)
+                res = db_no_return(queries_list, query_data)
 
                 if  res == "success":
                     if utils.send_mail_trigger_signup(req_body["email"], first_password):   # pylint: disable=no-else-return
@@ -202,7 +202,7 @@ class UserProfile:
             query_data = [(new_password, req_body["email"])]
 
             try:
-                res = db_create_update(queries_list, query_data)
+                res = db_no_return(queries_list, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
                     if utils.send_mail_trigger_signup(req_body["email"], new_password):      # pylint: disable=no-else-return
@@ -246,7 +246,7 @@ class UserProfile:
             query_data = [(req_body["email"], True)]
 
             try:
-                res = db_create_update(queries_list, query_data)
+                res = db_no_return(queries_list, query_data)
 
                 if  res == "success":   # pylint: disable=no-else-return
                     return {"validation": True}, 201

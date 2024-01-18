@@ -6,7 +6,7 @@
 import sys
 import logging
 import pandas as pd
-from db_read import db_read
+from db_return import db_return
 from utils import Utils
 
 
@@ -109,7 +109,7 @@ def business_scenario_complete_dropdown():
         #                         on dl.domain_id = pl.domain_id;",
         #                 query_data = None)
 
-        data_frame_data = db_read(query = "select industry_name,\
+        data_frame_data = db_return(query = "select industry_name,\
                                             domain_name,process_name\
                                             from industry_domain_process_key_parameters;",
                         query_data = None)
