@@ -4,7 +4,7 @@
 """
 import sys
 import logging
-from db_read import db_read
+from db_return import db_return
 from utils import Utils
 
 
@@ -37,7 +37,7 @@ def setting_parameter_key_parameters(req_body):
                       req_body["domain"],
                       req_body["process"],)
 
-        return db_read(query, query_data)
+        return db_return(query, query_data)
 
     except Exception as db_error:  # pylint: disable=broad-exception-caught
         exception_type, _, exception_traceback = sys.exc_info()

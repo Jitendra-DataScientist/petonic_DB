@@ -41,7 +41,7 @@ except Error as env_error:
     sys.exit()
 
 
-def db_read(query, query_data):
+def db_return(query, query_data):
     """Function that executes (a) query (queries) and
        return(s) some data from the database
     """

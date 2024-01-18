@@ -13,6 +13,7 @@ from change_password import ChangePassword
 from business_scenario_dropdowns import business_scenario_complete_dropdown
 from challenge_status import CS
 from challenge_json import CJ
+from contributor_approver import CA
 from challenge_generic import CG
 from setting_parameter_tab import setting_parameter_key_parameters
 import pydantic_check
@@ -37,6 +38,7 @@ change_pass_inst = ChangePassword()
 # BSD_inst = BSD()
 CS_inst = CS()
 CJ_inst = CJ()
+contributor_approver_inst = CA()
 challenge_generic_inst = CG()
 user_details_instance = Admin()
 
@@ -320,3 +322,30 @@ async def setting_parameter_key_factors_api(
         return JSONResponse(content=data, status_code=200)
     else:
         return JSONResponse(content=data, status_code=400)
+
+
+@app.post("/data-api/contributor-approver-json-data-update")
+async def contributor_approver_json_data_update(
+    payload: pydantic_check.ContributorApproverJsonDataWriteRequest
+    ):
+    """Route function for adding/updating json
+       entry in/of contributor_approver table
+    """
+
+    # req_body = await payload.json()
+    response, status_code = contributor_approver_inst.update_json(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/contributor-approver-json-data-fetch")
+async def contributor_approver_json_data_fetch(
+    payload: pydantic_check.ContributorApproverJsonDataFetchRequest
+    ):
+    """Route function for fetching data for fetchting
+       json entry of contributor_approver table
+    """
+
+    response, status_code = contributor_approver_inst.fetch_json(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)

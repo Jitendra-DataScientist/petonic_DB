@@ -41,7 +41,7 @@ except Error as env_error:
     sys.exit()
 
 
-def db_create_update(queries_list, query_data):
+def db_no_return(queries_list, query_data):
     """function for processing (a) query (queries) that
        do(does) not return any response(s) from database"""
     try:
