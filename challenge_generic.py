@@ -249,7 +249,7 @@ class CG:
                             "fields": ["challenge_id","initiator_id","initiation_timestamp",
                                         "industry","process","domain","creation_timestamp","name",
                                         "description","contributor_id","approver_id","challenge_id",
-                                        "challenge_status","json_data"]
+                                        "challenge_status","challenge_status_json"]
                             }, 200
                 else:
                     return {"fetch": False,

@@ -36,9 +36,9 @@ class CJ:
         try:
             # Queries Formation
             query = [
-                        "INSERT INTO challenge_json_data (challenge_id, json_data)\
+                        "INSERT INTO challenge_json_data (challenge_id, challenge_json)\
                         VALUES (%s, %s)\
-                        ON CONFLICT (challenge_id) DO UPDATE SET json_data = %s;",
+                        ON CONFLICT (challenge_id) DO UPDATE SET challenge_json = %s;",
                 ]
             query_data = [
                             (
