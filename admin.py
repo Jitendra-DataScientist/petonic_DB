@@ -5,8 +5,8 @@ like functions to edit user details, view-list etc.
 import sys
 import logging
 import json
-from db_read import db_read
-from db_create_update import db_create_update
+from db_return import db_return
+from db_no_return import db_no_return
 from utils import Utils
 
 
@@ -43,7 +43,7 @@ class Admin:
             query_data = (
                 req_body["email"],
             )
-            ret_data = db_read(query, query_data)
+            ret_data = db_return(query, query_data)
             if isinstance(ret_data[0][0], int):
                 if ret_data[0][0] >= 1:
                     # Queries Formation
@@ -54,7 +54,7 @@ class Admin:
                     query_data = [(req_body["email"],),]
 
                     try:
-                        res = db_create_update(queries_list, query_data)
+                        res = db_no_return(queries_list, query_data)
 
                         if  res == "success":   # pylint: disable=no-else-return
                             return {"update": True}, 200
@@ -109,7 +109,7 @@ class Admin:
             query_data = (
                 req_body["email"],
             )
-            ret_data = db_read(query, query_data)
+            ret_data = db_return(query, query_data)
             if isinstance(ret_data[0][0], int):
                 if ret_data[0][0] >= 1:
                     # Filter out the None values from req_body
@@ -133,7 +133,7 @@ class Admin:
                     query_data = [values]
 
                     try:
-                        res = db_create_update(queries_list, query_data)
+                        res = db_no_return(queries_list, query_data)
 
                         if  res == "success":   # pylint: disable=no-else-return
                             return {"update": True}, 200
@@ -179,7 +179,7 @@ class Admin:
                     FROM user_signup us\
                     LEFT JOIN validation v ON us.email = v.email;"
             query_data = None
-            ret_data = db_read(query, query_data)
+            ret_data = db_return(query, query_data)
             return {"fetch": True,
                     "data": ret_data,
                     "fields":["email", "role", "employee_id", "f_name", "l_name", "active"]}, 200

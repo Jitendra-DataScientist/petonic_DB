@@ -9,8 +9,8 @@ import json
 # from pymongo import json_util
 import logging
 from django.core.serializers.json import DjangoJSONEncoder
-from db_read import db_read
-from db_create_update import db_create_update
+from db_return import db_return
+from db_no_return import db_no_return
 from utils import Utils
 
 
@@ -61,7 +61,7 @@ class CG:
                         ]
 
             try:
-                res = db_create_update(query, query_data)
+                res = db_no_return(query, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
                     return {"creation": True}, 201
@@ -115,7 +115,7 @@ class CG:
                             )
 
             try:
-                ret_data = db_read(query, query_data)
+                ret_data = db_return(query, query_data)
 
                 return {"count_fetch": True,
                         "count": ret_data[0][0]}, 200
@@ -163,7 +163,7 @@ class CG:
                             req_body["challenge_id"],
                         )
 
-            ret_data = db_read(query, query_data)
+            ret_data = db_return(query, query_data)
 
             if ret_data[0][0] is not None:
                 return {
@@ -188,7 +188,7 @@ class CG:
                         ]
 
             try:
-                res = db_create_update(query, query_data)
+                res = db_no_return(query, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
                     return {"update": True}, 201
@@ -236,7 +236,7 @@ class CG:
                 query_data = None
 
             try:
-                ret_data = db_read(query, query_data)
+                ret_data = db_return(query, query_data)
                 # print ("\n\n\n\n")
                 # # print (json.dumps(ret_data,indent=4, default=json_util.default))
                 # print (json.dumps(ret_data,indent=4, cls=DjangoJSONEncoder))

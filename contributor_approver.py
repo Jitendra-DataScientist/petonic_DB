@@ -1,7 +1,7 @@
 """
-    this code primarily contains the challenge json related
-    funtions to connect python code to PostgreSQL database
-    by calling relevant pyscopg2 operation files (CRUD)
+    this code primarily contains the contributor and approver
+    json related funtions to connect python code to PostgreSQL
+    database by calling relevant pyscopg2 operation files (CRUD)
 """
 import sys
 import json
@@ -25,20 +25,20 @@ logger = logging.getLogger(__name__)
 utils = Utils()
 
 
-class CJ:
+class CA:
     """
-       this class primarily contains the challenge json related
-       funtions to connect python code to PostgreSQL database by
-       calling relevant pyscopg2 operation files (CRUD)
+       this class primarily contains the contributor and approver
+       json related funtions to connect python code to PostgreSQL
+       database by calling relevant pyscopg2 operation files (CRUD)
     """
-    def update_challenge_json(self, req_body):
-        """function adding/updating an entry in the challenge_json_data table"""
+    def update_json(self, req_body):
+        """function adding/updating an entry in the contributor_approver table"""
         try:
             # Queries Formation
             query = [
-                        "INSERT INTO challenge_json_data (challenge_id, challenge_json)\
+                        "INSERT INTO contributor_approver (challenge_id, contributor_approver_json)\
                         VALUES (%s, %s)\
-                        ON CONFLICT (challenge_id) DO UPDATE SET challenge_json = %s;",
+                        ON CONFLICT (challenge_id) DO UPDATE SET contributor_approver_json = %s;",
                 ]
             query_data = [
                             (
@@ -78,10 +78,10 @@ class CJ:
             }, 500
 
 
-    def fetch_challenge_json(self, req_body):
-        """function for fetchting an entry from the challenge_json_data table"""
+    def fetch_json(self, req_body):
+        """function for fetchting an entry from the contributor_approver table"""
         try:
-            query = "select * from challenge_json_data where challenge_id=%s;"
+            query = "select * from contributor_approver where challenge_id=%s;"
             query_data = (req_body["challenge_id"],)
 
             try:
@@ -89,7 +89,7 @@ class CJ:
 
                 try:
                     return {"fetch": True,
-                            "json_data": res[0][0]}, 200
+                            "json_data": res[0][2]}, 200
                 except IndexError:
                     return {"fetch": False,
                             "json_data": {},

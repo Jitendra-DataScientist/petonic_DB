@@ -5,8 +5,8 @@
 """
 import sys
 import logging
-from db_read import db_read
-from db_create_update import db_create_update
+from db_return import db_return
+from db_no_return import db_no_return
 from utils import Utils
 
 
@@ -48,7 +48,7 @@ class ChangePassword:
             query_data = [(req_body["new_password"], req_body["email"])]
 
             try:
-                res = db_create_update(queries_list, query_data)
+                res = db_no_return(queries_list, query_data)
                 if res == "success":   # pylint: disable=no-else-return
                     return {"reset": True}
                 else:
@@ -93,7 +93,7 @@ class ChangePassword:
                 req_body["current_password"],
             )
 
-            return db_read(query, query_data)
+            return db_return(query, query_data)
 
         except Exception as db_error:  # pylint: disable=broad-exception-caught
             exception_type, _, exception_traceback = sys.exc_info()
