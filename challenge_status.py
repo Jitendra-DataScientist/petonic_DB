@@ -37,7 +37,7 @@ class CS:
         try:
             # read the json (if present) for the corresponding
             # challenge_id from challenge_status table
-            query = "select json_data from challenge_status where challenge_id=%s;"
+            query = "select challenge_status_json from challenge_status where challenge_id=%s;"
             query_data = (req_body["challenge_id"],)
             json_res = db_read(query, query_data)
 
@@ -66,7 +66,7 @@ class CS:
                 query = [
                     "UPDATE challenge_status \
                     SET challenge_status = %s, \
-                    json_data = %s \
+                    challenge_status_json = %s \
                     WHERE challenge_id = %s;",
                 ]
                 query_data = [
@@ -78,11 +78,12 @@ class CS:
                 ]
             else:
                 query = [
-                    "INSERT INTO challenge_status (challenge_id, challenge_status, json_data) \
+                    "INSERT INTO challenge_status (challenge_id,\
+                    challenge_status, challenge_status_json) \
                     VALUES (%s, %s, jsonb_build_object(%s, %s)) \
                     ON CONFLICT (challenge_id) DO UPDATE \
                     SET challenge_status = %s, \
-                    json_data = jsonb_build_object(%s, %s);",
+                    challenge_status_json = jsonb_build_object(%s, %s);",
                 ]
                 query_data = [
                     (
@@ -129,7 +130,7 @@ class CS:
         """function fetchting an entry from the challenge_status table"""
         try:
             # Queries Formation
-            query = "SELECT challenge_status, json_data\
+            query = "SELECT challenge_status, challenge_status_json\
                     FROM challenge_status\
                     WHERE challenge_id=%s;"
             query_data = (req_body["challenge_id"],)
