@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 utils = Utils()
 
 
-class CA:
+class CAJ:
     """
        this class primarily contains the contributor and approver
        json related funtions to connect python code to PostgreSQL
