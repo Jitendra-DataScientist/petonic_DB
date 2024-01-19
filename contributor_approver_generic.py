@@ -100,9 +100,10 @@ class CAG:
                             res.update({"update": False})
                             return res, 500
                 else:
+
                     query = ["UPDATE contributor_approver\
                             SET contributor_id = ARRAY_APPEND(contributor_id, %s)\
-                            WHERE challenge_id = %s AND contributor_id IS NOT NULL;",]
+                            WHERE challenge_id = %s;",]
                     query_data = [ (
                                     req_body["contributor_id"],
                                     req_body["challenge_id"],
