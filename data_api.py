@@ -13,7 +13,8 @@ from change_password import ChangePassword
 from business_scenario_dropdowns import business_scenario_complete_dropdown
 from challenge_status import CS
 from challenge_json import CJ
-from contributor_approver import CA
+from contributor_approver_json import CAJ
+from contributor_approver_generic import CAG
 from challenge_generic import CG
 from setting_parameter_tab import setting_parameter_key_parameters
 import pydantic_check
@@ -38,7 +39,8 @@ change_pass_inst = ChangePassword()
 # BSD_inst = BSD()
 CS_inst = CS()
 CJ_inst = CJ()
-contributor_approver_inst = CA()
+contributor_approver_json_inst = CAJ()
+contributor_approver_generic_inst = CAG()
 challenge_generic_inst = CG()
 user_details_instance = Admin()
 
@@ -333,7 +335,7 @@ async def contributor_approver_json_data_update(
     """
 
     # req_body = await payload.json()
-    response, status_code = contributor_approver_inst.update_json(vars(payload))
+    response, status_code = contributor_approver_json_inst.update_json(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
@@ -346,6 +348,30 @@ async def contributor_approver_json_data_fetch(
        json entry of contributor_approver table
     """
 
-    response, status_code = contributor_approver_inst.fetch_json(vars(payload))
+    response, status_code = contributor_approver_json_inst.fetch_json(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/add-contributor")
+async def add_contributor(payload: pydantic_check.AddContributorRequest):
+    """Route function for adding a contributor_id
+       to contributor_approver table for a specific
+       challenge.
+    """
+
+    response, status_code = contributor_approver_generic_inst.add_contributor(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/add-approver")
+async def add_approver(payload: pydantic_check.AddApproverRequest):
+    """Route function for adding a contributor_id
+       to contributor_approver table for a specific
+       challenge.
+    """
+
+    response, status_code = contributor_approver_generic_inst.add_approver(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
