@@ -286,3 +286,25 @@ class ContributorApproverJsonDataFetchRequest(BaseModel):
         challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
     """
     challenge_id: PositiveInt
+
+
+class AddContributorRequest(BaseModel):
+    """Pydantic model for add-contributor request payload.
+
+    Attributes:
+        contributor_id (EmailStr): The contributor's email address.
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+    """
+    contributor_id: EmailStr
+    challenge_id: PositiveInt
+
+
+class AddApproverRequest(BaseModel):
+    """Pydantic model for add-approver request payload.
+
+    Attributes:
+        contributor_id (EmailStr): The approver's email address.
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+    """
+    approver_id: EmailStr
+    challenge_id: PositiveInt
