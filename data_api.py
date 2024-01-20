@@ -367,11 +367,23 @@ async def add_contributor(payload: pydantic_check.AddContributorRequest):
 
 @app.post("/data-api/add-approver")
 async def add_approver(payload: pydantic_check.AddApproverRequest):
-    """Route function for adding a contributor_id
+    """Route function for adding a approver_id
        to contributor_approver table for a specific
        challenge.
     """
 
     response, status_code = contributor_approver_generic_inst.add_approver(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/add-approver-comment")
+async def add_approver_comment(payload: pydantic_check.AddApproverCommentRequest):
+    """Route function for adding approver's comment
+       to contributor_approver table for a specific
+       challenge.
+    """
+
+    response, status_code = contributor_approver_generic_inst.add_approver_comment(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)

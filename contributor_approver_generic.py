@@ -129,9 +129,8 @@ class CAG:
 
 
     def add_approver(self, req_body):
-        """function for adding/updating an approver_id to
-           approver_id column in the contributor_approver
-           table
+        """function for adding an approver_id to approver_id
+           column in the contributor_approver table
         """
         try:
             # check if approver_id exists
@@ -164,6 +163,56 @@ class CAG:
                             req_body["challenge_id"],
                             req_body["approver_id"],
                             req_body["approver_id"],
+                        ),]
+
+            res = db_no_return(query, query_data)
+
+            if res == "success":   # pylint: disable=no-else-return
+                return {"update": True}, 201
+            else:
+                res.update({"update": False})
+                return res, 500
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "update": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
+
+
+    def add_approver_comment(self, req_body):
+        """function for adding approver's comment to
+           contributor_approver table corresponding
+           to a challenge_id
+        """
+        try:
+            # check if approver_id is correct (assigned to the corresponding challenge)
+            query = "select approver_id,approver_comment from\
+                     contributor_approver where challenge_id=%s;"
+            query_data = (req_body["challenge_id"],)
+
+            approver_details = db_return(query, query_data)
+            # print ("\n\n{}".format(approver_details))
+            # print ("\n\n{}".format((req_body["approver_id"])))
+            # print ("\n{}\n{}\n\n".format(approver_details[0][0] not in (req_body["approver_id"])))
+            if  not approver_details or not approver_details[0][0] or\
+            approver_details[0][0] != req_body["approver_id"]\
+            or approver_details[0][1]:
+                return {"update": False,
+                        "helpText": "Invalid challenge_id/approver_id,\
+                            or approver comment already set"}, 400
+
+            query = ["UPDATE contributor_approver\
+                     SET approver_comment = %s\
+                     WHERE challenge_id = %s;",
+                    ]
+            query_data = [(
+                            req_body["approver_comment"],
+                            req_body["challenge_id"],
                         ),]
 
             res = db_no_return(query, query_data)

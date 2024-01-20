@@ -303,8 +303,20 @@ class AddApproverRequest(BaseModel):
     """Pydantic model for add-approver request payload.
 
     Attributes:
-        contributor_id (EmailStr): The approver's email address.
+        approver_id (EmailStr): The approver's email address.
         challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
     """
     approver_id: EmailStr
     challenge_id: PositiveInt
+
+
+class AddApproverCommentRequest(BaseModel):
+    """Pydantic model for add-approver request payload.
+
+    Attributes:
+        approver_id (EmailStr): The approver's email address.
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+    """
+    approver_id: EmailStr
+    challenge_id: PositiveInt
+    approver_comment: str
