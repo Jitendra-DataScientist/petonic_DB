@@ -196,9 +196,6 @@ class CAG:
             query_data = (req_body["challenge_id"],)
 
             approver_details = db_return(query, query_data)
-            # print ("\n\n{}".format(approver_details))
-            # print ("\n\n{}".format((req_body["approver_id"])))
-            # print ("\n{}\n{}\n\n".format(approver_details[0][0] not in (req_body["approver_id"])))
             if  not approver_details or not approver_details[0][0] or\
             approver_details[0][0] != req_body["approver_id"]\
             or approver_details[0][1]:
