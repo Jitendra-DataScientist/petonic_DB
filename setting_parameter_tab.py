@@ -30,9 +30,9 @@ def setting_parameter_key_parameters(req_body):
     try:
         query = "select key_parameter, suggested_values, description\
                 from industry_domain_process_key_parameters\
-                where industry = %s\
-                and domain = %s\
-                and process = %s;"
+                where industry_name = %s\
+                and domain_name = %s\
+                and process_name = %s;"
         query_data = (req_body["industry"],
                       req_body["domain"],
                       req_body["process"],)
