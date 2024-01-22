@@ -222,17 +222,27 @@ class CG:
         try:
             # Queries Formation based on request method payload
             if req_body:
-                query = "select * from challenge\
-                        join challenge_status\
-                        on (challenge.challenge_id = challenge_status.challenge_id)\
-                        where initiator_id = %s;"
+                query = "SELECT c.challenge_id, c.initiator_id, c.initiation_timestamp, c.industry,\
+                        c.domain, c.process, c.creation_timestamp, c.name, c.description, cs.challenge_status,\
+                        cs.challenge_status_json, ca.contributor_id, ca.approver_id, ca.approver_comment\
+                        FROM challenge c\
+                        LEFT JOIN challenge_status cs\
+                        ON c.challenge_id = cs.challenge_id\
+                        LEFT JOIN contributor_approver ca\
+                        ON c.challenge_id = ca.challenge_id\
+                        where c.initiator_id = %s;"
                 query_data = (
                                 req_body["initiator_id"],
                             )
             else:
-                query = "select * from challenge\
-                        join challenge_status\
-                        on (challenge.challenge_id = challenge_status.challenge_id);"
+                query = "SELECT c.challenge_id, c.initiator_id, c.initiation_timestamp, c.industry,\
+                        c.domain, c.process, c.creation_timestamp, c.name, c.description, cs.challenge_status,\
+                        cs.challenge_status_json, ca.contributor_id, ca.approver_id, ca.approver_comment\
+                        FROM challenge c\
+                        LEFT JOIN challenge_status cs\
+                        ON c.challenge_id = cs.challenge_id\
+                        LEFT JOIN contributor_approver ca\
+                        ON c.challenge_id = ca.challenge_id;"
                 query_data = None
 
             try:
@@ -247,9 +257,10 @@ class CG:
                                             json.dumps(ret_data, cls=DjangoJSONEncoder)
                                             ),
                             "fields": ["challenge_id","initiator_id","initiation_timestamp",
-                                        "industry","process","domain","creation_timestamp","name",
-                                        "description","contributor_id","approver_id","challenge_id",
-                                        "challenge_status","challenge_status_json"]
+                                        "industry","domain","process","creation_timestamp","name",
+                                        "description","current_challenge_status",
+                                        "challenge_status_json","contributor_ids","approver_id",
+                                        "approver_comment"]
                             }, 200
                 else:
                     return {"fetch": False,
