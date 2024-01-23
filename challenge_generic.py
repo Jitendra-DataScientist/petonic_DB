@@ -64,7 +64,8 @@ class CG:
                 res = db_no_return(query, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
-                    return {"creation": True}, 201
+                    return {"creation": True,
+                            "challenge_id": challenge_id}, 201
                 else:
                     logger.warning("challenge_id already present")
                     res.update({"creation": False})
