@@ -3,7 +3,8 @@
     that are written using FASTAPI
 """
 import logging
-from fastapi import FastAPI, Request, Depends
+from typing import List
+from fastapi import FastAPI, Request, Depends, File, UploadFile, Form
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 # from db_main import DBMain
@@ -17,6 +18,7 @@ from contributor_approver_json import CAJ
 from contributor_approver_generic import CAG
 from challenge_generic import CG
 from setting_parameter_tab import setting_parameter_key_parameters
+from file_transfer import FT
 import pydantic_check
 from admin import Admin
 
@@ -43,6 +45,7 @@ contributor_approver_json_inst = CAJ()
 contributor_approver_generic_inst = CAG()
 challenge_generic_inst = CG()
 user_details_instance = Admin()
+file_transfer_instance = FT()
 
 
 # Create a FastAPI instance
@@ -385,5 +388,15 @@ async def add_approver_comment(payload: pydantic_check.AddApproverCommentRequest
     """
 
     response, status_code = contributor_approver_generic_inst.add_approver_comment(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/file-upload")
+async def file_upload(path_key: str = Form(...), files: List[UploadFile] = File(...)):
+    """Route function for uploading file(s)
+    """
+
+    response, status_code = file_transfer_instance.file_upload(path_key, files)
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
