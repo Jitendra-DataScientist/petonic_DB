@@ -3,8 +3,8 @@
     that are written using FASTAPI
 """
 import logging
-from typing import List
-from fastapi import FastAPI, Request, Depends, File, UploadFile, Form
+from typing import List, Dict
+from fastapi import FastAPI, Request, Depends, File, UploadFile, Form, Body
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 # from db_main import DBMain
@@ -400,3 +400,16 @@ async def file_upload(path_key: str = Form(...), files: List[UploadFile] = File(
     response, status_code = file_transfer_instance.file_upload(path_key, files)
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/file-download")
+async def file_download(payload: Dict[str, str] = Body(...)):
+    """Route function for downloading a file
+    """
+
+    response, status_code = file_transfer_instance.file_download(payload)
+    logger.info(response)
+    try:
+        return JSONResponse(content=response, status_code=status_code)
+    except TypeError:
+        return response
