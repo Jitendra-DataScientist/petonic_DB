@@ -1,10 +1,11 @@
 """
     this code is primarily related to file transfers
 """
-import sys
-import logging
-import time
 import os
+import sys
+import time
+import logging
+from fastapi.responses import FileResponse
 from psycopg2 import Error
 from utils import Utils
 
@@ -27,7 +28,7 @@ class FT:
        this class has funtions primarily related to file transfers
     """
     def file_upload(self, path_key, files):  # pylint: disable=too-many-locals
-        """function for challenge initiation (an entry added in challenge table)"""
+        """function for uploading file(s)"""
         try:
             # path_key to be of form "challenge-id _ contributor-id _ solution-id _ epoch"
             current_directory = os.getcwd()
@@ -94,4 +95,43 @@ class FT:
             return {
                 "upload": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
+
+
+    def file_download(self, payload):
+        """function for downloading a file"""
+        try:
+            path_key = payload.get("path_key")
+            filename = payload.get("filename")
+
+            if not path_key or not filename:
+                return {"helpText": "Both path_key and filename are required in the payload."}, 400
+
+            current_directory = os.getcwd()
+            files_directory = os.path.join(current_directory, 'files', path_key)
+            file_path = os.path.join(files_directory, filename)
+
+            try:
+                if os.path.exists(files_directory):
+                    if os.path.exists(file_path):   # pylint: disable=no-else-return
+                        return FileResponse(file_path, filename=filename,
+                                            media_type="application/octet-stream"), 200
+                    else:
+                        return {"helpText": f"{filename} file not found at path_key: \
+                                {path_key}"}, 404
+                else:
+                    return {"helpText": f"{path_key} path_key not found."}, 404
+            except Exception as download_error:   # pylint: disable=broad-exception-caught
+                return {"helpText": f"An error occurred while processing\
+                        the request: {str(download_error)}"}, 500
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "upload": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||\
+                    {line_number}||||{db_error}",
             }, 500
