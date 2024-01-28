@@ -73,7 +73,7 @@ class FT:
                     finally:
                         file.file.close()
 
-                new_directory = updated_directory + '/..'
+                new_directory = updated_directory + '/../..'
                 os.chdir(new_directory)
 
                 return {"upload": True,
@@ -82,7 +82,7 @@ class FT:
                         }, 200
 
             except Error as file_error:
-                new_directory = updated_directory + '/..'
+                new_directory = updated_directory + '/../..'
                 os.chdir(new_directory)
                 return {"upload":False,
                         "error": file_error}, 500
@@ -112,6 +112,7 @@ class FT:
             file_path = os.path.join(files_directory, filename)
 
             try:
+                # import os
                 if os.path.exists(files_directory):
                     if os.path.exists(file_path):   # pylint: disable=no-else-return
                         return FileResponse(file_path, filename=filename,
