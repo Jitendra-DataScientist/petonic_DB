@@ -6,7 +6,6 @@ import os
 import sys
 import logging
 import psycopg2
-from psycopg2 import Error
 from dotenv import load_dotenv
 
 
@@ -36,7 +35,7 @@ try:
         "user": os.getenv("user"),
         "password": os.getenv("password"),
     }
-except Error as env_error:
+except Exception as env_error:  # pylint: disable=broad-exception-caught
     logger.critical("Failed to read DB params: %s", env_error)
     sys.exit()
 

@@ -413,3 +413,16 @@ async def file_download(payload: Dict[str, str] = Body(...)):
         return JSONResponse(content=response, status_code=status_code)
     except TypeError:
         return response
+
+
+@app.post("/data-api/view-file-list")
+async def view_file_list(payload: pydantic_check.ViewFileListRequest):
+    """Route function for downloading a file
+    """
+
+    response, status_code = file_transfer_instance.view_file_list(vars(payload))
+    logger.info(response)
+    try:
+        return JSONResponse(content=response, status_code=status_code)
+    except TypeError:
+        return response

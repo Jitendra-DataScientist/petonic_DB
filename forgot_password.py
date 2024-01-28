@@ -5,7 +5,6 @@
 """
 import sys
 import logging
-from psycopg2 import Error
 from db_return import db_return
 from db_no_return import db_no_return
 from utils import Utils
@@ -113,7 +112,7 @@ class ForgotPassword:
         if isinstance(data[0][0], int):
             if data[0][0] == 1:
                 reset_action = self.forgot_password_execute_query(req_body)
-                print(reset_action)
+                logger.info("reset_action: %s",reset_action)
                 if reset_action["reset"]:
                     try:
                         logger.info(             # pylint: disable=logging-too-many-args
@@ -123,7 +122,7 @@ class ForgotPassword:
                             ),
                         )
                         return ({"reset_link": True}, 201)
-                    except Error as mail_error3:
+                    except Exception as mail_error3:  # pylint: disable=broad-exception-caught
                         logger.error("Failed to send mail: %s", mail_error3)
                         return ({
                                 "reset_link": False,
@@ -148,7 +147,7 @@ class ForgotPassword:
                                 )
 
                         return ({"reset_link": True, "IT_alert": True}, 202)
-                    except Error as mail_error4:
+                    except Exception as mail_error4:  # pylint: disable=broad-exception-caught
                         logger.error("Failed to send mail: %s", mail_error4)
                         return ({
                                 "reset_link": False,
