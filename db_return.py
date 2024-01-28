@@ -36,7 +36,7 @@ try:
         "user": os.getenv("user"),
         "password": os.getenv("password"),
     }
-except Error as env_error:
+except Exception as env_error:
     logger.critical("Failed to read DB params: %s", env_error)
     sys.exit()
 
