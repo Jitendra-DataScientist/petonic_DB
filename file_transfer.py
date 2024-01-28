@@ -31,18 +31,18 @@ class FT:
         try:
             # path_key to be of form "challenge-id _ contributor-id _ solution-id _ epoch"
             current_directory = os.getcwd()
-            logger.info(f"Current Directory: {current_directory}")
+            logger.info("Current Directory: %s", current_directory)
 
             current_directory_split = current_directory.split('\\')
             if current_directory_split[-1] != 'files':
                 new_directory = current_directory + '/files'
                 if os.path.exists(new_directory):
                     os.chdir(new_directory)
-                    logger.info(f"The directory '{new_directory}' exists.")
+                    logger.info("The directory '%s' exists.", new_directory)
                 else:
                     os.mkdir(new_directory)
                     os.chdir(new_directory)
-                    logger.info(f"The directory '{new_directory}' created.")
+                    logger.info("The directory '%s' created.", new_directory)
 
                 new_directory = new_directory + '/' + path_key + '_' + str(time.time())
             else:
@@ -58,7 +58,7 @@ class FT:
 
             # Verify the change
             updated_directory = os.getcwd()
-            logger.info("Updated Working Directory:", updated_directory)
+            logger.info("Updated Working Directory: %s", updated_directory)
 
             try:
                 for file in files:
@@ -79,7 +79,7 @@ class FT:
                         f"Successfully uploaded {[file.filename for file in files]}"
                         }, 200
 
-            except Exception as file_error:
+            except Exception as file_error:  # pylint: disable=broad-exception-caught
                 new_directory = updated_directory + '/../..'
                 os.chdir(new_directory)
                 return {"upload":False,
@@ -89,10 +89,12 @@ class FT:
             exception_type, _, exception_traceback = sys.exc_info()
             filename = exception_traceback.tb_frame.f_code.co_filename
             line_number = exception_traceback.tb_lineno
-            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, upload_error)
+            logger.error("%s||||%s||||%d||||%d", exception_type,
+                         filename, line_number, upload_error)
             return {
                 "upload": False,
-                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{upload_error}",    # pylint: disable=line-too-long
+                "helpText": f"Exception: {exception_type}||||\
+                    {filename}||||{line_number}||||{upload_error}",
             }, 500
 
 
@@ -127,7 +129,8 @@ class FT:
             exception_type, _, exception_traceback = sys.exc_info()
             filename = exception_traceback.tb_frame.f_code.co_filename
             line_number = exception_traceback.tb_lineno
-            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, download_error)
+            logger.error("%s||||%s||||%d||||%d", exception_type,
+                         filename, line_number, download_error)
             return {
                 "upload": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||\
@@ -136,10 +139,14 @@ class FT:
 
 
     def get_epoch_from_folder_name(self, folder_name):
+        """function used in get_folder_contents function to extract epoch from folder names"""
         return float(folder_name.rsplit("_", 1)[-1])
 
 
     def get_folder_contents(self, directory, prefix=""):
+        """function to get the folder and then files within them,
+           in a particular path prefix inside given directory
+        """
         try:
             folder_contents = {}
             sorted_folder_contents = {}
@@ -154,21 +161,23 @@ class FT:
                     contents = os.listdir(folder_path)
                     folder_contents[folder] = contents
             if folder_contents:
-                sorted_folder_contents = {k: v for k, v in sorted(folder_contents.items(),
-                                                                  key=lambda item: self.get_epoch_from_folder_name(item[0]),
-                                                                  reverse=True)}
+                sorted_folder_contents = dict(sorted(folder_contents.items(),
+                                     key=lambda item: self.get_epoch_from_folder_name(item[0]),
+                                     reverse=True))
+
             return {"list_fetch": True,
                     "folder_structure": sorted_folder_contents}
-        except Exception as view_list_error:
-            logger.error(f"An error occurred: {str(view_list_error)}")
+        except Exception as view_list_error:  # pylint: disable=broad-exception-caught
+            logger.error("An error occurred: %s", str(view_list_error))
             return {"list_fetch": False,
                     "helpText": str(view_list_error)}
 
 
     def view_file_list(self, payload):
+        """function to trigger get_folder_contents with appropriate directory and prefix"""
         try:
             current_directory = os.getcwd()
-            logger.info(f"Current Directory: {current_directory}")
+            logger.info("Current Directory: %s", current_directory)
 
             current_directory_split = current_directory.split('\\')
             if current_directory_split[-1] != 'files':
