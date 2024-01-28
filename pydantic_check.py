@@ -316,7 +316,17 @@ class AddApproverCommentRequest(BaseModel):
     Attributes:
         approver_id (EmailStr): The approver's email address.
         challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        approver_comment (str): The corresponding comment of the approver
     """
     approver_id: EmailStr
     challenge_id: PositiveInt
     approver_comment: str
+
+
+class ViewFileListRequest(BaseModel):
+    """Pydantic model for view-file-list request payload.
+
+    Attributes:
+        path_key_prefix (str): The corresponding comment of the approver
+    """
+    path_key_prefix: str
