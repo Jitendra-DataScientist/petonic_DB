@@ -112,7 +112,6 @@ class FT:
             file_path = os.path.join(files_directory, filename)
 
             try:
-                # import os
                 if os.path.exists(files_directory):
                     if os.path.exists(file_path):   # pylint: disable=no-else-return
                         return FileResponse(file_path, filename=filename,
