@@ -2,7 +2,6 @@
     this script hosts data-api routes
     that are written using FASTAPI
 """
-import os
 import logging
 from typing import List, Dict
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Form, Body
@@ -24,41 +23,13 @@ import pydantic_check
 from admin import Admin
 
 
-current_directory = os.getcwd()
-print("Current Directory: %s", current_directory)
-
-current_directory_split = current_directory.split('\\')
-if current_directory_split[-1] != 'files':
-    try:
-        if current_directory_split[-2] == 'files':
-            log_directory = current_directory + '/../..'
-        else:
-            log_directory = current_directory
-    except IndexError:
-        log_directory = current_directory
-else:
-    log_directory = current_directory + '/..'
-
-log_directory = os.path.join(log_directory, 'logs')
-
-if not os.path.exists(log_directory):
-    os.mkdir(log_directory)
-print ("\n\n{}\n\n".format(log_directory + '/data_api.log'))
 # Configure logging
 logging.basicConfig(
-    filename=log_directory + '/data_api.log',
-    # filename='logs/data_api.log',
     level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[logging.StreamHandler()],
 )
-logging.basicConfig(
-    filename='data_api.log',
-    # filename='logs/data_api.log',
-    level=logging.DEBUG,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()],
-)
+
 # Create a logger instance
 logger = logging.getLogger(__name__)
 
