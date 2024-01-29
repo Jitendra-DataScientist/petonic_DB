@@ -1,3 +1,14 @@
+# Ignore .env files
 .env
+
+# Ignore compiled Python files
 *.pyc
+
+# Ignore Python cache directory
 __pycache__/
+
+# Ignore log files
+logs/
+
+# Ignore uploaded files
+files/
