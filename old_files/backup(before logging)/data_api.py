@@ -2,7 +2,6 @@
     this script hosts data-api routes
     that are written using FASTAPI
 """
-import os
 import logging
 from typing import List, Dict
 from fastapi import FastAPI, Request, Depends, File, UploadFile, Form, Body
@@ -24,48 +23,15 @@ import pydantic_check
 from admin import Admin
 
 
-current_directory = os.getcwd()
-print("Current Directory: %s", current_directory)
-
-current_directory_split = current_directory.split('\\')
-if current_directory_split[-1] != 'files':
-    try:
-        if current_directory_split[-2] == 'files':
-            log_directory = current_directory + '/../..'
-        else:
-            log_directory = current_directory
-    except IndexError:
-        log_directory = current_directory
-else:
-    log_directory = current_directory + '/..'
-
-log_directory = os.path.join(log_directory, 'logs')
-
-if not os.path.exists(log_directory):
-    os.mkdir(log_directory)
-
 # Configure logging
-# logging.basicConfig(
-#     filename="logs.log"
-#     level=logging.DEBUG,
-#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-#     handlers=[logging.StreamHandler()],
-# )
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+)
 
 # Create a logger instance
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Create a file handler for this script's log file
-file_handler = logging.FileHandler(os.path.join(log_directory, "data_api.log"))
-file_handler.setLevel(logging.DEBUG)  # Set the logging level for this handler
-
-# Create a formatter
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-file_handler.setFormatter(formatter)
-
-# Add the file handler to the logger
-logger.addHandler(file_handler)
 
 
 # db_main_inst = DBMain()

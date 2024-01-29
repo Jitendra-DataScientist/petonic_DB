@@ -1,9 +1,8 @@
 """
-    this code primarily contains the contributor and approver
-    json related funtions to connect python code to PostgreSQL
-    database by calling relevant pyscopg2 operation files (CRUD)
+    this code primarily contains the challenge json related
+    funtions to connect python code to PostgreSQL database
+    by calling relevant pyscopg2 operation files (CRUD)
 """
-import os
 import sys
 import json
 import logging
@@ -12,66 +11,34 @@ from db_no_return import db_no_return
 from utils import Utils
 
 
-current_directory = os.getcwd()
-print("Current Directory: %s", current_directory)
-
-current_directory_split = current_directory.split('\\')
-if current_directory_split[-1] != 'files':
-    try:
-        if current_directory_split[-2] == 'files':
-            log_directory = current_directory + '/../..'
-        else:
-            log_directory = current_directory
-    except IndexError:
-        log_directory = current_directory
-else:
-    log_directory = current_directory + '/..'
-
-log_directory = os.path.join(log_directory, 'logs')
-
-if not os.path.exists(log_directory):
-    os.mkdir(log_directory)
-
 # Configure logging
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-#     handlers=[logging.StreamHandler()],
-# )
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+)
 
 # Create a logger instance
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Create a file handler for this script's log file
-file_handler = logging.FileHandler(os.path.join(log_directory, "contributor_approver_json.log"))
-file_handler.setLevel(logging.DEBUG)  # Set the logging level for this handler
-
-# Create a formatter
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-file_handler.setFormatter(formatter)
-
-# Add the file handler to the logger
-logger.addHandler(file_handler)
 
 
 utils = Utils()
 
 
-class CAJ:
+class CJ:
     """
-       this class primarily contains the contributor and approver
-       json related funtions to connect python code to PostgreSQL
-       database by calling relevant pyscopg2 operation files (CRUD)
+       this class primarily contains the challenge json related
+       funtions to connect python code to PostgreSQL database by
+       calling relevant pyscopg2 operation files (CRUD)
     """
-    def update_json(self, req_body):
-        """function adding/updating an entry in the contributor_approver table"""
+    def update_challenge_json(self, req_body):
+        """function adding/updating an entry in the challenge_json_data table"""
         try:
             # Queries Formation
             query = [
-                        "INSERT INTO contributor_approver (challenge_id, contributor_approver_json)\
+                        "INSERT INTO challenge_json_data (challenge_id, challenge_json)\
                         VALUES (%s, %s)\
-                        ON CONFLICT (challenge_id) DO UPDATE SET contributor_approver_json = %s;",
+                        ON CONFLICT (challenge_id) DO UPDATE SET challenge_json = %s;",
                 ]
             query_data = [
                             (
@@ -111,10 +78,10 @@ class CAJ:
             }, 500
 
 
-    def fetch_json(self, req_body):
-        """function for fetchting an entry from the contributor_approver table"""
+    def fetch_challenge_json(self, req_body):
+        """function for fetchting an entry from the challenge_json_data table"""
         try:
-            query = "select * from contributor_approver where challenge_id=%s;"
+            query = "select * from challenge_json_data where challenge_id=%s;"
             query_data = (req_body["challenge_id"],)
 
             try:
@@ -122,7 +89,7 @@ class CAJ:
 
                 try:
                     return {"fetch": True,
-                            "json_data": res[0][2]}, 200
+                            "json_data": res[0][0]}, 200
                 except IndexError:
                     return {"fetch": False,
                             "json_data": {},
