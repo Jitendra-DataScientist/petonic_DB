@@ -8,48 +8,15 @@ import logging
 from fastapi.responses import FileResponse
 from utils import Utils
 
-
-current_dir = os.getcwd()
-print("Current Directory: %s", current_dir)
-
-current_dir_split = current_dir.split('\\')
-if current_dir_split[-1] != 'files':
-    try:
-        if current_dir_split[-2] == 'files':
-            log_dir = current_dir + '/../..'
-        else:
-            log_dir = current_dir
-    except IndexError:
-        log_dir = current_dir
-else:
-    log_dir = current_dir + '/..'
-
-log_dir = os.path.join(log_dir, 'logs')
-
-if not os.path.exists(log_dir):
-    os.mkdir(log_dir)
-
 # Configure logging
-# logging.basicConfig(
-#     level=logging.DEBUG,
-#     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-#     handlers=[logging.StreamHandler()],
-# )
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
+)
 
 # Create a logger instance
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-# Create a file handler for this script's log file
-file_handler = logging.FileHandler(os.path.join(log_dir, "file_transfer.log"))
-file_handler.setLevel(logging.DEBUG)  # Set the logging level for this handler
-
-# Create a formatter
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-file_handler.setFormatter(formatter)
-
-# Add the file handler to the logger
-logger.addHandler(file_handler)
 
 
 utils = Utils()
