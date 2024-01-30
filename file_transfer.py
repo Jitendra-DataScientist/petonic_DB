@@ -9,25 +9,12 @@ from fastapi.responses import FileResponse
 from utils import Utils
 
 
-current_dir = os.getcwd()
-print("Current Directory: %s", current_dir)
+# Determine the directory for logs
+log_directory = os.path.join(os.getcwd(), 'logs')
 
-current_dir_split = current_dir.split('\\')
-if current_dir_split[-1] != 'files':
-    try:
-        if current_dir_split[-2] == 'files':
-            log_dir = current_dir + '/../..'
-        else:
-            log_dir = current_dir
-    except IndexError:
-        log_dir = current_dir
-else:
-    log_dir = current_dir + '/..'
-
-log_dir = os.path.join(log_dir, 'logs')
-
-if not os.path.exists(log_dir):
-    os.mkdir(log_dir)
+# Create the logs directory if it doesn't exist
+if not os.path.exists(log_directory):
+    os.mkdir(log_directory)
 
 # Configure logging
 # logging.basicConfig(
@@ -41,7 +28,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # Create a file handler for this script's log file
-file_handler = logging.FileHandler(os.path.join(log_dir, "file_transfer.log"))
+file_handler = logging.FileHandler(os.path.join(log_directory, "file_transfer.log"))
 file_handler.setLevel(logging.DEBUG)  # Set the logging level for this handler
 
 # Create a formatter
