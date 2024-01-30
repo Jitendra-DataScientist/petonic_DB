@@ -70,16 +70,17 @@ class CAG:
            table.
         """
         try:
-            # check if contributor_id exists
-            query = "select count(*) from user_signup\
-                    where email = %s and role = 'contributor';"
-            query_data = (req_body["contributor_id"],)
+            if req_body["contributor_id"] != "ai_solution@petonic.in":
+                # check if contributor_id exists
+                query = "select count(*) from user_signup\
+                        where email = %s and role = 'contributor';"
+                query_data = (req_body["contributor_id"],)
 
-            contributor_id_count = db_return(query, query_data)
+                contributor_id_count = db_return(query, query_data)
 
-            if contributor_id_count[0][0] == 0:
-                return {"update": False,
-                        "helpText": "Invalid contributor_id"}, 400
+                if contributor_id_count[0][0] == 0:
+                    return {"update": False,
+                            "helpText": "Invalid contributor_id"}, 400
 
             # check if challenge_id exists
             query = "select count(*) from contributor_approver where challenge_id=%s;"
