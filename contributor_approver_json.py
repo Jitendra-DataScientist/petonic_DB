@@ -149,21 +149,51 @@ class CAJ:
             }, 500
 
 
-    def contributor_solution_upload(self, req_body):
+    def contributor_solution_upload(self, req_body):    # pylint: disable=too-many-locals
+        """add a contributor solution json to contributor_approver
+           table for a specific challenge_id
+        """
         try:
+
             # Retrieving request data
             challenge_id = req_body["challenge_id"]
             contributor_id = req_body["contributor_id"]
             solution_json = req_body["solution_json"]
 
+            # check if challenge_id exists
+            query = "select count(*) from contributor_approver\
+                    where challenge_id = %s;"
+            query_data = (challenge_id,)
+
+            challenge_id_count = db_return(query, query_data)
+
+            if challenge_id_count[0][0] == 0:
+                return {"update": False,
+                        "helpText": "challenge_id not present in \
+                            contributor_approver table"}, 400
+
+            # check if contributor_id exists
+            query = "select count(*) from contributor_approver\
+                    where challenge_id = %s and %s = ANY(contributor_id);;"
+            query_data = (challenge_id, contributor_id,)
+
+            contributor_id_count = db_return(query, query_data)
+
+            if contributor_id_count[0][0] == 0:
+                return {"update": False,
+                        "helpText": "contributor_id not present for corresponding \
+                            challenge in contributor_approver table"}, 400
+
             # Fetch existing JSON data
-            select_query = "SELECT contributor_approver_json FROM contributor_approver WHERE challenge_id = %s FOR UPDATE;"
+            select_query = "SELECT contributor_approver_json FROM \
+                            contributor_approver WHERE challenge_id = %s FOR UPDATE;"
             existing_json = db_return(select_query, (challenge_id,))
 
             if not existing_json or not existing_json[0] or not existing_json[0][0]:
                 # If no existing JSON data found, create a new JSON object
                 new_json = json.dumps({contributor_id: [solution_json]})
-                update_query = "UPDATE contributor_approver SET contributor_approver_json = %s WHERE challenge_id = %s;"
+                update_query = "UPDATE contributor_approver SET \
+                                contributor_approver_json = %s WHERE challenge_id = %s;"
                 result = db_no_return([update_query], [(new_json, challenge_id)])
             else:
                 # Otherwise, update the existing JSON object
@@ -173,7 +203,8 @@ class CAJ:
                 else:
                     existing_json_dict[contributor_id].append(solution_json)
                 updated_json = json.dumps(existing_json_dict)
-                update_query = "UPDATE contributor_approver SET contributor_approver_json = %s WHERE challenge_id = %s;"
+                update_query = "UPDATE contributor_approver SET \
+                                contributor_approver_json = %s WHERE challenge_id = %s;"
                 result = db_no_return([update_query], [(updated_json, challenge_id)])
 
             return ({"update": True}, 201) if result == "success" else ({"update": False}, 500)
