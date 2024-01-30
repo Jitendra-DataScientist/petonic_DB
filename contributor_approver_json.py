@@ -147,3 +147,43 @@ class CAJ:
                 "fetch": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
+
+
+    def contributor_solution_upload(self, req_body):
+        try:
+            # Retrieving request data
+            challenge_id = req_body["challenge_id"]
+            contributor_id = req_body["contributor_id"]
+            solution_json = req_body["solution_json"]
+
+            # Fetch existing JSON data
+            select_query = "SELECT contributor_approver_json FROM contributor_approver WHERE challenge_id = %s FOR UPDATE;"
+            existing_json = db_return(select_query, (challenge_id,))
+
+            if not existing_json or not existing_json[0] or not existing_json[0][0]:
+                # If no existing JSON data found, create a new JSON object
+                new_json = json.dumps({contributor_id: [solution_json]})
+                update_query = "UPDATE contributor_approver SET contributor_approver_json = %s WHERE challenge_id = %s;"
+                result = db_no_return([update_query], [(new_json, challenge_id)])
+            else:
+                # Otherwise, update the existing JSON object
+                existing_json_dict = existing_json[0][0]
+                if contributor_id not in existing_json_dict:
+                    existing_json_dict[contributor_id] = [solution_json]
+                else:
+                    existing_json_dict[contributor_id].append(solution_json)
+                updated_json = json.dumps(existing_json_dict)
+                update_query = "UPDATE contributor_approver SET contributor_approver_json = %s WHERE challenge_id = %s;"
+                result = db_no_return([update_query], [(updated_json, challenge_id)])
+
+            return ({"update": True}, 201) if result == "success" else ({"update": False}, 500)
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "update": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
