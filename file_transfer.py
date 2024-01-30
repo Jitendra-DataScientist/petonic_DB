@@ -59,64 +59,44 @@ class FT:
     """
        this class has funtions primarily related to file transfers
     """
-    def file_upload(self, path_key, files):  # pylint: disable=too-many-locals
+
+    def file_upload(self, path_key, files):
         """function for uploading file(s)"""
         try:
             # path_key to be of form "challenge-id _ contributor-id _ solution-id _ epoch"
             current_directory = os.getcwd()
             logger.info("Current Directory: %s", current_directory)
 
-            current_directory_split = current_directory.split('\\')
-            if current_directory_split[-1] != 'files':
-                new_directory = current_directory + '/files'
-                if os.path.exists(new_directory):
-                    os.chdir(new_directory)
-                    logger.info("The directory '%s' exists.", new_directory)
-                else:
-                    os.mkdir(new_directory)
-                    os.chdir(new_directory)
-                    logger.info("The directory '%s' created.", new_directory)
+            new_directory = os.path.join(current_directory, 'files')
 
-                new_directory = new_directory + '/' + path_key + '_' + str(time.time())
-            else:
-                new_directory = current_directory + '/' + path_key + '_' + str(time.time())
+            if not os.path.exists(new_directory):
+                os.mkdir(new_directory)
+                logger.info("The directory '%s' created.", new_directory)
+
+            new_directory = os.path.join(new_directory, f'{path_key}_{time.time()}')
 
             try:
                 os.mkdir(new_directory)
             except FileExistsError:
-                return {"upload":False,
-                        "message": "path_key already exists"}, 400
-
-            os.chdir(new_directory)
-
-            # Verify the change
-            updated_directory = os.getcwd()
-            logger.info("Updated Working Directory: %s", updated_directory)
+                return {"upload": False, "message": "path_key already exists"}, 400
 
             try:
                 for file in files:
                     try:
-                        contents = file.file.read()
-                        with open(file.filename, 'wb') as file_obj:
-                            file_obj.write(contents)
+                        file_path = os.path.join(new_directory, file.filename)
+                        with open(file_path, 'wb') as file_obj:
+                            file_obj.write(file.file.read())
                     except Exception:  # pylint: disable=broad-exception-caught
                         return {"message": "There was an error uploading the file(s)"}, 500
                     finally:
                         file.file.close()
 
-                new_directory = updated_directory + '/../..'
-                os.chdir(new_directory)
-
                 return {"upload": True,
-                        "message":
-                        f"Successfully uploaded {[file.filename for file in files]}"
+                        "message": f"Successfully uploaded {[file.filename for file in files]}"
                         }, 200
 
             except Exception as file_error:  # pylint: disable=broad-exception-caught
-                new_directory = updated_directory + '/../..'
-                os.chdir(new_directory)
-                return {"upload":False,
-                        "error": file_error}, 500
+                return {"upload": False, "helpText": file_error}, 500
 
         except Exception as upload_error:  # pylint: disable=broad-exception-caught
             exception_type, _, exception_traceback = sys.exc_info()
@@ -126,8 +106,8 @@ class FT:
                          filename, line_number, upload_error)
             return {
                 "upload": False,
-                "helpText": f"Exception: {exception_type}||||\
-                    {filename}||||{line_number}||||{upload_error}",
+                "helpText": f"Exception: {exception_type}||||{filename}\
+                    ||||{line_number}||||{upload_error}",
             }, 500
 
 
@@ -212,19 +192,8 @@ class FT:
             current_directory = os.getcwd()
             logger.info("Current Directory: %s", current_directory)
 
-            current_directory_split = current_directory.split('\\')
-            if current_directory_split[-1] != 'files':
-                try:
-                    if current_directory_split[-2] == 'files':
-                        files_directory = current_directory + '/..'
-                    else:
-                        files_directory = current_directory + '/files'
-                except IndexError:
-                    files_directory = current_directory + '/files'
-            else:
-                files_directory = current_directory
-
-            return (self.get_folder_contents(files_directory, payload['path_key_prefix'])), 200
+            files_directory = os.path.join(current_directory, 'files')
+            return self.get_folder_contents(files_directory, payload['path_key_prefix']), 200
 
         except Exception as fetch_error:  # pylint: disable=broad-exception-caught
             exception_type, _, exception_traceback = sys.exc_info()
@@ -233,6 +202,6 @@ class FT:
             logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, fetch_error)
             return {
                 "list_fetch": False,
-                "helpText": f"Exception: {exception_type}||||{filename}||||\
-                    {line_number}||||{fetch_error}",
+                "helpText": f"Exception: {exception_type}||||\
+                {filename}||||{line_number}||||{fetch_error}",
             }, 500
