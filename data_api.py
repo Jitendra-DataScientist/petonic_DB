@@ -466,8 +466,8 @@ async def view_file_list(payload: pydantic_check.ViewFileListRequest):
 async def contributor_solution_upload_api(payload: pydantic_check.ContributorSolutionUploadRequest):
     """Route function for downloading a file
     """
-    res = contributor_approver_json_inst.contributor_solution_upload(vars(payload))
-    print ("\n\n{}\n\n".format(res))
-    response, status_code = res
+
+    response, status_code = contributor_approver_json_inst.contributor_solution_upload(
+                                                                         vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
