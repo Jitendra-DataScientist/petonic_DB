@@ -9,26 +9,12 @@ from db_return import db_return
 from utils import Utils
 
 
-current_directory = os.getcwd()
-print("Current Directory: %s", current_directory)
+# Determine the directory for logs
+log_directory = os.path.join(os.getcwd(), 'logs')
 
-current_directory_split = current_directory.split('\\')
-if current_directory_split[-1] != 'files':
-    try:
-        if current_directory_split[-2] == 'files':
-            log_directory = current_directory + '/../..'
-        else:
-            log_directory = current_directory
-    except IndexError:
-        log_directory = current_directory
-else:
-    log_directory = current_directory + '/..'
-
-log_directory = os.path.join(log_directory, 'logs')
-
+# Create the logs directory if it doesn't exist
 if not os.path.exists(log_directory):
     os.mkdir(log_directory)
-
 
 # Configure logging
 # logging.basicConfig(
