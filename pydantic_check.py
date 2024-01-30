@@ -330,3 +330,16 @@ class ViewFileListRequest(BaseModel):
         path_key_prefix (str): The corresponding comment of the approver
     """
     path_key_prefix: str
+
+
+class ContributorSolutionUploadRequest(BaseModel):
+    """Pydantic model for contributor-solution request payload.
+
+    Attributes:
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        contributor_id (EmailStr): The contributor's email address.
+        solution_json (Dict): The contributor's solution.
+    """
+    challenge_id: PositiveInt
+    contributor_id: EmailStr
+    solution_json: Dict[Union[str, int], Any]
