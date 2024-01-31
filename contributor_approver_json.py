@@ -148,28 +148,54 @@ class CAJ:
             solution_json = req_body["solution_json"]
 
             # check if challenge_id exists
-            query = "select count(*) from contributor_approver\
-                    where challenge_id = %s;"
-            query_data = (challenge_id,)
+            # query = "select count(*) from contributor_approver\
+            #         where challenge_id = %s;"
+            # query_data = (challenge_id,)
 
-            challenge_id_count = db_return(query, query_data)
+            # challenge_id_count = db_return(query, query_data)
 
-            if challenge_id_count[0][0] == 0:
-                return {"update": False,
-                        "helpText": "challenge_id not present in \
-                            contributor_approver table"}, 400
+            # if challenge_id_count[0][0] == 0:
+            #     return {"update": False,
+            #             "helpText": "challenge_id not present in \
+            #                 contributor_approver table"}, 400
 
             # check if contributor_id exists
-            query = "select count(*) from contributor_approver\
-                    where challenge_id = %s and %s = ANY(contributor_id);;"
-            query_data = (challenge_id, contributor_id,)
+            # query = "select count(*) from contributor_approver\
+            #         where challenge_id = %s and %s = ANY(contributor_id);;"
+            # query_data = (challenge_id, contributor_id,)
 
-            contributor_id_count = db_return(query, query_data)
+            # contributor_id_count = db_return(query, query_data)
 
-            if contributor_id_count[0][0] == 0:
-                return {"update": False,
-                        "helpText": "contributor_id not present for corresponding \
-                            challenge in contributor_approver table"}, 400
+            # if contributor_id_count[0][0] == 0:
+            #     return {"update": False,
+            #             "helpText": "contributor_id not present for corresponding \
+            #                 challenge in contributor_approver table"}, 400
+
+
+            if req_body["contributor_id"] != "ai_solution@petonic.in":
+                # check if contributor_id exists
+                query = "select count(*) from user_signup\
+                        where email = %s and role = 'contributor';"
+                query_data = (req_body["contributor_id"],)
+
+                contributor_id_count = db_return(query, query_data)
+
+                if contributor_id_count[0][0] == 0:
+                    return {"update": False,
+                            "helpText": "Invalid contributor_id"}, 400
+
+            # Check if the challenge_id exists in the contributor_approver table
+            select_query = "SELECT challenge_id FROM contributor_approver WHERE challenge_id = %s;"
+            challenge_exists = db_return(select_query, (challenge_id,))
+
+            # If challenge_id doesn't exist, insert a new entry
+            if not challenge_exists:
+                insert_query = "INSERT INTO contributor_approver \
+                                (challenge_id, contributor_approver_json) VALUES (%s, %s);"
+                insert_data = (challenge_id, json.dumps({contributor_id: [solution_json]}))
+                result = db_no_return([insert_query], [insert_data])
+                return ({"update": True}, 201) if result == "success" else ({"update": False}, 500)
+
 
             # Fetch existing JSON data
             select_query = "SELECT contributor_approver_json FROM \

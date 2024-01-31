@@ -51,103 +51,103 @@ class CAG:
        generic funtions to connect python code to PostgreSQL
        database by calling relevant pyscopg2 operation files (CRUD)
     """
-    def add_contributor(self, req_body):       # pylint: disable=too-many-branches,too-many-return-statements
-        """function for adding/updating a contributor_id to
-           contributor_id column in the contributor_approver
-           table.
-        """
-        try:
-            if req_body["contributor_id"] != "ai_solution@petonic.in":
-                # check if contributor_id exists
-                query = "select count(*) from user_signup\
-                        where email = %s and role = 'contributor';"
-                query_data = (req_body["contributor_id"],)
+    # def add_contributor(self, req_body):       # pylint: disable=too-many-branches,too-many-return-statements
+    #     """function for adding/updating a contributor_id to
+    #        contributor_id column in the contributor_approver
+    #        table.
+    #     """
+    #     try:
+    #         if req_body["contributor_id"] != "ai_solution@petonic.in":
+    #             # check if contributor_id exists
+    #             query = "select count(*) from user_signup\
+    #                     where email = %s and role = 'contributor';"
+    #             query_data = (req_body["contributor_id"],)
 
-                contributor_id_count = db_return(query, query_data)
+    #             contributor_id_count = db_return(query, query_data)
 
-                if contributor_id_count[0][0] == 0:
-                    return {"update": False,
-                            "helpText": "Invalid contributor_id"}, 400
+    #             if contributor_id_count[0][0] == 0:
+    #                 return {"update": False,
+    #                         "helpText": "Invalid contributor_id"}, 400
 
-            # check if challenge_id exists
-            query = "select count(*) from contributor_approver where challenge_id=%s;"
-            query_data = (req_body["challenge_id"],)
+    #         # check if challenge_id exists
+    #         query = "select count(*) from contributor_approver where challenge_id=%s;"
+    #         query_data = (req_body["challenge_id"],)
 
-            challenge_count = db_return(query, query_data)
+    #         challenge_count = db_return(query, query_data)
 
-            if challenge_count[0][0] == 0:
-                query = ["INSERT INTO contributor_approver (challenge_id, contributor_id)\
-                         VALUES (%s, ARRAY[%s]);",
-                         ]
-                query_data = [ (
-                                req_body["challenge_id"],
-                                req_body["contributor_id"],
-                            ),]
+    #         if challenge_count[0][0] == 0:
+    #             query = ["INSERT INTO contributor_approver (challenge_id, contributor_id)\
+    #                      VALUES (%s, ARRAY[%s]);",
+    #                      ]
+    #             query_data = [ (
+    #                             req_body["challenge_id"],
+    #                             req_body["contributor_id"],
+    #                         ),]
 
-                res = db_no_return(query, query_data)
+    #             res = db_no_return(query, query_data)
 
-                if res == "success":   # pylint: disable=no-else-return
-                    return {"update": True}, 201
-                else:
-                    res.update({"update": False})
-                    return res, 500
+    #             if res == "success":   # pylint: disable=no-else-return
+    #                 return {"update": True}, 201
+    #             else:
+    #                 res.update({"update": False})
+    #                 return res, 500
 
-            else:
-                # check if contributor already added for the same challenge
-                query = "select contributor_id from contributor_approver\
-                        where challenge_id = %s;"
-                query_data = (req_body["challenge_id"],)
+    #         else:
+    #             # check if contributor already added for the same challenge
+    #             query = "select contributor_id from contributor_approver\
+    #                     where challenge_id = %s;"
+    #             query_data = (req_body["challenge_id"],)
 
-                contributors = db_return(query, query_data)
+    #             contributors = db_return(query, query_data)
 
-                if contributors[0][0]:
-                    if req_body["contributor_id"] in contributors[0][0]:       # pylint: disable=no-else-return
-                        return {"update": False,
-                                "helpText": "contributor_id already present\
-                                            for this challenge"}, 400
-                    else:
-                        query = ["UPDATE contributor_approver\
-                                SET contributor_id = ARRAY_APPEND(contributor_id, %s)\
-                                WHERE challenge_id = %s AND contributor_id IS NOT NULL;",]
-                        query_data = [ (
-                                        req_body["contributor_id"],
-                                        req_body["challenge_id"],
-                                    ),]
+    #             if contributors[0][0]:
+    #                 if req_body["contributor_id"] in contributors[0][0]:       # pylint: disable=no-else-return
+    #                     return {"update": False,
+    #                             "helpText": "contributor_id already present\
+    #                                         for this challenge"}, 400
+    #                 else:
+    #                     query = ["UPDATE contributor_approver\
+    #                             SET contributor_id = ARRAY_APPEND(contributor_id, %s)\
+    #                             WHERE challenge_id = %s AND contributor_id IS NOT NULL;",]
+    #                     query_data = [ (
+    #                                     req_body["contributor_id"],
+    #                                     req_body["challenge_id"],
+    #                                 ),]
 
-                        res = db_no_return(query, query_data)
+    #                     res = db_no_return(query, query_data)
 
-                        if res == "success":   # pylint: disable=no-else-return
-                            return {"update": True}, 201
-                        else:
-                            res.update({"update": False})
-                            return res, 500
-                else:
+    #                     if res == "success":   # pylint: disable=no-else-return
+    #                         return {"update": True}, 201
+    #                     else:
+    #                         res.update({"update": False})
+    #                         return res, 500
+    #             else:
 
-                    query = ["UPDATE contributor_approver\
-                            SET contributor_id = ARRAY_APPEND(contributor_id, %s)\
-                            WHERE challenge_id = %s;",]
-                    query_data = [ (
-                                    req_body["contributor_id"],
-                                    req_body["challenge_id"],
-                                ),]
+    #                 query = ["UPDATE contributor_approver\
+    #                         SET contributor_id = ARRAY_APPEND(contributor_id, %s)\
+    #                         WHERE challenge_id = %s;",]
+    #                 query_data = [ (
+    #                                 req_body["contributor_id"],
+    #                                 req_body["challenge_id"],
+    #                             ),]
 
-                    res = db_no_return(query, query_data)
+    #                 res = db_no_return(query, query_data)
 
-                    if res == "success":   # pylint: disable=no-else-return
-                        return {"update": True}, 201
-                    else:
-                        res.update({"update": False})
-                        return res, 500
+    #                 if res == "success":   # pylint: disable=no-else-return
+    #                     return {"update": True}, 201
+    #                 else:
+    #                     res.update({"update": False})
+    #                     return res, 500
 
-        except Exception as db_error:  # pylint: disable=broad-exception-caught
-            exception_type, _, exception_traceback = sys.exc_info()
-            filename = exception_traceback.tb_frame.f_code.co_filename
-            line_number = exception_traceback.tb_lineno
-            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
-            return {
-                "update": False,
-                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
-            }, 500
+    #     except Exception as db_error:  # pylint: disable=broad-exception-caught
+    #         exception_type, _, exception_traceback = sys.exc_info()
+    #         filename = exception_traceback.tb_frame.f_code.co_filename
+    #         line_number = exception_traceback.tb_lineno
+    #         logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+    #         return {
+    #             "update": False,
+    #             "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+    #         }, 500
 
 
     def add_approver(self, req_body):
