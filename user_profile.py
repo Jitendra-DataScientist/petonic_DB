@@ -6,6 +6,8 @@
 import os
 import sys
 import logging
+import json
+import time
 from db_return import db_return
 from db_no_return import db_no_return
 from utils import Utils
@@ -50,6 +52,15 @@ class UserProfile:
        to connect python code to PostgreSQL database by
        calling relevant pyscopg2 operation files (CRUD)
     """
+
+    def __init__(self):
+        self.user_profile_file = "logs/user_profile.json"
+        # Check if user_profile.json exists, if not, create it
+        if not os.path.exists(self.user_profile_file):
+            with open(self.user_profile_file, "w", encoding="utf-8") as file_handle:
+                file_handle.write("{}")  # Write empty JSON object
+
+
     def login(self, req_body):
         """Function for the login functionality.
            Check the count of rows after join.
@@ -177,8 +188,20 @@ class UserProfile:
             try:
                 res = db_no_return(queries_list, query_data)
 
-                if  res == "success":
-                    if utils.send_mail_trigger_signup(req_body["email"], first_password):   # pylint: disable=no-else-return
+                if res == "success":
+                    # Read existing user profile data
+                    with open(self.user_profile_file, "r", encoding="utf-8") as file_handle:
+                        user_profile_data = json.load(file_handle)
+
+                    # Update user profile data with new user information
+                    user_profile_data[req_body["email"]] = {req_body["role"]: [time.time()]}
+
+
+                    # Write updated user profile data back to the file
+                    with open(self.user_profile_file, "w", encoding="utf-8") as file_handle:
+                        json.dump(user_profile_data, file_handle)
+
+                    if utils.send_mail_trigger_signup(req_body["email"], first_password):      # pylint: disable=no-else-return
                         return {"user_creation": True}, 201
                     else:
                         return {"user_creation": False,
