@@ -113,7 +113,7 @@ class Utils:
             server.sendmail(sender_email, to_email, msg.as_string())
 
 
-    def send_mail_trigger_signup(self, to_email, first_password):
+    def send_mail_trigger_signup(self, to_email, first_password, role):
         """mail sender trigger function"""
 
         subject = "Innovation.ai SignUp"
@@ -121,9 +121,9 @@ class Utils:
             logo_url = os.getenv("logo_url")
             body = (
                     f"""<p>Hello,<br>
-                    An account has been created on Innovation.ai, the password for which
-                    is <strong>{first_password}</strong>.<br>
-                    Please log in using this password to set a new password.</p>
+                    An account with <strong>{role}</strong> role has been created on Innovation.ai,
+                    the user ID for which is your mail ID and password for which is <strong>
+                    {first_password}</strong>.<br> Please log in using these credentials.</p>
                     <p>If you do not recognise this activity, please ignore this email.</p>
                     <p>Best regards,<br>
                     Petonic Team</p>
@@ -134,9 +134,9 @@ class Utils:
             logger.critical("Failed to load logo_url from .env: %s", mail_error)
             body = (
                     f"""<p>Hello,<br>
-                    An account has been created on Innovation.ai, the password for which
-                    is <strong>{first_password}</strong>.<br>
-                    Please log in using this password to set a new password.</p>
+                    An account with <strong>{role}</strong> role has been created on Innovation.ai,
+                    the user ID for which is your mail ID and password for which is <strong>
+                    {first_password}</strong>.<br> Please log in using these credentials.</p>
                     <p>If you do not recognise this activity, please ignore this email.</p>
                     <p>Best regards,<br>
                     Petonic Team</p>"""
