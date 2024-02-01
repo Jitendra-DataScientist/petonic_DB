@@ -201,7 +201,8 @@ class UserProfile:
                     with open(self.user_profile_file, "w", encoding="utf-8") as file_handle:
                         json.dump(user_profile_data, file_handle)
 
-                    if utils.send_mail_trigger_signup(req_body["email"], first_password):      # pylint: disable=no-else-return
+                    if utils.send_mail_trigger_signup(req_body["email"],                  # pylint: disable=no-else-return
+                                                      first_password, req_body["role"]):
                         return {"user_creation": True}, 201
                     else:
                         return {"user_creation": False,
@@ -248,7 +249,8 @@ class UserProfile:
                 res = db_no_return(queries_list, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
-                    if utils.send_mail_trigger_signup(req_body["email"], new_password):      # pylint: disable=no-else-return
+                    if utils.send_mail_trigger_signup(req_body["email"],                  # pylint: disable=no-else-return
+                                                      new_password, req_body["role"]):
                         return {"resend": True}, 201
                     else:
                         return {"resend": False,
