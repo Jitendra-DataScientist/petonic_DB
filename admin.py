@@ -6,6 +6,7 @@ import os
 import sys
 import logging
 import json
+import time
 from db_return import db_return
 from db_no_return import db_no_return
 from utils import Utils
@@ -48,6 +49,14 @@ class Admin:
     This code contains the functions related to admin
     like functions to edit user details, view-list etc.
     """
+
+    def __init__(self):
+        self.user_profile_file = "logs/user_profile.json"
+        if not os.path.exists(self.user_profile_file):
+            with open(self.user_profile_file, "w", encoding="utf-8") as file_handle:
+                file_handle.write("{}")
+
+
     def flip_user_status(self, req_body):
         """
             function to deactivate or reactivate
@@ -121,7 +130,7 @@ class Admin:
                     "helpText": "at least one of f_name, l_name,\
                         role or employee_id must be passed in payload"}, 400
 
-        try:
+        try:   # pylint: disable=too-many-nested-blocks
             ## first check if mail-id present in DB
             query = "select count(*) \
                     from user_signup\
@@ -155,7 +164,30 @@ class Admin:
                     try:
                         res = db_no_return(queries_list, query_data)
 
-                        if  res == "success":   # pylint: disable=no-else-return
+                        if res == "success":   # pylint: disable=no-else-return
+                            # Update user profile JSON data if role has changed
+                            if "role" in update_fields:
+                                # Read existing user profile data
+                                with open(self.user_profile_file, "r",
+                                          encoding="utf-8") as file_handle:
+                                    user_profile_data = json.load(file_handle)
+
+                                # Check if the role already exists for this email
+                                if req_body["role"] in user_profile_data.get(req_body["email"], {}):
+                                    # Role already exists, append the epoch to the existing list
+                                    user_profile_data[req_body["email"]][req_body["role"]].append(
+                                        time.time()
+                                        )
+                                else:
+                                    # Role does not exist, create a new list with the current epoch
+                                    user_profile_data.setdefault(req_body["email"], {})[
+                                        req_body["role"]
+                                        ] = [time.time()]
+
+                                # Write updated user profile data back to the file
+                                with open(self.user_profile_file, "w",
+                                          encoding="utf-8") as file_handle:
+                                    json.dump(user_profile_data, file_handle)
                             return {"update": True}, 200
                         else:
                             res.update({"update": False})
