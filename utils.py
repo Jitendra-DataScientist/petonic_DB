@@ -130,8 +130,8 @@ class Utils:
                     <img src={logo_url} alt="Petonic Company Logo">"""
                 )
 
-        except Exception as mail_error:             # pylint: disable=broad-exception-caught
-            logger.critical("Failed to load logo_url from .env: %s", mail_error)
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
             body = (
                     f"""<p>Hello,<br>
                     An account with <strong>{role}</strong> role has been created on Innovation.ai,
@@ -147,10 +147,9 @@ class Utils:
         try:
             sender_email = os.getenv("sender_email")
             sender_password = os.getenv("sender_password")
-        except Exception as mail_error1:             # pylint: disable=broad-exception-caught
-            logger.critical("Failed to fetch auto-mail creds from env: %s", mail_error1)
-            sender_email = "automail.petonic@gmail.com"
-            sender_password = "efvumbcfgryjachh"
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
 
         try:
             self.send_email(subject, body, to_email, sender_email,
@@ -177,8 +176,8 @@ class Utils:
                     <img src={logo_url} alt="Petonic Company Logo">"""
                 )
 
-        except Exception as mail_error:             # pylint: disable=broad-exception-caught
-            logger.critical("Failed to load logo_url from .env: %s", mail_error)
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
             body = (
                     f"""<p>Hello,<br>
                     Your password has been reset to <strong>{new_password}</strong>.<br>
@@ -192,8 +191,8 @@ class Utils:
         try:
             sender_email = os.getenv("sender_email")
             sender_password = os.getenv("sender_password")
-        except Exception as mail_error1:             # pylint: disable=broad-exception-caught
-            logger.critical("Failed to fetch auto-mail creds from env: %s", mail_error1)
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
             sys.exit()
 
         try:
@@ -201,6 +200,110 @@ class Utils:
                             sender_password, smtp_server)
             logger.info("mail sent !!")
             return "mail sent !!"
-        except Exception as mail_error2:             # pylint: disable=broad-exception-caught
-            logger.critical("Mail sending error: %s", mail_error2)
-            return "Mail sending error: ", mail_error2
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
+            return "Mail sending error: ", mail_error
+
+
+    def send_mail_trigger_role_change(self, to_email, role):
+        """mail sender trigger function"""
+
+        subject = "Change of Role"
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    Your role for Innovation.ai has now been set to <strong>{role}</strong>.<br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    Your role for Innovation.ai has now been set to <strong>{role}</strong>.<br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
+
+        # SMTP server details
+        smtp_server = "smtp.gmail.com"
+        try:
+            sender_email = os.getenv("sender_email")
+            sender_password = os.getenv("sender_password")
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
+
+        try:
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
+            logger.info("mail sent !!")
+            return "mail sent !!"
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
+            return "Mail sending error: ", mail_error
+
+
+    def send_mail_trigger_status_change(self, to_email, status):
+        """mail sender trigger function"""
+
+        if status:
+            subject = "Account Activated"
+            try:
+                logo_url = os.getenv("logo_url")
+                body = (
+                        f"""<p>Hello,<br>
+                        Your account for Innovation.ai has now been activated.<br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>
+                        <img src={logo_url} alt="Petonic Company Logo">"""
+                    )
+
+            except FileNotFoundError as file_error:
+                logger.critical("Failed to load logo_url from .env: %s", file_error)
+                body = (
+                        """<p>Hello,<br>
+                        Your account for Innovation.ai has now been activated.<br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>"""
+                    )
+        else:
+            subject = "Account Deactivated"
+            try:
+                logo_url = os.getenv("logo_url")
+                body = (
+                        f"""<p>Hello,<br>
+                        Your account for Innovation.ai has now been deactivated.<br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>
+                        <img src={logo_url} alt="Petonic Company Logo">"""
+                    )
+
+            except FileNotFoundError as file_error:
+                logger.critical("Failed to load logo_url from .env: %s", file_error)
+                body = (
+                        """<p>Hello,<br>
+                        Your account for Innovation.ai has now been deactivated.<br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>"""
+                    )
+        # SMTP server details
+        smtp_server = "smtp.gmail.com"
+        try:
+            sender_email = os.getenv("sender_email")
+            sender_password = os.getenv("sender_password")
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
+
+        try:
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
+            logger.info("mail sent !!")
+            return "mail sent !!"
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
+            return "Mail sending error: ", mail_error

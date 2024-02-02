@@ -57,18 +57,21 @@ class Admin:
                 file_handle.write("{}")
 
 
-    def flip_user_status(self, req_body):
+    def flip_user_status(self, req_body):  # pylint: disable=too-many-return-statements)
         """
             function to deactivate or reactivate
             a particular user profile on User
             Management Page (to be done by
             admin).
         """
-        try:
+        try:  # pylint: disable=too-many-nested-blocks
             ## first check if mail-id present in DB
-            query = "select count(*) \
-                    from user_login\
-                    where user_login.email = %s"
+            query = "SELECT count(ul.email), v.active\
+                    FROM user_login ul\
+                    LEFT JOIN validation v\
+                    ON (ul.email = v.email)\
+                    WHERE ul.email = %s\
+                    GROUP BY v.active"
             query_data = (
                 req_body["email"],
             )
@@ -86,6 +89,20 @@ class Admin:
                         res = db_no_return(queries_list, query_data)
 
                         if  res == "success":   # pylint: disable=no-else-return
+                            try:
+                                utils.send_mail_trigger_status_change(
+                                    req_body["email"], not ret_data[0][1]
+                                    )
+                            except Exception as mail_error:  # pylint: disable=broad-exception-caught
+                                exception_type, _, exception_traceback = sys.exc_info()
+                                filename = exception_traceback.tb_frame.f_code.co_filename
+                                line_number = exception_traceback.tb_lineno
+                                logger.error("%s||||%s||||%d", exception_type,
+                                             filename, line_number)
+                                return {
+                                    "update": False,
+                                    "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{mail_error}",    # pylint: disable=line-too-long
+                                }
                             return {"update": True}, 200
                         else:
                             res.update({"update": False})
@@ -118,7 +135,7 @@ class Admin:
             }, 500
 
 
-    def edit_details(self, req_body):  # pylint: disable=too-many-locals,too-many-return-statements
+    def edit_details(self, req_body):  # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
         """
             function to edit first name, last name,
             employee id and/or role.
@@ -165,7 +182,7 @@ class Admin:
                         res = db_no_return(queries_list, query_data)
 
                         if res == "success":   # pylint: disable=no-else-return
-                            # Update user profile JSON data if role has changed
+                            # Update user profile JSON data and send mail if role has changed
                             if "role" in update_fields:
                                 # Read existing user profile data
                                 with open(self.user_profile_file, "r",
@@ -188,6 +205,14 @@ class Admin:
                                 with open(self.user_profile_file, "w",
                                           encoding="utf-8") as file_handle:
                                     json.dump(user_profile_data, file_handle)
+
+                                # send mail
+                                try:
+                                    utils.send_mail_trigger_role_change(
+                                        req_body["email"], req_body["role"]
+                                        )
+                                except Exception as mail_error:             # pylint: disable=broad-exception-caught
+                                    logger.error("Mail sending error: %s", mail_error)
                             return {"update": True}, 200
                         else:
                             res.update({"update": False})
