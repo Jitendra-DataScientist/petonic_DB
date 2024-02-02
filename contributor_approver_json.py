@@ -109,7 +109,7 @@ class CAJ:
 
                 try:
                     return {"fetch": True,
-                            "json_data": res[0][2]}, 200
+                            "json_data": res[0][1]}, 200
                 except IndexError:
                     return {"fetch": False,
                             "json_data": {},
