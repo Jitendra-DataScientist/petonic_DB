@@ -238,6 +238,9 @@ class CG:
             }, 500
 
 
+    # def cont_name_func(self, email_list, mapping_dict):
+    #     return [mapping_dict.get(element) for element in email_list]
+
     def view_list(self, req_body=None):
         """function for view-list page for all roles"""
         try:
@@ -360,29 +363,43 @@ class CG:
             try:
                 ret_data = db_return(query, query_data)
                 # print ("\n\n\n\n")
-                # # print (json.dumps(ret_data,indent=4, default=json_util.default))
+                # print (json.dumps(ret_data,indent=4, default=json_util.default))
                 # print (json.dumps(ret_data,indent=4, cls=DjangoJSONEncoder))
-                # print ("\n\n{}\n\n".format(ret_data[-1]))
-                # print (json.dumps(ret_data[-1],indent=4, cls=DjangoJSONEncoder))
-                # print (ret_data[-1][-2]==" ")
-                # print (type(ret_data[-1][-2]))
-                # print (ret_data[-1][-3])
-                # print (type(ret_data[-1][-3]))
                 # print ("\n\n\n\n")
-                if ret_data:   # pylint: disable=no-else-return
-                    ret_data = list(map(lambda sublist: list(map(lambda x: None if x ==\
-                                            " " and sublist[-2] == " " else x, sublist)), ret_data))
-
+                cont_list = [item for sublist in ret_data for item in sublist[-4] if item]
+                cont_list = list(set(cont_list))
+                if cont_list:
+                    query = "SELECT email, f_name, l_name FROM user_signup WHERE email IN %s"
+                    query_data = (tuple(cont_list),)
+                    cont_name_list = db_return(query, query_data)
+                    cont_name_dict = {element[0]:element[1]+' '+element[2]
+                                      for element in cont_name_list}
+                    # modified_ret_data = [element+(self.cont_name_func(
+                    #                                     element[-4],cont_name_dict
+                    #                                 ),)
+                    #                      for element in ret_data]
+                    modified_ret_data = [element+(list(map(
+                                        lambda x: cont_name_dict[x] if x else None,element[-4]
+                                                )),)
+                                         for element in ret_data]
+                if modified_ret_data:   # pylint: disable=no-else-return
+                    # ret_data = list(map(lambda sublist: list(map(lambda x: None\
+                    #          if x ==" " and sublist[-2] == " " else x, sublist)), ret_data))
+                    modified_ret_data = list(map(
+                                                lambda sublist: list(map(
+                                                    lambda x: None if x == " " else x,sublist
+                                                    )),
+                                                modified_ret_data))
                     return {"fetch": True,
                             "data": json.loads(
-                                            json.dumps(ret_data, cls=DjangoJSONEncoder)
+                                            json.dumps(modified_ret_data, cls=DjangoJSONEncoder)
                                             ),
                             "fields": ["challenge_id","initiator_id","initiator_name",
                                        "initiation_timestamp","industry","domain","process",
                                        "creation_timestamp","name","description",
                                        "current_challenge_status", "challenge_status_json",
                                        "contributor_ids","approver_id","approver_name",
-                                        "approver_comment"]
+                                        "approver_comment","contributor_names"]
                             }, 200
                 else:
                     return {"fetch": False,
