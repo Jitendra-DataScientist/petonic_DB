@@ -364,8 +364,15 @@ class CG:
                 # print (json.dumps(ret_data,indent=4, cls=DjangoJSONEncoder))
                 # print ("\n\n{}\n\n".format(ret_data[-1]))
                 # print (json.dumps(ret_data[-1],indent=4, cls=DjangoJSONEncoder))
+                # print (ret_data[-1][-2]==" ")
+                # print (type(ret_data[-1][-2]))
+                # print (ret_data[-1][-3])
+                # print (type(ret_data[-1][-3]))
                 # print ("\n\n\n\n")
                 if ret_data:   # pylint: disable=no-else-return
+                    ret_data = list(map(lambda sublist: list(map(lambda x: None if x ==\
+                                            " " and sublist[-2] == " " else x, sublist)), ret_data))
+
                     return {"fetch": True,
                             "data": json.loads(
                                             json.dumps(ret_data, cls=DjangoJSONEncoder)
