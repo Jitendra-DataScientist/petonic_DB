@@ -243,7 +243,7 @@ class CG:
         try:
             # Queries Formation based on request method payload
             if req_body:
-                query = """SELECT 
+                query = """SELECT
                                 c.challenge_id, 
                                 c.initiator_id, 
                                 CONCAT_WS(' ', COALESCE(ui.f_name, ''), COALESCE(ui.l_name, '')) AS initiator_name,
@@ -302,7 +302,7 @@ class CG:
                                 req_body["initiator_id"],
                             )
             else:
-                query = """SELECT 
+                query = """SELECT
                                 c.challenge_id, 
                                 c.initiator_id, 
                                 CONCAT_WS(' ', COALESCE(ui.f_name, ''), COALESCE(ui.l_name, '')) AS initiator_name,
@@ -368,10 +368,11 @@ class CG:
                             "data": json.loads(
                                             json.dumps(ret_data, cls=DjangoJSONEncoder)
                                             ),
-                            "fields": ["challenge_id","initiator_id","initiator_name","initiation_timestamp",
-                                        "industry","domain","process","creation_timestamp","name",
-                                        "description","current_challenge_status",
-                                        "challenge_status_json","contributor_ids","approver_id","approver_name"
+                            "fields": ["challenge_id","initiator_id","initiator_name",
+                                       "initiation_timestamp","industry","domain","process",
+                                       "creation_timestamp","name","description",
+                                       "current_challenge_status", "challenge_status_json",
+                                       "contributor_ids","approver_id","approver_name"
                                         "approver_comment"]
                             }, 200
                 else:
