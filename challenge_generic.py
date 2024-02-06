@@ -278,7 +278,7 @@ class CG:
                             LEFT JOIN 
                                 user_signup ua ON ca.approver_id = ua.email
                             WHERE
-                                c.initiator_id = 'your_initiator_id_here'
+                                c.initiator_id = %s
                             GROUP BY
                                 c.challenge_id, 
                                 c.initiator_id, 
@@ -362,6 +362,8 @@ class CG:
                 # print ("\n\n\n\n")
                 # # print (json.dumps(ret_data,indent=4, default=json_util.default))
                 # print (json.dumps(ret_data,indent=4, cls=DjangoJSONEncoder))
+                # print ("\n\n{}\n\n".format(ret_data[-1]))
+                # print (json.dumps(ret_data[-1],indent=4, cls=DjangoJSONEncoder))
                 # print ("\n\n\n\n")
                 if ret_data:   # pylint: disable=no-else-return
                     return {"fetch": True,
@@ -372,7 +374,7 @@ class CG:
                                        "initiation_timestamp","industry","domain","process",
                                        "creation_timestamp","name","description",
                                        "current_challenge_status", "challenge_status_json",
-                                       "contributor_ids","approver_id","approver_name"
+                                       "contributor_ids","approver_id","approver_name",
                                         "approver_comment"]
                             }, 200
                 else:
