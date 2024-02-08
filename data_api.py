@@ -299,7 +299,7 @@ async def view_list_api(request: Request = Depends()):
         except ValueError:
             return JSONResponse(content={"fetch": False,
                                          "data": None,
-                                         "helpText":"Invalid JSON format in the request body"},
+                                         "helpText":"Invalid format in the request body"},
                                 status_code=400)
 
         response, status_code = challenge_generic_inst.view_list(vars(payload))
