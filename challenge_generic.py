@@ -12,6 +12,7 @@ import logging
 from django.core.serializers.json import DjangoJSONEncoder
 from db_return import db_return
 from db_no_return import db_no_return
+from view_list_query_templates import ViewListQueryTemplates
 from utils import Utils
 
 
@@ -46,7 +47,7 @@ logger.addHandler(file_handler)
 
 
 utils = Utils()
-
+view_list_query_templates_instance = ViewListQueryTemplates()
 
 class CG:
     """
@@ -238,136 +239,118 @@ class CG:
             }, 500
 
 
+    def view_list_query(self, req_body):
+        """
+           function for query formation for view-list page
+        """
+        # Queries Formation based on request method payload
+        if req_body:
+            where_elements = []
+            limit_offset = None
+
+            # set limit and offset
+            if req_body['upper_index'] and isinstance(req_body['lower_index'], int):
+                if int(req_body['lower_index']) < 1:
+                    return "Bad Request. lower_index < 1"
+                limit_offset = "LIMIT %s OFFSET %s" % (req_body['upper_index'], req_body['lower_index']-1)
+            elif req_body['upper_index']:
+                limit_offset = "LIMIT %s" % (req_body['upper_index'])
+            elif isinstance(req_body['lower_index'], int):
+                if int(req_body['lower_index']) < 1:
+                    return "Bad Request. lower_index < 1"
+                limit_offset = "OFFSET %s" % (req_body['lower_index']-1)
+
+            # set WHERE clause - initiator_id
+            if req_body['initiator_id']:
+                if len(req_body['initiator_id']) == 1:
+                    where_elements.append("c.initiator_id IN %s" % str(tuple(req_body['initiator_id']))[:-2]+")")
+                else:
+                    where_elements.append("c.initiator_id IN %s" % str(tuple(req_body['initiator_id'])))
+
+            # set WHERE clause - initiation_start_date and/or initiation_end_date
+            if req_body['initiation_start_date'] and req_body['initiation_end_date']:
+                where_elements.append("c.initiation_timestamp BETWEEN '%s' AND '%s'" % (req_body['initiation_start_date'], req_body['initiation_end_date']))
+            elif req_body['initiation_start_date']:
+                where_elements.append("c.initiation_timestamp >= '%s'" % req_body['initiation_start_date'])
+            elif req_body['initiation_end_date']:
+                where_elements.append("c.initiation_timestamp <= '%s'" % req_body['initiation_end_date'])
+
+            # set WHERE clause - creation_date_null, creation_start_date and/or creation_end_date
+            if req_body['creation_date_null']:
+                if req_body['creation_start_date'] and req_body['creation_end_date']:
+                    where_elements.append("(c.creation_timestamp IS NULL OR (c.creation_timestamp BETWEEN '%s' AND '%s'))" % (req_body['creation_start_date'], req_body['creation_end_date']))
+                elif req_body['creation_start_date']:
+                    where_elements.append("(c.creation_timestamp IS NULL OR (c.creation_timestamp >= '%s'))" % req_body['creation_start_date'])
+                elif req_body['creation_end_date']:
+                    where_elements.append("(c.creation_timestamp IS NULL OR (c.creation_timestamp <= '%s'))" % req_body['creation_end_date'])
+            else:
+                if req_body['creation_start_date'] and req_body['creation_end_date']:
+                    where_elements.append("c.creation_timestamp BETWEEN '%s' AND '%s'" % (req_body['creation_start_date'], req_body['creation_end_date']))
+                elif req_body['creation_start_date']:
+                    where_elements.append("c.creation_timestamp >= '%s'" % req_body['creation_start_date'])
+                elif req_body['creation_end_date']:
+                    where_elements.append("c.creation_timestamp <= '%s'" % req_body['creation_end_date'])
+
+            # set WHERE clause - status
+            if req_body['status']:
+                if len(req_body['status']) == 1:
+                    where_elements.append("cs.challenge_status IN %s" % str(tuple(req_body['status']))[:-2]+")")
+                else:
+                    where_elements.append("cs.challenge_status IN %s" % str(tuple(req_body['status'])))
+
+
+            if where_elements and limit_offset:
+                query_template = view_list_query_templates_instance.where_limit
+                if len(where_elements) == 1:
+                    where_clause = where_elements[0]
+                else:
+                    where_clause = " AND ".join(where_elements[:-1]) + " AND " + where_elements[-1]
+                query = (query_template % (where_clause, limit_offset))
+            elif where_elements:
+                query_template = view_list_query_templates_instance.where
+                if len(where_elements) == 1:
+                    where_clause = where_elements[0]
+                else:
+                    where_clause = " AND ".join(where_elements[:-1]) + " AND " + where_elements[-1]
+                query = query_template % where_clause
+            elif limit_offset:
+                query_template = view_list_query_templates_instance.limit
+                query = (query_template % limit_offset)
+            # elif not where_elements and (not limit and not offset):
+            #     return "Bad Request", None
+            else:
+                return "Bad Request", None
+            # print ("\n\n{}\n\n".format(where_elements))
+        else:
+            query = view_list_query_templates_instance.no_filter
+        return query
+
     # def cont_name_func(self, email_list, mapping_dict):
     #     return [mapping_dict.get(element) for element in email_list]
 
     def view_list(self, req_body=None):
         """function for view-list page for all roles"""
         try:
-            # Queries Formation based on request method payload
-            if req_body:
-                query = """SELECT
-                                c.challenge_id, 
-                                c.initiator_id, 
-                                CONCAT_WS(' ', COALESCE(ui.f_name, ''), COALESCE(ui.l_name, '')) AS initiator_name,
-                                c.initiation_timestamp,
-                                c.industry, 
-                                c.domain, 
-                                c.process, 
-                                c.creation_timestamp, 
-                                c.name,
-                                c.description, 
-                                cs.challenge_status,
-                                cs.challenge_status_json::TEXT AS challenge_status_json_text,
-                                ARRAY_AGG(keys.contributor_approver_keys) AS contributor_approver_keys,
-                                ca.approver_id AS approver_id, 
-                                CONCAT_WS(' ', COALESCE(ua.f_name, ''), COALESCE(ua.l_name, '')) AS approver_name,
-                                ca.approver_comment AS approver_comment
-                            FROM 
-                                challenge c
-                            LEFT JOIN 
-                                challenge_status cs ON c.challenge_id = cs.challenge_id
-                            LEFT JOIN (
-                                SELECT 
-                                    DISTINCT challenge_id,
-                                    json_object_keys(contributor_approver_json) AS contributor_approver_keys
-                                FROM 
-                                    contributor_approver
-                            ) keys ON c.challenge_id = keys.challenge_id
-                            LEFT JOIN 
-                                contributor_approver ca ON c.challenge_id = ca.challenge_id
-                            LEFT JOIN 
-                                user_signup ui ON c.initiator_id = ui.email
-                            LEFT JOIN 
-                                user_signup ua ON ca.approver_id = ua.email
-                            WHERE
-                                c.initiator_id = %s
-                            GROUP BY
-                                c.challenge_id, 
-                                c.initiator_id, 
-                                ui.f_name,
-                                ui.l_name,
-                                ua.f_name,
-                                ua.l_name,
-                                c.initiation_timestamp, 
-                                c.industry, 
-                                c.domain,
-                                c.process, 
-                                c.creation_timestamp, 
-                                c.name, 
-                                c.description,
-                                cs.challenge_status,
-                                cs.challenge_status_json::TEXT, 
-                                ca.approver_id, 
-                                ca.approver_comment;
-                            """
-                query_data = (
-                                req_body["initiator_id"],
-                            )
-            else:
-                query = """SELECT
-                                c.challenge_id, 
-                                c.initiator_id, 
-                                CONCAT_WS(' ', COALESCE(ui.f_name, ''), COALESCE(ui.l_name, '')) AS initiator_name,
-                                c.initiation_timestamp,
-                                c.industry, 
-                                c.domain, 
-                                c.process, 
-                                c.creation_timestamp, 
-                                c.name,
-                                c.description, 
-                                cs.challenge_status,
-                                cs.challenge_status_json::TEXT AS challenge_status_json_text,
-                                ARRAY_AGG(keys.contributor_approver_keys) AS contributor_approver_keys,
-                                ca.approver_id AS approver_id, 
-                                CONCAT_WS(' ', COALESCE(ua.f_name, ''), COALESCE(ua.l_name, '')) AS approver_name,
-                                ca.approver_comment AS approver_comment
-                            FROM 
-                                challenge c
-                            LEFT JOIN 
-                                challenge_status cs ON c.challenge_id = cs.challenge_id
-                            LEFT JOIN (
-                                SELECT 
-                                    DISTINCT challenge_id,
-                                    json_object_keys(contributor_approver_json) AS contributor_approver_keys
-                                FROM 
-                                    contributor_approver
-                            ) keys ON c.challenge_id = keys.challenge_id
-                            LEFT JOIN 
-                                contributor_approver ca ON c.challenge_id = ca.challenge_id
-                            LEFT JOIN 
-                                user_signup ui ON c.initiator_id = ui.email
-                            LEFT JOIN 
-                                user_signup ua ON ca.approver_id = ua.email
-                            GROUP BY
-                                c.challenge_id, 
-                                c.initiator_id, 
-                                ui.f_name,
-                                ui.l_name,
-                                ua.f_name,
-                                ua.l_name,
-                                c.initiation_timestamp, 
-                                c.industry, 
-                                c.domain,
-                                c.process, 
-                                c.creation_timestamp, 
-                                c.name, 
-                                c.description,
-                                cs.challenge_status,
-                                cs.challenge_status_json::TEXT, 
-                                ca.approver_id, 
-                                ca.approver_comment;
-                            """
-                query_data = None
-
+            query = self.view_list_query(req_body)
+            # print ("\n\n{}\n\n".format(query))
+            print (query == "Bad Request")
+            print (query)
+            if query == "Bad Request":
+                return {"fetch": False,
+                        "helpText": "Bad Request"}, 400
+            print (query == "Bad Request. lower_index < 1")
+            if query == "Bad Request. lower_index < 1":
+                return {"fetch": False,
+                        "helpText": "Bad Request. lower_index < 1"}, 400
             try:
-                ret_data = db_return(query, query_data)
+                ret_data = db_return(query, query_data = None)
                 # print ("\n\n\n\n")
                 # print (json.dumps(ret_data,indent=4, default=json_util.default))
                 # print (json.dumps(ret_data,indent=4, cls=DjangoJSONEncoder))
                 # print ("\n\n\n\n")
                 cont_list = [item for sublist in ret_data for item in sublist[-4] if item]
                 cont_list = list(set(cont_list))
+                modified_ret_data = None
                 if cont_list:
                     query = "SELECT email, f_name, l_name FROM user_signup WHERE email IN %s"
                     query_data = (tuple(cont_list),)
@@ -378,6 +361,9 @@ class CG:
                     #                                     element[-4],cont_name_dict
                     #                                 ),)
                     #                      for element in ret_data]
+                    # print ("\n\n{}\n\n".format(cont_name_dict))
+                    # print ("\n\n{}\n\n".format(cont_list))
+                    # print ("\n\n{}\n\n".format(ret_data))
                     modified_ret_data = [element+(list(map(
                                         lambda x: cont_name_dict[x] if x else None,element[-4]
                                                 )),)
@@ -427,3 +413,58 @@ class CG:
                 "data": None,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
+
+
+'''
+SELECT
+    c.challenge_id, 
+    c.initiator_id, 
+    CONCAT_WS(' ', COALESCE(ui.f_name, ''), COALESCE(ui.l_name, '')) AS initiator_name,
+    c.initiation_timestamp,
+    c.industry, 
+    c.domain, 
+    c.process, 
+    c.creation_timestamp, 
+    c.name,
+    c.description, 
+    cs.challenge_status,
+    cs.challenge_status_json::TEXT AS challenge_status_json_text,
+    ARRAY_AGG(keys.contributor_approver_keys) AS contributor_approver_keys,
+    ca.approver_id AS approver_id, 
+    CONCAT_WS(' ', COALESCE(ua.f_name, ''), COALESCE(ua.l_name, '')) AS approver_name,
+    ca.approver_comment AS approver_comment
+FROM 
+    challenge c
+LEFT JOIN 
+    challenge_status cs ON c.challenge_id = cs.challenge_id
+LEFT JOIN (
+    SELECT 
+        DISTINCT challenge_id,
+        json_object_keys(contributor_approver_json) AS contributor_approver_keys
+    FROM 
+        contributor_approver
+) keys ON c.challenge_id = keys.challenge_id
+LEFT JOIN 
+    contributor_approver ca ON c.challenge_id = ca.challenge_id
+LEFT JOIN 
+    user_signup ui ON c.initiator_id = ui.email
+LEFT JOIN 
+    user_signup ua ON ca.approver_id = ua.email
+GROUP BY
+    c.challenge_id, 
+    c.initiator_id, 
+    ui.f_name,
+    ui.l_name,
+    ua.f_name,
+    ua.l_name,
+    c.initiation_timestamp, 
+    c.industry, 
+    c.domain,
+    c.process, 
+    c.creation_timestamp, 
+    c.name, 
+    c.description,
+    cs.challenge_status,
+    cs.challenge_status_json::TEXT, 
+    ca.approver_id, 
+    ca.approver_comment;'''
