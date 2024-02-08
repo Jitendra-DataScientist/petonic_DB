@@ -228,6 +228,10 @@ class ViewListRequest(BaseModel):
         lower_index (Optional[int]): The lower index (optional).
         upper_index (Optional[int]): The upper index (optional).
         status: Optional[List[str]] = status of the challenges being fetched (optional).
+        industry: Optional[List[str]] = related industry of challenge
+        domain: Optional[List[str]] = related domain of challenge
+        process: Optional[List[str]] = related process of challenge
+        approver_id: Optional[List[EmailStr]] = The email ID of approver (optional).
     """
     # initiator_id: constr(
     #     pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
@@ -241,6 +245,10 @@ class ViewListRequest(BaseModel):
     lower_index: Optional[int] = None
     upper_index: Optional[int] = None
     status: Optional[List[str]] = None
+    industry: Optional[List[str]] = None
+    domain: Optional[List[str]] = None
+    process: Optional[List[str]] = None
+    approver_id: Optional[List[EmailStr]] = None
 
 
 class FlipUserStatusRequest(BaseModel):
