@@ -4,7 +4,7 @@ rules for email addresses, passwords, user roles, etc.
 These models provide a structured and validated way to
 handle incoming JSON payloads in FastAPI routes.
 """
-from typing import Dict, Union, Any
+from typing import Dict, Union, Any, Optional, List
 # from pydantic import BaseModel, EmailStr, constr, Union, PositiveInt, ValidationError, validator
 from pydantic import BaseModel, EmailStr, constr, PositiveInt
 
@@ -218,12 +218,29 @@ class ViewListRequest(BaseModel):
 
     Attributes:
         # initiator_id (str): initiator_id, for eg., initiator_johndoe@example.com
-        initiator_id (str): The email ID of initiator.
+        initiator_id Optional[List[EmailStr]]: The email ID of initiator (optional).
+        initiation_start_date (Optional[str]): The initiation start date (optional).
+        initiation_end_date (Optional[str]): The initiation end date (optional).
+        creation_start_date (Optional[str]): The creation start date (optional).
+        creation_end_date (Optional[str]): The creation end date (optional).
+        creation_date_null: Optional[bool] = whether to include the challenges that are under draft,
+                                                i.e, creation_date is null (optional).
+        lower_index (Optional[int]): The lower index (optional).
+        upper_index (Optional[int]): The upper index (optional).
+        status: Optional[List[str]] = status of the challenges being fetched (optional).
     """
     # initiator_id: constr(
     #     pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
     #     )
-    initiator_id: EmailStr
+    initiator_id: Optional[List[EmailStr]] = None
+    initiation_start_date: Optional[str] = None
+    initiation_end_date: Optional[str] = None
+    creation_start_date: Optional[str] = None
+    creation_end_date: Optional[str] = None
+    creation_date_null: Optional[bool] = None
+    lower_index: Optional[int] = None
+    upper_index: Optional[int] = None
+    status: Optional[List[str]] = None
 
 
 class FlipUserStatusRequest(BaseModel):
