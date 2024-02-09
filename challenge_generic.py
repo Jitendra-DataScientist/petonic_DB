@@ -369,7 +369,6 @@ class CG:
             #     return "Bad Request", None
             else:
                 return "Bad Request", None
-            # print ("\n\n{}\n\n".format(where_elements))
         else:
             query = view_list_query_templates_instance.no_filter
         return query
@@ -381,13 +380,9 @@ class CG:
         """function for view-list page for all roles"""
         try:
             query = self.view_list_query(req_body)
-            # print ("\n\n{}\n\n".format(query))
-            print (query == "Bad Request")
-            print (query)
             if query == "Bad Request":
                 return {"fetch": False,
                         "helpText": "Bad Request"}, 400
-            print (query == "Bad Request. lower_index < 1")
             if query == "Bad Request. lower_index < 1":
                 return {"fetch": False,
                         "helpText": "Bad Request. lower_index < 1"}, 400
@@ -410,9 +405,6 @@ class CG:
                     #                                     element[-4],cont_name_dict
                     #                                 ),)
                     #                      for element in ret_data]
-                    # print ("\n\n{}\n\n".format(cont_name_dict))
-                    # print ("\n\n{}\n\n".format(cont_list))
-                    # print ("\n\n{}\n\n".format(ret_data))
                     modified_ret_data = [element+(list(map(
                                         lambda x: cont_name_dict[x] if x else None,element[-4]
                                                 )),)
