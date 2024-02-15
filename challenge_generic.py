@@ -406,7 +406,7 @@ class CG:
                     #                                 ),)
                     #                      for element in ret_data]
                     cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
-                    cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
+                    cont_name_dict["ai_solution"] = "GenAI Solution"
                     print ("\n\n{}\n\n".format(cont_list))
                     print ("\n\n{}\n\n".format(cont_name_dict))
                     # print ("\n\n{}\n\n".format(ret_data[-2]))
