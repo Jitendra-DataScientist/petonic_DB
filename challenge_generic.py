@@ -409,7 +409,7 @@ class CG:
                     cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
                     print ("\n\n{}\n\n".format(cont_list))
                     print ("\n\n{}\n\n".format(cont_name_dict))
-                    print ("\n\n{}\n\n".format(ret_data[-2]))
+                    # print ("\n\n{}\n\n".format(ret_data[-2]))
                     modified_ret_data = [element+(list(map(
                                         lambda x: cont_name_dict[x] if x else None,element[-4]
                                                 )),)
