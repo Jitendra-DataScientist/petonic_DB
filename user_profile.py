@@ -322,8 +322,8 @@ class UserProfile:
 
     def get_user_details(self, req_body):
         """
-            function to fetch details of all users
-            for the admin view list.
+            function to fetch details of users
+            based on email IDs.
         """
         try:
             if not req_body["user_ids"]:
@@ -353,6 +353,6 @@ class UserProfile:
             logger.error("%s||||%s||||%d", exception_type, filename, line_number)
             return {
                 "fetch": False,
-                "fields":["email", "role", "employee_id", "f_name", "l_name", "active"],
+                "fields":["role", "employee_id", "f_name", "l_name", "active"],
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
