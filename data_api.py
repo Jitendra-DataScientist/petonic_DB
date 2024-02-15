@@ -458,3 +458,12 @@ async def contributor_solution_upload_api(payload: pydantic_check.ContributorSol
                                                                          vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/get-user-details")
+async def get_user_details_api(payload: pydantic_check.GetUserDetailsRequest):
+    """Route function to fetch user details based on email IDs"""
+
+    response, status_code = user_profile_inst.get_user_details(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)

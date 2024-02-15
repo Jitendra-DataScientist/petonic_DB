@@ -318,3 +318,41 @@ class UserProfile:
                 "validation": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
+
+
+    def get_user_details(self, req_body):
+        """
+            function to fetch details of users
+            based on email IDs.
+        """
+        try:
+            if not req_body["user_ids"]:
+                return {"fetch": False,
+                        "helpText": "no user_id passed",}, 400
+            # Queries Formation
+            query = "SELECT us.email,us.role,us.employee_id,us.f_name,us.l_name,v.active\
+                    FROM user_signup us\
+                    LEFT JOIN validation v ON us.email = v.email\
+                    WHERE us.email IN %s;"
+            query_data = (
+                        tuple(req_body["user_ids"]),
+                    )
+            ret_data = db_return(query, query_data)
+            if ret_data:
+                mod_ret_data = {element[0]: element[1:] for element in ret_data}
+            else:
+                mod_ret_data = {}
+            return {"fetch": True,
+                    "data": mod_ret_data,
+                    "fields":["role", "employee_id", "f_name", "l_name", "active"]}, 200
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+            return {
+                "fetch": False,
+                "fields":["role", "employee_id", "f_name", "l_name", "active"],
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
