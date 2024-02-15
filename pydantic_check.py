@@ -368,3 +368,12 @@ class ContributorSolutionUploadRequest(BaseModel):
     challenge_id: PositiveInt
     contributor_id: EmailStr
     solution_json: Dict[Union[str, int], Any]
+
+
+class GetUserDetailsRequest(BaseModel):
+    """Pydantic model for get-user-details request payload.
+
+    Attributes:
+        user_ids: List[EmailStr]: The list of IDs whose details are to be fetched.
+    """
+    user_ids: List[EmailStr]
