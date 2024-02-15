@@ -406,13 +406,25 @@ class CG:
                     #                                 ),)
                     #                      for element in ret_data]
                     cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
-                    cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
-                    print ("\n\n{}\n\n".format(cont_name_dict))
-                    print ("\n\n{}\n\n".format(ret_data[-2]))
+                    cont_name_dict["ai_solution"] = "GenAI Solution"
                     modified_ret_data = [element+(list(map(
                                         lambda x: cont_name_dict[x] if x else None,element[-4]
                                                 )),)
                                          for element in ret_data]
+
+                    # Sameer Sir's suggestion:
+                    # modified_ret_data = [
+                    #                         element + (
+                    #                             list(map(
+                    #                                 lambda x: cont_name_dict.get(x, x) if
+                    #                                 isinstance(x, str) else None,
+                    #                                 [email if email != 'ai_solution' else
+                    #                                 'ai_solution@petonic.in' for email in
+                    #                                   element[-4]]
+                    #                             )),
+                    #                         )
+                    #                         for element in ret_data
+                    #                     ]
                 if modified_ret_data:   # pylint: disable=no-else-return
                     # ret_data = list(map(lambda sublist: list(map(lambda x: None\
                     #          if x ==" " and sublist[-2] == " " else x, sublist)), ret_data))
