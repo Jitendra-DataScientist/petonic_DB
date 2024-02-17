@@ -377,3 +377,16 @@ class GetUserDetailsRequest(BaseModel):
         user_ids: List[EmailStr]: The list of IDs whose details are to be fetched.
     """
     user_ids: List[EmailStr]
+
+
+class ProjectInitiateRequest(BaseModel):
+    """Pydantic model for project-initiate request payload.
+
+    Attributes:
+        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        pm_id: EmailStr: The project manager's email address.
+        pm_tool: str: The project management tool being used.
+    """
+    challenge_id: PositiveInt
+    pm_id: EmailStr
+    pm_tool: str
