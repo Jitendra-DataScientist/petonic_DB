@@ -13,6 +13,9 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     c.creation_timestamp, 
                     c.name,
                     c.description, 
+                    c.pm_id,
+                    c.pm_tool,
+                    CONCAT_WS(' ', COALESCE(um.f_name, ''), COALESCE(um.l_name, '')) AS pm_name,
                     cs.challenge_status,
                     cs.challenge_status_json::TEXT AS challenge_status_json_text,
                     ARRAY_AGG(keys.contributor_approver_keys) AS contributor_approver_keys,
@@ -36,6 +39,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     user_signup ui ON c.initiator_id = ui.email
                 LEFT JOIN 
                     user_signup ua ON ca.approver_id = ua.email
+                LEFT JOIN 
+                    user_signup um ON c.pm_id = um.email
                 WHERE
                     %s
                 GROUP BY
@@ -45,6 +50,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     ui.l_name,
                     ua.f_name,
                     ua.l_name,
+                    um.f_name,
+                    um.l_name,
                     c.initiation_timestamp, 
                     c.industry, 
                     c.domain,
@@ -52,6 +59,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     c.creation_timestamp, 
                     c.name, 
                     c.description,
+                    c.pm_id,
+                    c.pm_tool,
                     cs.challenge_status,
                     cs.challenge_status_json::TEXT, 
                     ca.approver_id, 
@@ -68,7 +77,10 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     c.process, 
                     c.creation_timestamp, 
                     c.name,
-                    c.description, 
+                    c.description,
+                    c.pm_id,
+                    c.pm_tool,
+                    CONCAT_WS(' ', COALESCE(um.f_name, ''), COALESCE(um.l_name, '')) AS pm_name,
                     cs.challenge_status,
                     cs.challenge_status_json::TEXT AS challenge_status_json_text,
                     ARRAY_AGG(keys.contributor_approver_keys) AS contributor_approver_keys,
@@ -92,6 +104,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     user_signup ui ON c.initiator_id = ui.email
                 LEFT JOIN 
                     user_signup ua ON ca.approver_id = ua.email
+                LEFT JOIN 
+                    user_signup um ON c.pm_id = um.email
                 WHERE
                     %s
                 GROUP BY
@@ -101,6 +115,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     ui.l_name,
                     ua.f_name,
                     ua.l_name,
+                    um.f_name,
+                    um.l_name,
                     c.initiation_timestamp, 
                     c.industry, 
                     c.domain,
@@ -108,6 +124,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     c.creation_timestamp, 
                     c.name, 
                     c.description,
+                    c.pm_id,
+                    c.pm_tool,
                     cs.challenge_status,
                     cs.challenge_status_json::TEXT, 
                     ca.approver_id, 
@@ -123,7 +141,10 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     c.process, 
                     c.creation_timestamp, 
                     c.name,
-                    c.description, 
+                    c.description,
+                    c.pm_id,
+                    c.pm_tool,
+                    CONCAT_WS(' ', COALESCE(um.f_name, ''), COALESCE(um.l_name, '')) AS pm_name,
                     cs.challenge_status,
                     cs.challenge_status_json::TEXT AS challenge_status_json_text,
                     ARRAY_AGG(keys.contributor_approver_keys) AS contributor_approver_keys,
@@ -147,6 +168,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     user_signup ui ON c.initiator_id = ui.email
                 LEFT JOIN 
                     user_signup ua ON ca.approver_id = ua.email
+                LEFT JOIN 
+                    user_signup um ON c.pm_id = um.email
                 GROUP BY
                     c.challenge_id, 
                     c.initiator_id, 
@@ -154,6 +177,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     ui.l_name,
                     ua.f_name,
                     ua.l_name,
+                    um.f_name,
+                    um.l_name,
                     c.initiation_timestamp, 
                     c.industry, 
                     c.domain,
@@ -161,6 +186,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     c.creation_timestamp, 
                     c.name, 
                     c.description,
+                    c.pm_id,
+                    c.pm_tool,
                     cs.challenge_status,
                     cs.challenge_status_json::TEXT, 
                     ca.approver_id, 
@@ -177,11 +204,14 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                         c.process, 
                         c.creation_timestamp, 
                         c.name,
-                        c.description, 
+                        c.description,
+                        c.pm_id,
+                        c.pm_tool,
+                        CONCAT_WS(' ', COALESCE(um.f_name, ''), COALESCE(um.l_name, '')) AS pm_name,
                         cs.challenge_status,
                         cs.challenge_status_json::TEXT AS challenge_status_json_text,
                         ARRAY_AGG(keys.contributor_approver_keys) AS contributor_approver_keys,
-                        ca.approver_id AS approver_id, 
+                        ca.approver_id AS approver_id,
                         CONCAT_WS(' ', COALESCE(ua.f_name, ''), COALESCE(ua.l_name, '')) AS approver_name,
                         ca.approver_comment AS approver_comment
                     FROM 
@@ -201,6 +231,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                         user_signup ui ON c.initiator_id = ui.email
                     LEFT JOIN 
                         user_signup ua ON ca.approver_id = ua.email
+                    LEFT JOIN 
+                        user_signup um ON c.pm_id = um.email
                     GROUP BY
                         c.challenge_id, 
                         c.initiator_id, 
@@ -208,6 +240,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                         ui.l_name,
                         ua.f_name,
                         ua.l_name,
+                        um.f_name,
+                        um.l_name,
                         c.initiation_timestamp, 
                         c.industry, 
                         c.domain,
@@ -215,6 +249,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                         c.creation_timestamp, 
                         c.name, 
                         c.description,
+                        c.pm_id,
+                        c.pm_tool,
                         cs.challenge_status,
                         cs.challenge_status_json::TEXT, 
                         ca.approver_id, 
