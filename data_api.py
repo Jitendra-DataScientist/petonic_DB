@@ -22,6 +22,7 @@ from setting_parameter_tab import setting_parameter_key_parameters
 from file_transfer import FT
 import pydantic_check
 from admin import Admin
+from project_management import PM
 
 
 # Determine the directory for logs
@@ -67,6 +68,7 @@ contributor_approver_generic_inst = CAG()
 challenge_generic_inst = CG()
 user_details_instance = Admin()
 file_transfer_instance = FT()
+project_management_instance = PM()
 
 
 # Create a FastAPI instance
@@ -465,5 +467,16 @@ async def get_user_details_api(payload: pydantic_check.GetUserDetailsRequest):
     """Route function to fetch user details based on email IDs"""
 
     response, status_code = user_profile_inst.get_user_details(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/project-initiate")
+async def project_initiate_api(payload: pydantic_check.ProjectInitiateRequest):
+    """Route function to add project manager name
+       and project management tool eing used, to DB
+    """
+
+    response, status_code = project_management_instance.project_initiation(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
