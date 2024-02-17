@@ -440,7 +440,7 @@ class CG:
                             "fields": ["challenge_id","initiator_id","initiator_name",
                                        "initiation_timestamp","industry","domain","process",
                                        "creation_timestamp","name","description",
-                                       "pm_id", "pm_tool",
+                                       "pm_id", "pm_tool","pm_name",
                                        "current_challenge_status", "challenge_status_json",
                                        "contributor_ids","approver_id","approver_name",
                                         "approver_comment","contributor_names"]
