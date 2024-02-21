@@ -395,23 +395,23 @@ class CG:
                 cont_list = [item for sublist in ret_data for item in sublist[-4] if item]
                 cont_list = list(set(cont_list))
                 modified_ret_data = None
-                if cont_list:
-                    query = "SELECT email, f_name, l_name FROM user_signup WHERE email IN %s"
-                    query_data = (tuple(cont_list),)
-                    cont_name_list = db_return(query, query_data)
-                    cont_name_dict = {element[0]:element[1]+' '+element[2]
-                                      for element in cont_name_list}
+                # if cont_list:
+                query = "SELECT email, f_name, l_name FROM user_signup WHERE email IN %s"
+                query_data = (tuple(cont_list),)
+                cont_name_list = db_return(query, query_data)
+                cont_name_dict = {element[0]:element[1]+' '+element[2]
+                                    for element in cont_name_list}
                     # modified_ret_data = [element+(self.cont_name_func(
                     #                                     element[-4],cont_name_dict
                     #                                 ),)
                     #                      for element in ret_data]
-                    cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
-                    cont_name_dict["ai_solution"] = "GenAI Solution"
 
-                    modified_ret_data = [element+(list(map(
-                                        lambda x: cont_name_dict[x] if x else None,element[-4]
-                                                )),)
-                                         for element in ret_data]
+                cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
+                cont_name_dict["ai_solution"] = "GenAI Solution"
+                modified_ret_data = [element+(list(map(
+                                    lambda x: cont_name_dict[x] if x else None,element[-4]
+                                            )),)
+                                        for element in ret_data]
 
                     # Sameer Sir's suggestion:
                     # modified_ret_data = [
