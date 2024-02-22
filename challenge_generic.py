@@ -8,6 +8,7 @@ import sys
 import json
 # from bson import json_util
 # from pymongo import json_util
+import re
 import logging
 from django.core.serializers.json import DjangoJSONEncoder
 from db_return import db_return
@@ -49,21 +50,45 @@ logger.addHandler(file_handler)
 utils = Utils()
 view_list_query_templates_instance = ViewListQueryTemplates()
 
+
+def remove_special_characters(text):
+    """function to remove spaces and special characters from a string"""
+    # Define the pattern to match special characters and whitespaces
+    pattern = r'[^a-zA-Z0-9]'  # This pattern matches anything that is not alphanumeric
+
+    # Use the sub() function to replace all matches of the pattern with an empty string
+    clean_text = re.sub(pattern, '', text)
+
+    return clean_text
+
+
 class CG:
     """
        this class primarily contains the generic challenge related
        funtions to connect python code to PostgreSQL database by
        calling relevant pyscopg2 operation files (CRUD)
     """
+
     def challenge_initiation(self, req_body):
         """function for challenge initiation (an entry added in challenge table)"""
         try:
-            # challenge_id for this new challenge would be 1 plus
-            # the count of challenges created by the same initiator
-            try:
-                challenge_id = self.challenge_count("max_of_ch_id")[0]['count'] + 1
-            except TypeError:
-                challenge_id = 1
+            # try:
+            #     challenge_id = self.challenge_count("max_of_ch_id")[0]['count'] + 1
+            # except TypeError:
+            #     challenge_id = 1
+            # try:
+            postfix = str(self.challenge_count(
+                {"industry_domain_process_specific": req_body["industry"]}
+                )[0]['count'])
+            if len(postfix)>2:
+                pass
+            elif len(postfix)>1:
+                postfix = '0' + postfix
+            else:
+                postfix = '00' + postfix
+            challenge_id = remove_special_characters(req_body["industry"])[:3].upper() + postfix
+            # except:  # pylint: disable=bare-except
+            #     challenge_id = utils.generate_random_string(6)
 
             # Queries Formation
             query = ["INSERT INTO challenge\
@@ -119,8 +144,14 @@ class CG:
         """
         try:
             # Queries Formation
-            if req_body == "max_of_ch_id":
-                query = "select max(challenge_id) from challenge;"
+            # if req_body == "max_of_ch_id":
+            #     query = "select max(challenge_id) from challenge;"
+            #     query_data = None
+            if "industry_domain_process_specific" in req_body:
+                # query = "select count(*) from challenge where industry=%s;"
+                # query_data = req_body["industry_domain_process_specific"]
+                query = f"""SELECT count(*) from challenge
+                            WHERE industry='{req_body['industry_domain_process_specific']}';"""
                 query_data = None
             elif "initiator_id" in req_body:
                 query = "select count(*) from challenge where initiator_id=%s;"
@@ -138,7 +169,6 @@ class CG:
 
             try:
                 ret_data = db_return(query, query_data)
-
                 return {"count_fetch": True,
                         "count": ret_data[0][0]}, 200
 
