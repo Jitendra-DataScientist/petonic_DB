@@ -111,10 +111,10 @@ class UpdateChallengeStatusRequest(BaseModel):
     """Pydantic model for the update-challenge-status request payload.
 
     Attributes:
-        challenge_id (int): The ID of the challenge to update.
+        challenge_id (str): The ID of the challenge to update.
         challenge_status (str): The new status for the challenge.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
     challenge_status: constr(max_length=10)
 
 
@@ -122,20 +122,20 @@ class FetchChallengeStatusRequest(BaseModel):
     """Pydantic model for the fetch-challenge-status request payload.
 
     Attributes:
-        challenge_id (int): The ID of the challenge to fetch the status for.
+        challenge_id (str): The ID of the challenge to fetch the status for.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
 
 
 class ChallengeJsonDataWriteRequest(BaseModel):
     """Pydantic model for the challenge-json-data-update request payload.
 
     Attributes:
-        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        challenge_id (str): The id of the challenge, which should be a positive integer.
         json_data (python dictionary): the python dict can have keys that numbers, strings or
                                        combination of both, the values could be of any type.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
     json_data: Dict[Union[str, int], Any]
 
 
@@ -143,9 +143,9 @@ class ChallengeJsonDataFetchRequest(BaseModel):
     """Pydantic model for the challenge-json-data-fetch request payload.
 
     Attributes:
-        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        challenge_id (str): The id of the challenge, which should be a positive integer.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
 
 
 class ChallengeInitiationRequest(BaseModel):
@@ -201,12 +201,12 @@ class ChallengeCreationRequest(BaseModel):
     """Pydantic model for the challenge-creation request payload.
 
     Attributes:
-        challenge_id (PositiveInt): The ID of the challenge.
+        challenge_id (str): The ID of the challenge.
         creation_timestamp (str): The initiator ID, a combination of role and email.
         name (str): Name of the challenge.
         description (str): Description of the challenge.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
     creation_timestamp: constr(pattern=r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')
     name: str
     description: str
@@ -296,11 +296,11 @@ class ContributorApproverJsonDataWriteRequest(BaseModel):
     """Pydantic model for the contributor-approver-json-data-update request payload.
 
     Attributes:
-        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        challenge_id (str): The id of the challenge, which should be a positive integer.
         json_data (python dictionary): the python dict can have keys that numbers, strings or
                                        combination of both, the values could be of any type.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
     json_data: Dict[Union[str, int], Any]
 
 
@@ -308,9 +308,9 @@ class ContributorApproverJsonDataFetchRequest(BaseModel):
     """Pydantic model for the contributor-approver-json-data-fetch request payload.
 
     Attributes:
-        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        challenge_id (str): The id of the challenge, which should be a positive integer.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
 
 
 # class AddContributorRequest(BaseModel):
@@ -329,10 +329,10 @@ class AddApproverRequest(BaseModel):
 
     Attributes:
         approver_id (EmailStr): The approver's email address.
-        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        challenge_id (str): The id of the challenge, which should be a positive integer.
     """
     approver_id: EmailStr
-    challenge_id: PositiveInt
+    challenge_id: str
 
 
 class AddApproverCommentRequest(BaseModel):
@@ -340,11 +340,11 @@ class AddApproverCommentRequest(BaseModel):
 
     Attributes:
         approver_id (EmailStr): The approver's email address.
-        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        challenge_id (str): The id of the challenge, which should be a positive integer.
         approver_comment (str): The corresponding comment of the approver
     """
     approver_id: EmailStr
-    challenge_id: PositiveInt
+    challenge_id: str
     approver_comment: str
 
 
@@ -361,11 +361,11 @@ class ContributorSolutionUploadRequest(BaseModel):
     """Pydantic model for contributor-solution request payload.
 
     Attributes:
-        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        challenge_id (str): The id of the challenge, which should be a positive integer.
         contributor_id (EmailStr): The contributor's email address.
         solution_json (Dict): The contributor's solution.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
     contributor_id: EmailStr
     solution_json: Dict[Union[str, int], Any]
 
@@ -383,10 +383,10 @@ class ProjectInitiateRequest(BaseModel):
     """Pydantic model for project-initiate request payload.
 
     Attributes:
-        challenge_id (PositiveInt): The id of the challenge, which should be a positive integer.
+        challenge_id (str): The id of the challenge, which should be a positive integer.
         pm_id: EmailStr: The project manager's email address.
         pm_tool: str: The project management tool being used.
     """
-    challenge_id: PositiveInt
+    challenge_id: str
     pm_id: EmailStr
     pm_tool: str
