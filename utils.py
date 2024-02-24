@@ -205,6 +205,52 @@ class Utils:
             return "Mail sending error: ", mail_error
 
 
+    def send_mail_trigger_change_pass(self, to_email, new_password):
+        """mail sender trigger function"""
+
+        subject = "Password Reset"
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    Your password has been changed to <strong>{new_password}
+                    </strong> successfully.<br>
+                    Please log in using this password now.</p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    Your password has been changed to <strong>{new_password}
+                    </strong> successfully.<br>
+                    Please log in using this password now.</p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
+
+        # SMTP server details
+        smtp_server = "smtp.gmail.com"
+        try:
+            sender_email = os.getenv("sender_email")
+            sender_password = os.getenv("sender_password")
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
+
+        try:
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
+            logger.info("mail sent !!")
+            return "mail sent !!"
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
+            return "Mail sending error: ", mail_error
+
+
     def send_mail_trigger_role_change(self, to_email, role):
         """mail sender trigger function"""
 
