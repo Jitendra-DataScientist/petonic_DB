@@ -71,7 +71,7 @@ class ChangePassword:
             try:
                 res = db_no_return(queries_list, query_data)
                 if res == "success":   # pylint: disable=no-else-return
-                    return {"reset": True}
+                    return {"reset": True, "new_password": req_body["new_password"]}
                 else:
                     res.update({"reset": False})
                     return res
@@ -126,7 +126,7 @@ class ChangePassword:
             }
 
 
-    def change_password_main(self, req_body):
+    def change_password_main(self, req_body):             # pylint: disable=too-many-return-statements
         """function to trigger functions stack for
            change-password functionality
         """
@@ -139,7 +139,20 @@ class ChangePassword:
             if data[0][0] == 1:
                 reset_action = self.change_password_execute_query(req_body)
                 if reset_action["reset"]:   # pylint: disable=no-else-return
-                    return ({"reset": True}, 201)
+                    try:
+                        logger.info(             # pylint: disable=logging-too-many-args
+                            "In function: ",
+                            utils.send_mail_trigger_change_pass(
+                                req_body["email"], reset_action["new_password"]
+                            ),
+                        )
+                        return ({"reset": True}, 201)
+                    except Exception as mail_error3:  # pylint: disable=broad-exception-caught
+                        logger.error("Failed to send mail: %s", mail_error3)
+                        return ({
+                                "reset": True,
+                                "helpText": "failed to send mail",
+                                }, 500)
                 else:
                     return ({"reset": False, "helpText": "failed to reset password"}, 500)
             elif data[0][0] == 0:
