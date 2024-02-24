@@ -215,7 +215,9 @@ class Utils:
                     f"""<p>Hello,<br>
                     Your password has been changed to <strong>{new_password}
                     </strong> successfully.<br>
-                    Please log in using this password now.</p>
+                    Please log in using this password now.
+                    If you do not recognize this activity, contact your admin.
+                    </p>
                     <p>Best regards,<br>
                     Petonic Team</p>
                     <img src={logo_url} alt="Petonic Company Logo">"""
@@ -227,7 +229,9 @@ class Utils:
                     f"""<p>Hello,<br>
                     Your password has been changed to <strong>{new_password}
                     </strong> successfully.<br>
-                    Please log in using this password now.</p>
+                    Please log in using this password now.
+                    If you do not recognize this activity, contact your admin.
+                    </p>
                     <p>Best regards,<br>
                     Petonic Team</p>"""
                 )
