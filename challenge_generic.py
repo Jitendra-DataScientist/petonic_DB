@@ -69,7 +69,7 @@ class CG:
        calling relevant pyscopg2 operation files (CRUD)
     """
 
-    def challenge_initiation(self, req_body):
+    def challenge_initiation(self, req_body):  # pylint: disable=too-many-locals
         """function for challenge initiation (an entry added in challenge table)"""
         try:
             # try:
@@ -77,16 +77,28 @@ class CG:
             # except TypeError:
             #     challenge_id = 1
             # try:
-            postfix = str(self.challenge_count(
-                {"industry_domain_process_specific": req_body["industry"]}
-                )[0]['count'])
+            query = "SELECT challenge_id FROM challenge WHERE industry=%s"
+            query_data = (req_body["industry"],)
+            ch_ids = db_return(query, query_data)
+            ch_ids = [item[0] for item in ch_ids]
+            prefix = remove_special_characters(req_body["industry"])[:3].upper()
+            # ch_ids_split = [element.split(prefix) for element in ch_ids]
+            cleaned_list = [num.replace(prefix, "") for num in ch_ids]
+            filtered_list = [int(element) for element in cleaned_list if element.isdigit()]
+            # postfix = str(self.challenge_count(
+            #     {"industry_domain_process_specific": req_body["industry"]}
+            #     )[0]['count'])
+            if filtered_list:
+                postfix = str(max(filtered_list) + 1)
+            else:
+                postfix = '0'
             if len(postfix)>2:
                 pass
             elif len(postfix)>1:
                 postfix = '0' + postfix
             else:
                 postfix = '00' + postfix
-            challenge_id = remove_special_characters(req_body["industry"])[:3].upper() + postfix
+            challenge_id = prefix + postfix
             # except:  # pylint: disable=bare-except
             #     challenge_id = utils.generate_random_string(6)
 
