@@ -78,7 +78,7 @@ class CG:
             #     challenge_id = 1
             # try:
             prefix = remove_special_characters(req_body["industry"])[:3]
-            query = "SELECT challenge_id FROM challenge WHERE industry LIKE %s"
+            query = "SELECT challenge_id FROM challenge WHERE LEFT(industry, 3) = %s;"
             query_data = (prefix,)
             ch_ids = db_return(query, query_data)
             ch_ids = [item[0] for item in ch_ids]
