@@ -218,7 +218,7 @@ class CG:
             }, 500
 
 
-    def challenge_creation(self, req_body):
+    def challenge_creation(self, req_body):  # pylint: disable=too-many-return-statements
         """function for updating challenge creation date, name and description in challenge table"""
         try:
             # check if the challenge_id is present in challenge table
@@ -233,7 +233,7 @@ class CG:
                     }, 400
 
             # check if challenge already created
-            query = "SELECT creation_timestamp\
+            query = "SELECT creation_timestamp, initiator_id\
                     FROM challenge\
                     WHERE challenge_id = %s;"
             query_data = (
@@ -268,7 +268,17 @@ class CG:
                 res = db_no_return(query, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
-                    return {"update": True}, 201
+                    try:
+                        utils.send_mail_trigger_ch_sub(
+                                ret_data[0][1],
+                                req_body["challenge_id"],
+                                req_body["name"],
+                                req_body["description"],
+                            )
+                        return {"update": True}, 201
+                    except Exception as mail_error:  # pylint: disable=broad-exception-caught
+                        return {"update": True,
+                                "helpText": f"failed to send mail: {mail_error}"}, 207
                 else:
                     res.update({"update": False})
                     return res, 400
