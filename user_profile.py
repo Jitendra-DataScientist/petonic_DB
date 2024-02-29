@@ -160,6 +160,20 @@ class UserProfile:
     def signup(self, req_body):
         """function for signup funtionality"""
         try:
+            # check if admin role
+            query = "select role \
+                    from user_signup\
+                    where email = %s;"
+            query_data = (
+                req_body["email"],
+            )
+
+            role_data = db_return(query, query_data)
+
+            if role_data and role_data[0] and role_data[0][0]=='admin':
+                return {"user_creation": False,
+                        "helpText": "admin role already created"}, 400
+
             # Queries Formation
             first_password = utils.generate_random_string(str_len=8)
 
