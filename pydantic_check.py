@@ -34,7 +34,7 @@ class SignupRequest(BaseModel):
                                        or an integer, or a combination of both.
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|approver)$")
+    role: constr(pattern="^(initiator|contributor|approver|admin|pm)$")
     f_name: str
     l_name: str
     # company_id: Union[str, int]
@@ -49,7 +49,7 @@ class ResendSignupMailRequest(BaseModel):
         role (str): The user's role, should be one of "initiator", "contributor", or "approver".
     """
     email: EmailStr
-    role: constr(pattern="^(initiator|contributor|approver)$")
+    role: constr(pattern="^(initiator|contributor|approver|pm)$")
 
 
 class ValidationRequest(BaseModel):
