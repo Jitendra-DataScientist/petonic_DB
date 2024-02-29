@@ -416,7 +416,7 @@ class Utils:
     def send_mail_trigger_ch_sub(self, to_email, challenge_id, name, description):             # pylint: disable=too-many-arguments
         """mail sender trigger function for challenge submission (initiator mail)"""
 
-        subject = "Challenge Initiated !!"
+        subject = "Challenge Submitted !!"
         try:
             logo_url = os.getenv("logo_url")
             body = (
