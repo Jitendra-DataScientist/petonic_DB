@@ -140,7 +140,7 @@ class CG:
 
                 else:
                     # logger.warning("challenge_id already present")
-                    res.update({"creation": False,"challenge_id":challenge_id,"clean":cleaned_list,"fiter":filtered_list})
+                    res.update({"creation": False})
                     return res, 400
 
             except Exception as db_error:  # pylint: disable=broad-exception-caught
