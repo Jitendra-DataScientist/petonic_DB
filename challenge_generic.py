@@ -122,8 +122,22 @@ class CG:
                 res = db_no_return(query, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
-                    return {"creation": True,
-                            "challenge_id": challenge_id}, 201
+                    try:
+                        utils.send_mail_trigger_forgot_pass(
+                                challenge_id,
+                                req_body["initiator_id"],
+                                req_body["initiation_timestamp"],
+                                req_body["industry"],
+                                req_body["process"],
+                                req_body["domain"],
+                            )
+                        return {"creation": True,
+                                "challenge_id": challenge_id}, 201
+                    except Exception as mail_error:
+                        return {"creation": True,
+                                "challenge_id": challenge_id,
+                                "challenge_id": "failed to send mail: {}".format(mail_error)}, 207
+
                 else:
                     # logger.warning("challenge_id already present")
                     res.update({"creation": False})
