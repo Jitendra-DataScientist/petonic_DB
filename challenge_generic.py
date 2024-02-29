@@ -123,20 +123,19 @@ class CG:
 
                 if res == "success":   # pylint: disable=no-else-return
                     try:
-                        utils.send_mail_trigger_forgot_pass(
-                                challenge_id,
+                        utils.send_mail_trigger_ch_init(
                                 req_body["initiator_id"],
-                                req_body["initiation_timestamp"],
+                                challenge_id,
                                 req_body["industry"],
                                 req_body["process"],
                                 req_body["domain"],
                             )
                         return {"creation": True,
                                 "challenge_id": challenge_id}, 201
-                    except Exception as mail_error:
+                    except Exception as mail_error:  # pylint: disable=broad-exception-caught
                         return {"creation": True,
                                 "challenge_id": challenge_id,
-                                "challenge_id": "failed to send mail: {}".format(mail_error)}, 207
+                                "helpText": f"failed to send mail: {mail_error}"}, 207
 
                 else:
                     # logger.warning("challenge_id already present")
