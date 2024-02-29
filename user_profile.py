@@ -90,10 +90,10 @@ class UserProfile:
                     )
                     role = db_return(query, query_data)
                 else:
-                    role = [("incorrect creds / email not validated",
-                             "incorrect creds / email not validated",
-                             "incorrect creds / email not validated",
-                             "incorrect creds / email not validated",)]
+                    role = [("incorrect creds / inactive account / email not validated",
+                             "incorrect creds / inactive account / email not validated",
+                             "incorrect creds / inactive account / email not validated",
+                             "incorrect creds / inactive account / email not validated",)]
             try:
                 ret_data.append(role[0][0])
                 ret_data.append(role[0][1])
