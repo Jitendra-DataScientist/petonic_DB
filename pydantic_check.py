@@ -47,9 +47,13 @@ class ResendSignupMailRequest(BaseModel):
     Attributes:
         email (EmailStr): The user's email address.
         role (str): The user's role, should be one of "initiator", "contributor", or "approver".
+        admin_email (EmailStr): The email of admin account.
+        admin_password (str): The password of admin account.
     """
     email: EmailStr
     role: constr(pattern="^(initiator|contributor|approver|pm)$")
+    admin_email: EmailStr
+    admin_password: str
 
 
 class ValidationRequest(BaseModel):

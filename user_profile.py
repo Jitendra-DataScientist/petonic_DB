@@ -246,10 +246,26 @@ class UserProfile:
             }, 500
 
 
-    def resend_mail_signup(self, req_body):
+    def resend_mail_signup(self, req_body):  # pylint: disable=too-many-return-statements
         """funtionality to resend signup mail with a
            different password, rest creds remain the same"""
         try:
+            # verify admin creds
+            try:
+                if self.login(
+                    {"email":req_body["admin_email"],
+                    "password":req_body["admin_password"]
+                    }
+                    )[1] == "admin":
+                    pass
+                else:
+                    return {"resend": False,
+                            "helpText": "invalid admin creds"}, 400
+            except Exception as admin_auth:  # pylint: disable=broad-exception-caught
+                logger.info("admin_auth: %s", admin_auth)
+                return {"resend": False,
+                        "helpText": "admin authorisation error"}, 500
+
             new_password = utils.generate_random_string(str_len=8)
             queries_list = [
                 "UPDATE user_login \
