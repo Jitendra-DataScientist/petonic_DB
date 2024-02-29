@@ -370,9 +370,9 @@ class Utils:
                     You have successfully initiated a challenge. Please find the details
                     of the challenge below:<br>
                     <strong>Challenge ID: </strong>{challenge_id}<br>
-                    <strong>industry: </strong>{industry}<br>
-                    <strong>domain: </strong>{domain}<br>
-                    <strong>process: </strong>{process}<br>
+                    <strong>Industry: </strong>{industry}<br>
+                    <strong>Domain: </strong>{domain}<br>
+                    <strong>Process: </strong>{process}<br>
                     <br></p>
                     <p>Best regards,<br>
                     Petonic Team</p>
@@ -386,9 +386,9 @@ class Utils:
                     You have successfully initiated a challenge. Please find the details
                     of the challenge below:<br>
                     <strong>Challenge ID: </strong>{challenge_id}<br>
-                    <strong>industry: </strong>{industry}<br>
-                    <strong>domain: </strong>{domain}<br>
-                    <strong>process: </strong>{process}<br>
+                    <strong>Industry: </strong>{industry}<br>
+                    <strong>Domain: </strong>{domain}<br>
+                    <strong>Process: </strong>{process}<br>
                     <br></p>
                     <p>Best regards,<br>
                     Petonic Team</p>"""
