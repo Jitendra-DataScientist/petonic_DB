@@ -194,7 +194,8 @@ class Admin:
                 if ret_data[0][0] >= 1:
                     # Filter out the None values from req_body
                     update_fields = {key: value for key, value in\
-                                      req_body.items() if value is not None}
+                                      req_body.items() if value is not None\
+                                      and key not in ["admin_email", "admin_password"]}
 
                     # Construct the SET clause of the SQL query dynamically
                     set_clause = ", ".join(f"{key} = %s" for key in update_fields)
