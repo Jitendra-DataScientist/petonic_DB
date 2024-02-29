@@ -359,7 +359,7 @@ class Utils:
             return "Mail sending error: ", mail_error
 
 
-    def send_mail_trigger_ch_init(self, to_email, challenge_id, industry, process, domain):
+    def send_mail_trigger_ch_init(self, to_email, challenge_id, industry, process, domain):             # pylint: disable=too-many-arguments
         """mail sender trigger function"""
 
         subject = "Challenge Initiated !!"
@@ -367,7 +367,8 @@ class Utils:
             logo_url = os.getenv("logo_url")
             body = (
                     f"""<p>Hello,<br>
-                    You have successfully initiated a challenge. Please find the details of challenge below:
+                    You have successfully initiated a challenge. Please find the details
+                    of challenge below:
                     <strong>challenge_id: </strong>{challenge_id}
                     <strong>industry: </strong>{industry}
                     <strong>domain: </strong>{process}
@@ -382,7 +383,8 @@ class Utils:
             logger.critical("Failed to load logo_url from .env: %s", file_error)
             body = (
                     f"""<p>Hello,<br>
-                    You have successfully initiated a challenge. Please find the details of challenge below:
+                    You have successfully initiated a challenge. Please find the details
+                    of challenge below:
                     <strong>challenge_id: </strong>{challenge_id}
                     <strong>industry: </strong>{industry}
                     <strong>domain: </strong>{process}
