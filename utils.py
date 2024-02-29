@@ -369,10 +369,10 @@ class Utils:
                     f"""<p>Hello,<br>
                     You have successfully initiated a challenge. Please find the details
                     of challenge below:<br>
-                    <strong>challenge_id: </strong>{challenge_id}
-                    <strong>industry: </strong>{industry}
-                    <strong>domain: </strong>{domain}
-                    <strong>process: </strong>{process}
+                    <strong>challenge_id: </strong>{challenge_id}<br>
+                    <strong>industry: </strong>{industry}<br>
+                    <strong>domain: </strong>{domain}<br>
+                    <strong>process: </strong>{process}<br>
                     <br></p>
                     <p>Best regards,<br>
                     Petonic Team</p>
