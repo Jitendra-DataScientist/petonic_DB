@@ -9,6 +9,7 @@ import json
 import time
 from db_return import db_return
 from db_no_return import db_no_return
+from user_profile import UserProfile
 from utils import Utils
 
 
@@ -42,6 +43,7 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
+user_profile_instance = UserProfile()
 utils = Utils()
 
 class Admin:
@@ -65,6 +67,22 @@ class Admin:
             admin).
         """
         try:  # pylint: disable=too-many-nested-blocks
+            # verify admin creds
+            try:
+                if user_profile_instance.login(
+                    {"email":req_body["admin_email"],
+                     "password":req_body["admin_password"]
+                     }
+                     )[1] == "admin":
+                    pass
+                else:
+                    return {"update": False,
+                            "helpText": "invalid admin creds"}, 400
+            except Exception as admin_auth:  # pylint: disable=broad-exception-caught
+                logger.info("admin_auth: %s", admin_auth)
+                return {"update": False,
+                        "helpText": "admin authorisation error"}, 500
+
             ## first check if mail-id present in DB
             query = "SELECT count(ul.email), v.active\
                     FROM user_login ul\
@@ -135,12 +153,28 @@ class Admin:
             }, 500
 
 
-    def edit_details(self, req_body):  # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
+    def edit_details(self, req_body):  # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
         """
             function to edit first name, last name,
             employee id and/or role.
         """
         print (json.dumps(req_body,indent=4))
+        # verify admin creds
+        try:
+            if user_profile_instance.login(
+                {"email":req_body["admin_email"],
+                 "password":req_body["admin_password"]
+                 }
+                 )[1] == "admin":
+                pass
+            else:
+                return {"update": False,
+                        "helpText": "invalid admin creds"}, 400
+        except Exception as admin_auth:  # pylint: disable=broad-exception-caught
+            logger.info("admin_auth: %s", admin_auth)
+            return {"update": False,
+                    "helpText": "admin authorisation error"}, 500
+
         if not req_body['f_name'] and not req_body['l_name'] and\
               not req_body['role'] and not req_body['employee_id']:
             return {"update":False,
@@ -160,7 +194,8 @@ class Admin:
                 if ret_data[0][0] >= 1:
                     # Filter out the None values from req_body
                     update_fields = {key: value for key, value in\
-                                      req_body.items() if value is not None}
+                                      req_body.items() if value is not None\
+                                      and key not in ["admin_email", "admin_password"]}
 
                     # Construct the SET clause of the SQL query dynamically
                     set_clause = ", ".join(f"{key} = %s" for key in update_fields)
