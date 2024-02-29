@@ -77,11 +77,12 @@ class CG:
             # except TypeError:
             #     challenge_id = 1
             # try:
-            query = "SELECT challenge_id FROM challenge WHERE industry=%s"
-            query_data = (req_body["industry"],)
+            prefix = remove_special_characters(req_body["industry"])[:3]
+            query = "SELECT challenge_id FROM challenge WHERE industry LIKE %s"
+            query_data = (prefix,)
             ch_ids = db_return(query, query_data)
             ch_ids = [item[0] for item in ch_ids]
-            prefix = remove_special_characters(req_body["industry"])[:3].upper()
+            prefix = prefix.upper()
             # ch_ids_split = [element.split(prefix) for element in ch_ids]
             cleaned_list = [num.replace(prefix, "") for num in ch_ids]
             filtered_list = [int(element) for element in cleaned_list if element.isdigit()]
