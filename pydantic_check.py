@@ -257,9 +257,13 @@ class FlipUserStatusRequest(BaseModel):
        Note this is only for the post request.
 
     Attributes:
-        email (str): The email ID of user.
+        email (EmailStr): The email ID of user.
+        admin_email (EmailStr): The email of admin account.
+        admin_password (str): The password of admin account.
     """
     email: EmailStr
+    admin_email: EmailStr
+    admin_password: str
 
 
 class EditUserDetailsRequest(BaseModel):
@@ -271,12 +275,16 @@ class EditUserDetailsRequest(BaseModel):
         l_name (str): The user's last name.
         role (str): The user's role.
         employee_id (PositiveInt): The user's employee ID.
+        admin_email (EmailStr): The email of admin account.
+        admin_password (str): The password of admin account.
     """
     email: EmailStr
     f_name: str = None
     l_name: str = None
     role: str = None
     employee_id: PositiveInt = None
+    admin_email: EmailStr
+    admin_password: str
 
 
 class SettinParamaterKeyParametersRequest(BaseModel):
