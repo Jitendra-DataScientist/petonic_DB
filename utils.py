@@ -368,11 +368,11 @@ class Utils:
             body = (
                     f"""<p>Hello,<br>
                     You have successfully initiated a challenge. Please find the details
-                    of challenge below:
+                    of challenge below:<br>
                     <strong>challenge_id: </strong>{challenge_id}
                     <strong>industry: </strong>{industry}
-                    <strong>domain: </strong>{process}
-                    <strong>process: </strong>{domain}
+                    <strong>domain: </strong>{domain}
+                    <strong>process: </strong>{process}
                     <br></p>
                     <p>Best regards,<br>
                     Petonic Team</p>
@@ -384,11 +384,11 @@ class Utils:
             body = (
                     f"""<p>Hello,<br>
                     You have successfully initiated a challenge. Please find the details
-                    of challenge below:
+                    of challenge below:<br>
                     <strong>challenge_id: </strong>{challenge_id}
                     <strong>industry: </strong>{industry}
-                    <strong>domain: </strong>{process}
-                    <strong>process: </strong>{domain}
+                    <strong>domain: </strong>{domain}
+                    <strong>process: </strong>{process}
                     <br></p>
                     <p>Best regards,<br>
                     Petonic Team</p>"""
