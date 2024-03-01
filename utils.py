@@ -11,6 +11,7 @@ import random
 import string
 import smtplib
 import logging
+import threading
 from dotenv import load_dotenv
 
 
@@ -413,7 +414,7 @@ class Utils:
             return "Mail sending error: ", mail_error
 
 
-    def send_mail_trigger_ch_sub(self, to_email, challenge_id, name, description):             # pylint: disable=too-many-arguments
+    def send_mail_trigger_ch_sub(self, to_email, challenge_id, name, description, cont_list):             # pylint: disable=too-many-arguments
         """mail sender trigger function for challenge submission (initiator mail)"""
 
         subject = "Challenge Submitted !!"
@@ -459,7 +460,64 @@ class Utils:
             self.send_email(subject, body, to_email, sender_email,
                             sender_password, smtp_server)
             logger.info("mail sent !!")
+            if cont_list:
+                threading.Thread(
+                    target=self.send_mail_trigger_ch_sub_cont, args=(
+                                challenge_id, name, description, cont_list
+                                )
+                    ).start()
+                # threading.Timer(
+                #     100, self.send_mail_trigger_ch_sub_cont, args=(
+                #                 challenge_id, name, description, cont_list
+                #                 )
+                #     ).start()
             return "mail sent !!"
         except Exception as mail_error:             # pylint: disable=broad-exception-caught
             logger.critical("Mail sending error: %s", mail_error)
             return "Mail sending error: ", mail_error
+
+
+    def send_mail_trigger_ch_sub_cont(self, challenge_id, name, description, cont_list):
+        """mail sender trigger function for challenge submission (contributor mail)"""
+        subject = "New Challenge in list !!"
+        try:
+            logo_url = os.getenv("logo_url")
+            body = f"""<p>Hello,<br>
+                        A new challenge has been created that awaits your solution. Please find the details
+                        of the challenge below:<br>
+                        <strong>Challenge ID: </strong>{challenge_id}<br>
+                        <strong>Challenge Name: </strong>{name}<br>
+                        <strong>Challenge Description: </strong>{description}<br>
+                        <br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>
+                        <img src={logo_url} alt="Petonic Company Logo">"""
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = f"""<p>Hello,<br>
+                        A new challenge has been created that awaits your solution. Please find the details
+                        of the challenge below:<br>
+                        <strong>Challenge ID: </strong>{challenge_id}<br>
+                        <strong>Challenge Name: </strong>{name}<br>
+                        <strong>Challenge Description: </strong>{description}<br>
+                        <br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>"""
+
+        # SMTP server details
+        smtp_server = "smtp.gmail.com"
+        try:
+            sender_email = os.getenv("sender_email")
+            sender_password = os.getenv("sender_password")
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
+
+        try:
+            for email in cont_list:
+                if email and email[0]:
+                    self.send_email(subject, body, email[0], sender_email,
+                                    sender_password, smtp_server)
+                    logger.info("Mail sent to %s !!", email)
+        except Exception as mail_error:  # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
