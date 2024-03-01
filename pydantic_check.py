@@ -56,8 +56,8 @@ class ResendSignupMailRequest(BaseModel):
     """
     email: EmailStr
     role: constr(pattern="^(initiator|contributor|approver|pm)$")
-    admin_email: EmailStr
-    admin_password: str
+    admin_email: EmailStr = None
+    admin_password: str = None
 
 
 class ValidationRequest(BaseModel):
