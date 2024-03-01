@@ -157,7 +157,7 @@ class UserProfile:
                     }, 500
 
 
-    def signup(self, req_body):
+    def signup(self, req_body):  # pylint: disable=too-many-locals,too-many-return-statements
         """function for signup funtionality"""
         try:
             # check if admin role
@@ -170,9 +170,30 @@ class UserProfile:
 
             role_data = db_return(query, query_data)
 
-            if role_data and role_data[0] and role_data[0][0]=='admin':
+            if role_data and role_data[0] and role_data[0][0]=='admin'\
+                    and req_body["role"] == "admin":  # pylint: disable=no-else-return
                 return {"user_creation": False,
                         "helpText": "admin role already created"}, 400
+            elif role_data and role_data[0] and role_data[0][0]=='admin':
+                return {"user_creation": False,
+                        "helpText": "Primary-key Violation Error"}, 400
+
+            # verify admin creds for roles other than admin
+            if req_body["role"] != "admin":
+                try:
+                    if self.login(
+                        {"email":req_body["admin_email"],
+                        "password":req_body["admin_password"]
+                        }
+                        )[1] == "admin":
+                        pass
+                    else:
+                        return {"user_creation": False,
+                                "helpText": "invalid admin creds"}, 400
+                except Exception as admin_auth:  # pylint: disable=broad-exception-caught
+                    logger.info("admin_auth: %s", admin_auth)
+                    return {"user_creation": False,
+                            "helpText": "admin authorisation error"}, 500
 
             # Queries Formation
             first_password = utils.generate_random_string(str_len=8)
