@@ -270,11 +270,16 @@ class CG:
 
                 if res == "success":   # pylint: disable=no-else-return
                     try:
+                        query = "SELECT email\
+                                FROM user_signup\
+                                WHERE role = 'contributor';"
+                        cont_list = db_return(query, None)
                         utils.send_mail_trigger_ch_sub(
                                 ret_data[0][1],
                                 req_body["challenge_id"],
                                 req_body["name"],
                                 req_body["description"],
+                                cont_list,
                             )
                         return {"update": True}, 201
                     except Exception as mail_error:  # pylint: disable=broad-exception-caught
