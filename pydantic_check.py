@@ -32,6 +32,8 @@ class SignupRequest(BaseModel):
         l_name (str): The user's last name.
         employee_id (Union[str, int]): The user's employee ID, can be either a string
                                        or an integer, or a combination of both.
+        admin_email (EmailStr): The email of admin account.
+        admin_password (str): The password of admin account.
     """
     email: EmailStr
     role: constr(pattern="^(initiator|contributor|approver|admin|pm)$")
@@ -39,6 +41,8 @@ class SignupRequest(BaseModel):
     l_name: str
     # company_id: Union[str, int]
     employee_id: Any
+    admin_email: EmailStr = None
+    admin_password: str = None
 
 
 class ResendSignupMailRequest(BaseModel):
