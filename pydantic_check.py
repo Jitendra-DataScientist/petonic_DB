@@ -41,8 +41,8 @@ class SignupRequest(BaseModel):
     l_name: str
     # company_id: Union[str, int]
     employee_id: Any
-    admin_email: EmailStr
-    admin_password: str
+    admin_email: EmailStr = None
+    admin_password: str = None
 
 
 class ResendSignupMailRequest(BaseModel):
@@ -56,8 +56,8 @@ class ResendSignupMailRequest(BaseModel):
     """
     email: EmailStr
     role: constr(pattern="^(initiator|contributor|approver|pm)$")
-    admin_email: EmailStr = None
-    admin_password: str = None
+    admin_email: EmailStr
+    admin_password: str
 
 
 class ValidationRequest(BaseModel):
