@@ -406,3 +406,19 @@ class ProjectInitiateRequest(BaseModel):
     challenge_id: str
     pm_id: EmailStr
     pm_tool: str
+
+
+class GenAPIAnalytcis(BaseModel):
+    """Pydantic model for gen-ai-api analytics request payload.
+
+    Attributes:
+        challenge_id (str): The id of the challenge, which should be a positive integer.
+        pm_id: EmailStr: The project manager's email address.
+        pm_tool: str: The project management tool being used.
+    """
+    gen_ai_api: str
+    challenge_id: str
+    input: Dict
+    prompt: str
+    output: Dict
+    modelParams: Dict
