@@ -10,6 +10,7 @@ import logging
 import threading
 # from decimal import Decimal, getcontext
 from db_no_return import db_no_return
+from db_return import db_return
 from utils import Utils
 
 # # Set the precision and scale for Decimal objects
@@ -149,5 +150,30 @@ def update_total_usage(challenge_id, tokens, cost):
                     ),
                 ]
 
-    res = db_no_return(query, query_data)
-    print (res)
+    db_no_return(query, query_data)
+
+
+def fetch_gen_usage(challenge_id):
+    """this function fetches the tokens and cost incurred for a particular challenge_id"""
+
+    try:
+        query = "select tokens,cost from gen_ai_token_usage where challenge_id=%s"
+        query_data = (challenge_id,)
+        res = db_return(query, query_data)
+        if res:    # pylint: disable=no-else-return
+            return {"tokens": res[0][0],
+                    "cost": res[0][1],
+                    "fetch": True}, 200
+        else:
+            return {"fetch": False,
+                    "helpText":"no records found"}, 400
+
+    except Exception as db_error:  # pylint: disable=broad-exception-caught
+        exception_type, _, exception_traceback = sys.exc_info()
+        filename = exception_traceback.tb_frame.f_code.co_filename
+        line_number = exception_traceback.tb_lineno
+        logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+        return {
+            "update": False,
+            "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+        }, 500
