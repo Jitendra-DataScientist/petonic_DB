@@ -7,8 +7,12 @@ import os
 import json
 import sys
 import logging
+# from decimal import Decimal, getcontext
 from db_no_return import db_no_return
 from utils import Utils
+
+# # Set the precision and scale for Decimal objects
+# getcontext().prec = 9
 
 
 # Determine the directory for logs
@@ -61,8 +65,8 @@ def gen_res_write(req_body):
         # Queries Formation
         queries_list = ["""INSERT INTO gen_ai_analytics
                         (challenge_id, gen_ai_api, input, output,
-                        prompt, model_params)
-                        VALUES (%s, %s, %s, %s, %s, %s);"""]
+                        prompt, model_params, tokens, cost)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"""]
 
         query_data = [(req_body["challenge_id"],
                         req_body["gen_ai_api"],
@@ -70,6 +74,8 @@ def gen_res_write(req_body):
                         json.dumps(req_body["output"]),
                         req_body["prompt"],
                         json.dumps(req_body["modelParams"]),
+                        req_body["tokens"],
+                        req_body["cost"],
                         )]
 
         try:

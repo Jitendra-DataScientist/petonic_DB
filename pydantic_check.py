@@ -390,7 +390,7 @@ class GetUserDetailsRequest(BaseModel):
     """Pydantic model for get-user-details request payload.
 
     Attributes:
-        user_ids: List[EmailStr]: The list of IDs whose details are to be fetched.
+        user_ids (List[EmailStr]): The list of IDs whose details are to be fetched.
     """
     user_ids: List[EmailStr]
 
@@ -400,8 +400,8 @@ class ProjectInitiateRequest(BaseModel):
 
     Attributes:
         challenge_id (str): The id of the challenge, which should be a positive integer.
-        pm_id: EmailStr: The project manager's email address.
-        pm_tool: str: The project management tool being used.
+        pm_id (EmailStr): The project manager's email address.
+        pm_tool (str): The project management tool being used.
     """
     challenge_id: str
     pm_id: EmailStr
@@ -413,8 +413,14 @@ class GenAPIAnalytcis(BaseModel):
 
     Attributes:
         challenge_id (str): The id of the challenge, which should be a positive integer.
-        pm_id: EmailStr: The project manager's email address.
-        pm_tool: str: The project management tool being used.
+        gen_ai_api (str): The name of the GenAI API (probably, the part after the route).
+        input (Dict): The input parameters for the API.
+        prompt (str): The prompt used to generate response from the model.
+        output (Dict): The response from the API.
+        modelParams (Dict): The parameters/configurations of the model used.
+        tokens (int): The number of tokens used in a particular API call.
+        cost (str): The total cost incurred in the API call (this is passed as string and
+                    converted into decimal before passing to DB).
     """
     gen_ai_api: str
     challenge_id: str
@@ -422,3 +428,5 @@ class GenAPIAnalytcis(BaseModel):
     prompt: str
     output: Dict
     modelParams: Dict
+    tokens: int
+    cost: str
