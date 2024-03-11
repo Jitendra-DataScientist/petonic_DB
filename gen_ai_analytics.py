@@ -7,6 +7,7 @@ import os
 import json
 import sys
 import logging
+import threading
 # from decimal import Decimal, getcontext
 from db_no_return import db_no_return
 from utils import Utils
@@ -58,8 +59,8 @@ utils = Utils()
 
 def gen_res_write(req_body):
     """function to write response of Gen AI API into
-        DB, specifically, challenge_id, gen_ai_api, input,
-        output, prompt and model_params, into the DB
+       DB, specifically, challenge_id, gen_ai_api, input,
+       output, prompt and model_params, into the DB
     """
     try:
         # Queries Formation
@@ -82,6 +83,13 @@ def gen_res_write(req_body):
             res = db_no_return(queries_list, query_data)
 
             if  res == "success":   # pylint: disable=no-else-return
+                threading.Thread(target=update_total_usage, args=(
+                        req_body["challenge_id"],
+                        req_body["tokens"],
+                        req_body["cost"]
+                        )
+                    ).start()
+
                 return {"update": True}, 201
             else:
                 res.update({"update": False})
@@ -106,3 +114,40 @@ def gen_res_write(req_body):
             "update": False,
             "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
         }, 500
+
+
+def update_total_usage(challenge_id, tokens, cost):
+    """this function updates the gen_ai_token_usage
+       table in the DB for a particular challenge_id
+    """
+
+    # query = """SELECT tokens,cost
+    #            FROM gen_ai_analytics
+    #            WHERE challenge_id=%s;"""
+    # query_data = (challenge_id,)
+    # res = db_return(query,query_data)
+    # if res:
+    #     res = [(0 if value is None else value, 0 if cost is None else \
+    #            cost) for value, cost in res]
+    #     tokens = sum(0 if token is None else token for token, _ in res)
+    #     costs = sum(0 if cost is None else cost for _, cost in res)
+    #     return res,tokens,costs
+    query = [
+            """INSERT INTO gen_ai_token_usage (challenge_id, tokens, cost)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (challenge_id) DO UPDATE 
+                SET tokens = gen_ai_token_usage.tokens + %s,
+                    cost = gen_ai_token_usage.cost + %s;"""
+        ]
+    query_data = [
+                    (
+                        challenge_id,
+                        tokens,
+                        cost,
+                        tokens,
+                        cost,
+                    ),
+                ]
+
+    res = db_no_return(query, query_data)
+    print (res)
