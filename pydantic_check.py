@@ -408,7 +408,7 @@ class ProjectInitiateRequest(BaseModel):
     pm_tool: str
 
 
-class GenAPIAnalytcis(BaseModel):
+class GenAPIAnalytics(BaseModel):
     """Pydantic model for gen-ai-api analytics request payload.
 
     Attributes:
@@ -430,3 +430,12 @@ class GenAPIAnalytcis(BaseModel):
     modelParams: Dict
     tokens: int
     cost: str
+
+
+class GenAITokenCost(BaseModel):
+    """Pydantic model for gen-ai-token-cost request payload.
+
+    Attributes:
+        challenge_id (str): The id of the challenge, which should be a positive integer.
+    """
+    challenge_id: str

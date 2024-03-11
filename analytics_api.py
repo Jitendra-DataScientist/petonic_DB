@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 # from db_main import DBMain
 import pydantic_check
-from gen_ai_analytics import gen_res_write
+from gen_ai_analytics import gen_res_write, fetch_gen_usage
 
 
 # Determine the directory for logs
@@ -69,10 +69,20 @@ async def health():
 
 
 @app.post("/analytics/gen-ai-apis")
-async def data_api_login(payload: pydantic_check.GenAPIAnalytcis):
+async def gen_log_write(payload: pydantic_check.GenAPIAnalytics):
     """Route function for user login action"""
 
     # req_body = await payload.json()
     response, status_code = gen_res_write(vars(payload))
+    logger.info("Response: %s, Status Code: %s", response, status_code)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/analytics/gen-ai-token-cost")
+async def gen_usage_fetch(payload: pydantic_check.GenAITokenCost):
+    """Route function for user login action"""
+
+    # req_body = await payload.json()
+    response, status_code = fetch_gen_usage(vars(payload))
     logger.info("Response: %s, Status Code: %s", response, status_code)
     return JSONResponse(content=response, status_code=status_code)
