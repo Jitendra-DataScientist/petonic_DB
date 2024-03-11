@@ -153,16 +153,16 @@ def update_total_usage(challenge_id, tokens, cost):
     db_no_return(query, query_data)
 
 
-def fetch_gen_usage(challenge_id):
+def fetch_gen_usage(req_body):
     """this function fetches the tokens and cost incurred for a particular challenge_id"""
 
     try:
         query = "select tokens,cost from gen_ai_token_usage where challenge_id=%s"
-        query_data = (challenge_id,)
+        query_data = (req_body["challenge_id"],)
         res = db_return(query, query_data)
         if res:    # pylint: disable=no-else-return
             return {"tokens": res[0][0],
-                    "cost": res[0][1],
+                    "cost": str(res[0][1]),
                     "fetch": True}, 200
         else:
             return {"fetch": False,
