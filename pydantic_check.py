@@ -426,7 +426,7 @@ class GenAPIAnalytics(BaseModel):
     challenge_id: str
     input: Dict
     prompt: str
-    output: Dict
+    output: str
     modelParams: str
     tokens: int
     cost: str
