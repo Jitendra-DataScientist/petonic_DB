@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 # Create a file handler for this script's log file
-file_handler = logging.FileHandler(os.path.join(log_directory, "data_api.log"))
+file_handler = logging.FileHandler(os.path.join(log_directory, "analytics_api.log"))
 file_handler.setLevel(logging.DEBUG)  # Set the logging level for this handler
 
 # Create a formatter

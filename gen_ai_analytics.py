@@ -75,7 +75,7 @@ def gen_res_write(req_body):
                         json.dumps(req_body["input"]),
                         json.dumps(req_body["output"]),
                         req_body["prompt"],
-                        json.dumps(req_body["modelParams"]),
+                        req_body["modelParams"],
                         req_body["tokens"],
                         req_body["cost"],
                         )]
