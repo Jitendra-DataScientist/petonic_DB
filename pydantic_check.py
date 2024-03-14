@@ -427,7 +427,7 @@ class GenAPIAnalytics(BaseModel):
     input: Dict
     prompt: str
     output: Dict
-    modelParams: Dict
+    modelParams: str
     tokens: int
     cost: str
 
