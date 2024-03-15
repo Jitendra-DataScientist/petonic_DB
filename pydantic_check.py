@@ -421,6 +421,7 @@ class GenAPIAnalytics(BaseModel):
         tokens (int): The number of tokens used in a particular API call.
         cost (str): The total cost incurred in the API call (this is passed as string and
                     converted into decimal before passing to DB).
+        timestamp (float): The timestamp at which the logs came.
     """
     gen_ai_api: str
     challenge_id: str
@@ -430,12 +431,24 @@ class GenAPIAnalytics(BaseModel):
     modelParams: str
     tokens: int
     cost: str
+    timestamp: float
 
 
-class GenAITokenCost(BaseModel):
+# class GenAITokenCost(BaseModel):
+#     """Pydantic model for gen-ai-token-cost request payload.
+
+#     Attributes:
+#         challenge_id (str): The id of the challenge, which should be a positive integer.
+#     """
+#     challenge_id: str
+
+
+class GenAITokenCostUserWise(BaseModel):
     """Pydantic model for gen-ai-token-cost request payload.
 
     Attributes:
-        challenge_id (str): The id of the challenge, which should be a positive integer.
+        start_epoch (float): The data after this timestamp needs to be fetched.
+        end_epoch (float): The data before this timestamp needs to be fetched.
     """
-    challenge_id: str
+    start_epoch: float
+    end_epoch: float
