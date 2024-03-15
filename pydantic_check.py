@@ -421,7 +421,7 @@ class GenAPIAnalytics(BaseModel):
         tokens (int): The number of tokens used in a particular API call.
         cost (str): The total cost incurred in the API call (this is passed as string and
                     converted into decimal before passing to DB).
-        timestamp (float): The timestamp at which the logs came.
+        # timestamp (float): The timestamp at which the logs came.
     """
     gen_ai_api: str
     challenge_id: str
@@ -431,7 +431,7 @@ class GenAPIAnalytics(BaseModel):
     modelParams: str
     tokens: int
     cost: str
-    timestamp: float
+    # timestamp: float
 
 
 # class GenAITokenCost(BaseModel):
