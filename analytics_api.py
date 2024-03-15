@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 # from db_main import DBMain
 import pydantic_check
-from gen_ai_analytics import gen_res_write, fetch_gen_usage
+from gen_ai_analytics import gen_res_write, fetch_gen_usage_user_wise
 
 
 # Determine the directory for logs
@@ -70,7 +70,8 @@ async def health():
 
 @app.post("/analytics/gen-ai-apis")
 async def gen_log_write(payload: pydantic_check.GenAPIAnalytics):
-    """Route function for user login action"""
+    """Route function to write tokens used and cost
+       incurred for various steps in the challenge"""
 
     # req_body = await payload.json()
     response, status_code = gen_res_write(vars(payload))
@@ -78,11 +79,23 @@ async def gen_log_write(payload: pydantic_check.GenAPIAnalytics):
     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.post("/analytics/gen-ai-token-cost")
-async def gen_usage_fetch(payload: pydantic_check.GenAITokenCost):
-    """Route function for user login action"""
+# @app.post("/analytics/gen-ai-token-cost")
+# async def gen_usage_fetch(payload: pydantic_check.GenAITokenCost):
+#     """Route function to fetch the total tokens
+#        and total cost for a challenge"""
+
+#     # req_body = await payload.json()
+#     response, status_code = fetch_gen_usage(vars(payload))
+#     logger.info("Response: %s, Status Code: %s", response, status_code)
+#     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.get("/analytics/gen-ai-token-cost-user-wise")
+async def gen_usage_fetch_user_wise(payload: pydantic_check.GenAITokenCostUserWise):
+    """Route function to fetch the total tokens
+       and total cost for challenges but user-wise"""
 
     # req_body = await payload.json()
-    response, status_code = fetch_gen_usage(vars(payload))
+    response, status_code = fetch_gen_usage_user_wise(vars(payload))
     logger.info("Response: %s, Status Code: %s", response, status_code)
     return JSONResponse(content=response, status_code=status_code)
