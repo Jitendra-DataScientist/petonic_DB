@@ -333,6 +333,6 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
         return {
             "fetch": False,
             "data1": None,
-            "data2": data2,
+            "data2": None,
             "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
         }, 500
