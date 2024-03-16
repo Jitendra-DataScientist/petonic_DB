@@ -253,6 +253,8 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
         res = db_return(query, query_data)
         # print (res,"\n\n\n\n")
         # print (res1,"\n\n\n\n")
+        ai_df = pd.DataFrame()
+        u_df = pd.DataFrame()
         if res1:
             df = pd.DataFrame(res1, columns=["challenge_id", "gen_ai_api", "cost", "tokens", "timestamp", "name"])  # pylint: disable=invalid-name
             # print(df)
