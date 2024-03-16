@@ -90,7 +90,7 @@ async def gen_log_write(payload: pydantic_check.GenAPIAnalytics):
 #     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.get("/analytics/gen-ai-token-cost-user-wise")
+@app.post("/analytics/gen-ai-token-cost-user-wise")
 async def gen_usage_fetch_user_wise(payload: pydantic_check.GenAITokenCostUserWise):
     """Route function to fetch the total tokens
        and total cost for challenges but user-wise"""

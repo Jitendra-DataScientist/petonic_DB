@@ -288,7 +288,7 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
                 if month not in result_dict[name]:
                     result_dict[name][month] = {'cost': cost, 'tokens': tokens}
         if not ai_df.empty:
-            ai_df = ai_df[["cost","token","timestamp"]]
+            ai_df = ai_df[["cost","tokens","timestamp"]]
             df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
 
             # Extract month from timestamp
