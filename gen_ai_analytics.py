@@ -295,7 +295,7 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
             df['month'] = df['timestamp'].dt.month_name()
 
             # Group by month and calculate total cost and tokens for each month
-            grouped_df = df.groupby('month').agg({'cost': 'sum', 'token': 'sum'}).reset_index()
+            grouped_df = df.groupby('month').agg({'cost': 'sum', 'tokens': 'sum'}).reset_index()
 
             # Convert the 'cost' column to string format
             grouped_df['cost'] = grouped_df['cost'].astype(str)
