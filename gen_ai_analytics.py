@@ -263,7 +263,7 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
             u_df = df[~condition]
             # print(ai_df)
             # print(u_df)
-            u_df['timestamp'] = pd.to_datetime(u_df['timestamp'], unit='s')
+            u_df.loc[:, 'timestamp'] = pd.to_datetime(u_df['timestamp'], unit='s')
 
             # Filter records from the last 12 months
             current_date = datetime.now()
@@ -314,8 +314,8 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
                 data2 = {"user_data": result_dict,
                          "ai_data": None}
             else:
-                data2 = {"user_data": result_dict,
-                         "ai_data": ai_result_dict}
+                ai_result_dict_str = {str(k): v for k, v in ai_result_dict.items()}  # Convert keys to strings
+                data2 = {"user_data": result_dict, "ai_data": ai_result_dict_str}
         if res:    # pylint: disable=no-else-return
             converted_list = [
                         (name, employee_id, num1, num2, str(num3), str(num4), num5, str(num6))
