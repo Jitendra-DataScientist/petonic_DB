@@ -315,7 +315,8 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
                          "ai_data": None}
             else:
                 ai_result_dict_str = {str(k): v for k, v in ai_result_dict.items()}  # Convert keys to strings
-                data2 = {"user_data": result_dict, "ai_data": ai_result_dict_str}
+                converted_data = {key[1:-1].replace("', ", "-").replace("'", ""): value for key, value in ai_result_dict_str.items()}
+                data2 = {"user_data": result_dict, "ai_data": converted_data}
         if res:    # pylint: disable=no-else-return
             converted_list = [
                         (name, employee_id, num1, num2, str(num3), str(num4), num5, str(num6))
