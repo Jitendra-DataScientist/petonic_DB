@@ -254,13 +254,13 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
         # print (res,"\n\n\n\n")
         # print (res1,"\n\n\n\n")
         if res1:
-            df = pd.DataFrame(res1, columns = ["challenge_id", "gen_ai_api", "cost", "tokens", "timestamp", "name"])  # pylint: disable=invalid-name
-            print(df)
+            df = pd.DataFrame(res1, columns=["challenge_id", "gen_ai_api", "cost", "tokens", "timestamp", "name"])  # pylint: disable=invalid-name
+            # print(df)
             condition = df['gen_ai_api'] == '/gen_ai_api/generate_solution'
             ai_df = df[condition]
             u_df = df[~condition]
-            print(ai_df)
-            print(u_df)
+            # print(ai_df)
+            # print(u_df)
             u_df['timestamp'] = pd.to_datetime(u_df['timestamp'], unit='s')
 
             # Filter records from the last 12 months
@@ -268,40 +268,44 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
             last_12_months = current_date - timedelta(days=365)
             filtered_df = u_df[u_df['timestamp'] >= last_12_months]
 
-            # Group by 'name' and calculate total cost and total tokens
-            grouped_df = filtered_df.groupby(['name', filtered_df['timestamp'].dt.strftime('%B')]).agg({'cost': 'sum', 'tokens': 'sum'}).reset_index()
+            # Group by 'name', 'year', and 'month' and calculate total cost and total tokens
+            grouped_df = filtered_df.rename(columns={'timestamp': 'date'}).groupby(['name', filtered_df['timestamp'].dt.year.rename('year'), filtered_df['timestamp'].dt.month_name().rename('month')]).agg({'cost': 'sum', 'tokens': 'sum'}).reset_index()
 
             # Convert the 'cost' column to string format
             grouped_df['cost'] = grouped_df['cost'].astype(str)
 
-            # Convert the grouped DataFrame to a nested dictionary with months as keys
+            # Convert the grouped DataFrame to a nested dictionary with "month-year" as keys
             result_dict = {}
             for _, row in grouped_df.iterrows():
                 name = row['name']
-                month = row['timestamp']
+                year = row['year']
+                month = row['month']
                 cost = row['cost']
                 tokens = row['tokens']
 
                 if name not in result_dict:
                     result_dict[name] = {}
 
-                if month not in result_dict[name]:
-                    result_dict[name][month] = {'cost': cost, 'tokens': tokens}
+                if f"{month}-{year}" not in result_dict[name]:
+                    result_dict[name][f"{month}-{year}"] = {'cost': cost, 'tokens': tokens}
+
         if not ai_df.empty:
-            ai_df = ai_df[["cost","tokens","timestamp"]]
+            ai_df = ai_df[["cost", "tokens", "timestamp"]]
             df['timestamp'] = pd.to_datetime(df['timestamp'], unit='s')
 
-            # Extract month from timestamp
+            # Extract year and month from timestamp
+            df['year'] = df['timestamp'].dt.year
             df['month'] = df['timestamp'].dt.month_name()
 
-            # Group by month and calculate total cost and tokens for each month
-            grouped_df = df.groupby('month').agg({'cost': 'sum', 'tokens': 'sum'}).reset_index()
+            # Group by 'year' and 'month' and calculate total cost and tokens for each month-year
+            grouped_df = df.groupby(['year', 'month']).agg({'cost': 'sum', 'tokens': 'sum'}).reset_index()
 
             # Convert the 'cost' column to string format
             grouped_df['cost'] = grouped_df['cost'].astype(str)
 
-            # Convert the grouped DataFrame to a dictionary
-            ai_result_dict = grouped_df.set_index('month').to_dict(orient='index')
+            # Convert the grouped DataFrame to a dictionary with "month-year" as keys
+            ai_result_dict = grouped_df.set_index(['month', 'year']).to_dict(orient='index')
+
         data2 = None
         if res1:
             if ai_df.empty:
