@@ -5,8 +5,8 @@ These models provide a structured and validated way to
 handle incoming JSON payloads in FastAPI routes.
 """
 from typing import Dict, Union, Any, Optional, List
-# from pydantic import BaseModel, EmailStr, constr, Union, PositiveInt, ValidationError, validator
-from pydantic import BaseModel, EmailStr, constr, PositiveInt
+from pydantic import BaseModel, EmailStr, constr, PositiveInt, validator
+# from pydantic import Union, ValidationError
 
 
 class LoginRequest(BaseModel):
@@ -20,6 +20,11 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
     # role: constr(pattern="^(initiator|contributor|approver)$")
+
+    @validator("email", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert email to lowercase."""
+        return value.lower()
 
 
 class SignupRequest(BaseModel):
@@ -44,6 +49,11 @@ class SignupRequest(BaseModel):
     admin_email: EmailStr = None
     admin_password: str = None
 
+    @validator("email", "admin_email", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert admin_email and email to lowercase."""
+        return value.lower() if value else value
+
 
 class ResendSignupMailRequest(BaseModel):
     """Pydantic model for the resend signup mail request payload.
@@ -59,6 +69,11 @@ class ResendSignupMailRequest(BaseModel):
     admin_email: EmailStr
     admin_password: str
 
+    @validator("email", "admin_email", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert admin_email and email to lowercase."""
+        return value.lower()
+
 
 class ValidationRequest(BaseModel):
     """Pydantic model for a validation request payload.
@@ -70,6 +85,11 @@ class ValidationRequest(BaseModel):
     email: EmailStr
     # role: constr(pattern="^(initiator|contributor|approver)$")
 
+    @validator("email", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert email to lowercase."""
+        return value.lower()
+
 
 class ForgotPasswordRequest(BaseModel):
     """Pydantic model for a Forgot Password request payload.
@@ -80,6 +100,11 @@ class ForgotPasswordRequest(BaseModel):
     """
     email: EmailStr
     # role: constr(pattern="^(initiator|contributor|approver)$")
+
+    @validator("email", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert email to lowercase."""
+        return value.lower()
 
 
 class ChangePasswordRequest(BaseModel):
@@ -95,6 +120,11 @@ class ChangePasswordRequest(BaseModel):
     # role: constr(pattern="^(initiator|contributor|approver)$")
     current_password: str
     new_password: str
+
+    @validator("email", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert email to lowercase."""
+        return value.lower()
 
 
 class DomainDropdownRequest(BaseModel):
@@ -176,6 +206,11 @@ class ChallengeInitiationRequest(BaseModel):
     process: str
     domain: str
 
+    @validator("initiator_id", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert initiator_id to lowercase."""
+        return value.lower()
+
 
 # class ChallengeCountRequest(BaseModel):
 #     initiator_id: constr(pattern=r'^[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$')
@@ -203,6 +238,11 @@ class ChallengeCountRequest(BaseModel):
     #     pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
     #     )
     initiator_id: EmailStr
+
+    @validator("initiator_id", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert initiator_id to lowercase."""
+        return value.lower()
 
 
 class ChallengeCreationRequest(BaseModel):
@@ -258,6 +298,17 @@ class ViewListRequest(BaseModel):
     process: Optional[List[str]] = None
     approver_id: Optional[List[EmailStr]] = None
 
+    @validator("initiator_id", "approver_id", pre=True)
+    def convert_to_lower_case(self, value):
+        """Validator to convert initiator_id and approver_id to lowercase."""
+        if value is not None:
+            if isinstance(value, list):
+                ret = [email.lower() for email in value]
+            elif isinstance(value, str):
+                ret = value.lower()
+        else: ret = value
+        return ret
+
 
 class FlipUserStatusRequest(BaseModel):
     """Pydantic model for the flip_user_status
@@ -272,6 +323,11 @@ class FlipUserStatusRequest(BaseModel):
     email: EmailStr
     admin_email: EmailStr
     admin_password: str
+
+    @validator("email", "admin_email", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert email and admin_email to lowercase."""
+        return value.lower() if value else value
 
 
 class EditUserDetailsRequest(BaseModel):
@@ -290,9 +346,14 @@ class EditUserDetailsRequest(BaseModel):
     f_name: str = None
     l_name: str = None
     role: str = None
-    employee_id: PositiveInt = None
+    employee_id: Any = None
     admin_email: EmailStr
     admin_password: str
+
+    @validator("email", "admin_email", pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert email and admin_email to lowercase."""
+        return value.lower()
 
 
 class SettinParamaterKeyParametersRequest(BaseModel):
@@ -350,6 +411,11 @@ class AddApproverRequest(BaseModel):
     approver_id: EmailStr
     challenge_id: str
 
+    @validator('approver_id', pre=True)
+    def validate_approver_id(self, value):
+        """Validator to ensure approver_id is always in lowercase."""
+        return value.lower()
+
 
 class AddApproverCommentRequest(BaseModel):
     """Pydantic model for add-approver request payload.
@@ -362,6 +428,11 @@ class AddApproverCommentRequest(BaseModel):
     approver_id: EmailStr
     challenge_id: str
     approver_comment: str
+
+    @validator('approver_id', pre=True)
+    def validate_approver_id(self, value):
+        """Validator to ensure approver_id is always in lowercase."""
+        return value.lower()
 
 
 class ViewFileListRequest(BaseModel):
@@ -385,6 +456,11 @@ class ContributorSolutionUploadRequest(BaseModel):
     contributor_id: EmailStr
     solution_json: Dict[Union[str, int], Any]
 
+    @validator('contributor_id', pre=True)
+    def convert_to_lower(self, value):
+        """Validator to convert contributor_id to lowercase."""
+        return value.lower()
+
 
 class GetUserDetailsRequest(BaseModel):
     """Pydantic model for get-user-details request payload.
@@ -393,6 +469,12 @@ class GetUserDetailsRequest(BaseModel):
         user_ids (List[EmailStr]): The list of IDs whose details are to be fetched.
     """
     user_ids: List[EmailStr]
+
+
+    @validator('user_ids', each_item=True, pre=True)
+    def convert_to_lowercase(self, value):
+        """Validator to convert user_ids to lowercase."""
+        return value.lower()
 
 
 class ProjectInitiateRequest(BaseModel):
@@ -406,6 +488,12 @@ class ProjectInitiateRequest(BaseModel):
     challenge_id: str
     pm_id: EmailStr
     pm_tool: str
+
+
+    @validator('pm_id', pre=True)
+    def validate_pm_id(self, value):
+        """Validator to convert pm_id to lowercase."""
+        return value.lower()
 
 
 class GenAPIAnalytics(BaseModel):
