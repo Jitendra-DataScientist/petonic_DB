@@ -184,9 +184,6 @@ class CG:
                 query_data = (
                                 req_body["initiator_id"],
                             )
-                query_data = (
-                                req_body["initiator_id"],
-                            )
             else:
                 query = "select count(*) from challenge where challenge_id=%s;"
                 query_data = (

@@ -64,7 +64,7 @@ class ForgotPassword:
                 WHERE email = %s;"
             ]
 
-            query_data = [(new_password, req_body["email"].lower())]
+            query_data = [(new_password, req_body["email"])]
 
             try:
                 res = db_no_return(queries_list, query_data)
@@ -106,7 +106,7 @@ class ForgotPassword:
             query = "select count(*) \
                     from validation \
                     where email = %s;"
-            query_data = (req_body["email"].lower(),)
+            query_data = (req_body["email"],)
 
             return db_return(query, query_data)
 
@@ -138,7 +138,7 @@ class ForgotPassword:
                         logger.info(             # pylint: disable=logging-too-many-args
                             "In function: ",
                             utils.send_mail_trigger_forgot_pass(
-                                req_body["email"].lower(), reset_action["new_password"]
+                                req_body["email"], reset_action["new_password"]
                             ),
                         )
                         return ({"reset_link": True}, 201)
@@ -161,9 +161,9 @@ class ForgotPassword:
                     try:
                         logger.info(
                                     "In function: send_mail_trigger_forgot_pass(email=%s, new_password=%s) returned: %s",    # pylint: disable=line-too-long
-                                    req_body["email"].lower(),
+                                    req_body["email"],
                                     reset_action["new_password"],
-                                    utils.send_mail_trigger_forgot_pass(req_body["email"].lower(), reset_action["new_password"]),    # pylint: disable=line-too-long
+                                    utils.send_mail_trigger_forgot_pass(req_body["email"], reset_action["new_password"]),    # pylint: disable=line-too-long
                                 )
 
                         return ({"reset_link": True, "IT_alert": True}, 202)
