@@ -111,7 +111,7 @@ class CG:
             query_data = [
                             (
                                 challenge_id,
-                                req_body["initiator_id"],
+                                req_body["initiator_id"].lower(),
                                 req_body["initiation_timestamp"],
                                 req_body["industry"],
                                 req_body["process"],
@@ -125,7 +125,7 @@ class CG:
                 if res == "success":   # pylint: disable=no-else-return
                     try:
                         utils.send_mail_trigger_ch_init(
-                                req_body["initiator_id"],
+                                req_body["initiator_id"].lower(),
                                 challenge_id,
                                 req_body["industry"],
                                 req_body["process"],
@@ -182,7 +182,7 @@ class CG:
             elif "initiator_id" in req_body:
                 query = "select count(*) from challenge where initiator_id=%s;"
                 query_data = (
-                                req_body["initiator_id"],
+                                req_body["initiator_id"].lower(),
                             )
             else:
                 query = "select count(*) from challenge where challenge_id=%s;"
@@ -333,10 +333,10 @@ class CG:
             if req_body['initiator_id']:
                 if len(req_body['initiator_id']) == 1:
                     where_elements.append(f"c.initiator_id IN \
-                                          {str(tuple(req_body['initiator_id']))[:-2]})")
+                                          {str(tuple(req_body['initiator_id'].lower()))[:-2]})")
                 else:
                     where_elements.append(f"c.initiator_id IN \
-                                          {str(tuple(req_body['initiator_id']))}")
+                                          {str(tuple(req_body['initiator_id'].lower()))}")
 
             # set WHERE clause - industry
             if req_body['industry']:
@@ -363,9 +363,9 @@ class CG:
             if req_body['approver_id']:
                 if len(req_body['approver_id']) == 1:
                     where_elements.append(f"ca.approver_id IN \
-                                          {str(tuple(req_body['approver_id']))[:-2]})")
+                                          {str(tuple(req_body['approver_id'].lower()))[:-2]})")
                 else:
-                    where_elements.append(f"ca.approver_id IN {tuple(req_body['approver_id'])}")
+                    where_elements.append(f"ca.approver_id IN {tuple(req_body['approver_id'].lower())}")
 
             # set WHERE clause - initiation_start_date and/or initiation_end_date
             if req_body['initiation_start_date'] and req_body['initiation_end_date']:

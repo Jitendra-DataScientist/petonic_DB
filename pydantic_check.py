@@ -5,8 +5,8 @@ These models provide a structured and validated way to
 handle incoming JSON payloads in FastAPI routes.
 """
 from typing import Dict, Union, Any, Optional, List
-from pydantic import BaseModel, EmailStr, constr, PositiveInt, validator
-# from pydantic import Union, ValidationError
+from pydantic import BaseModel, EmailStr, constr, PositiveInt
+# from pydantic import Union, ValidationError, validator
 
 
 class LoginRequest(BaseModel):
@@ -21,11 +21,11 @@ class LoginRequest(BaseModel):
     password: str
     # role: constr(pattern="^(initiator|contributor|approver)$")
 
-    @classmethod
-    @validator("email", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert email to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator("email", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert email to lowercase."""
+    #     return value.lower()
 
 
 class SignupRequest(BaseModel):
@@ -50,11 +50,11 @@ class SignupRequest(BaseModel):
     admin_email: EmailStr = None
     admin_password: str = None
 
-    @classmethod
-    @validator("email", "admin_email", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert admin_email and email to lowercase."""
-        return value.lower() if value else value
+    # @classmethod
+    # @validator("email", "admin_email", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert admin_email and email to lowercase."""
+    #     return value.lower() if value else value
 
 
 class ResendSignupMailRequest(BaseModel):
@@ -71,11 +71,11 @@ class ResendSignupMailRequest(BaseModel):
     admin_email: EmailStr
     admin_password: str
 
-    @classmethod
-    @validator("email", "admin_email", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert admin_email and email to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator("email", "admin_email", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert admin_email and email to lowercase."""
+    #     return value.lower()
 
 
 class ValidationRequest(BaseModel):
@@ -88,11 +88,11 @@ class ValidationRequest(BaseModel):
     email: EmailStr
     # role: constr(pattern="^(initiator|contributor|approver)$")
 
-    @classmethod
-    @validator("email", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert email to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator("email", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert email to lowercase."""
+    #     return value.lower()
 
 
 class ForgotPasswordRequest(BaseModel):
@@ -105,11 +105,11 @@ class ForgotPasswordRequest(BaseModel):
     email: EmailStr
     # role: constr(pattern="^(initiator|contributor|approver)$")
 
-    @classmethod
-    @validator("email", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert email to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator("email", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert email to lowercase."""
+    #     return value.lower()
 
 
 class ChangePasswordRequest(BaseModel):
@@ -126,11 +126,11 @@ class ChangePasswordRequest(BaseModel):
     current_password: str
     new_password: str
 
-    @classmethod
-    @validator("email", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert email to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator("email", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert email to lowercase."""
+    #     return value.lower()
 
 
 class DomainDropdownRequest(BaseModel):
@@ -212,11 +212,11 @@ class ChallengeInitiationRequest(BaseModel):
     process: str
     domain: str
 
-    @classmethod
-    @validator("initiator_id", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert initiator_id to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator("initiator_id", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert initiator_id to lowercase."""
+    #     return value.lower()
 
 
 # class ChallengeCountRequest(BaseModel):
@@ -246,11 +246,11 @@ class ChallengeCountRequest(BaseModel):
     #     )
     initiator_id: EmailStr
 
-    @classmethod
-    @validator("initiator_id", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert initiator_id to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator("initiator_id", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert initiator_id to lowercase."""
+    #     return value.lower()
 
 
 class ChallengeCreationRequest(BaseModel):
@@ -306,17 +306,17 @@ class ViewListRequest(BaseModel):
     process: Optional[List[str]] = None
     approver_id: Optional[List[EmailStr]] = None
 
-    @classmethod
-    @validator("initiator_id", "approver_id", pre=True)
-    def convert_to_lower_case(self, value):
-        """Validator to convert initiator_id and approver_id to lowercase."""
-        if value is not None:
-            if isinstance(value, list):
-                ret = [email.lower() for email in value]
-            elif isinstance(value, str):
-                ret = value.lower()
-        else: ret = value
-        return ret
+    # @classmethod
+    # @validator("initiator_id", "approver_id", pre=True)
+    # def convert_to_lower_case(self, value):
+    #     """Validator to convert initiator_id and approver_id to lowercase."""
+    #     if value is not None:
+    #         if isinstance(value, list):
+    #             ret = [email.lower() for email in value]
+    #         elif isinstance(value, str):
+    #             ret = value.lower()
+    #     else: ret = value
+    #     return ret
 
 
 class FlipUserStatusRequest(BaseModel):
@@ -333,11 +333,11 @@ class FlipUserStatusRequest(BaseModel):
     admin_email: EmailStr
     admin_password: str
 
-    @classmethod
-    @validator("email", "admin_email", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert email and admin_email to lowercase."""
-        return value.lower() if value else value
+    # @classmethod
+    # @validator("email", "admin_email", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert email and admin_email to lowercase."""
+    #     return value.lower() if value else value
 
 
 class EditUserDetailsRequest(BaseModel):
@@ -360,11 +360,11 @@ class EditUserDetailsRequest(BaseModel):
     admin_email: EmailStr
     admin_password: str
 
-    @classmethod
-    @validator("email", "admin_email", pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert email and admin_email to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator("email", "admin_email", pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert email and admin_email to lowercase."""
+    #     return value.lower()
 
 
 class SettinParamaterKeyParametersRequest(BaseModel):
@@ -422,11 +422,11 @@ class AddApproverRequest(BaseModel):
     approver_id: EmailStr
     challenge_id: str
 
-    @classmethod
-    @validator('approver_id', pre=True)
-    def validate_approver_id(self, value):
-        """Validator to ensure approver_id is always in lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator('approver_id', pre=True)
+    # def validate_approver_id(self, value):
+    #     """Validator to ensure approver_id is always in lowercase."""
+    #     return value.lower()
 
 
 class AddApproverCommentRequest(BaseModel):
@@ -441,11 +441,11 @@ class AddApproverCommentRequest(BaseModel):
     challenge_id: str
     approver_comment: str
 
-    @classmethod
-    @validator('approver_id', pre=True)
-    def validate_approver_id(self, value):
-        """Validator to ensure approver_id is always in lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator('approver_id', pre=True)
+    # def validate_approver_id(self, value):
+    #     """Validator to ensure approver_id is always in lowercase."""
+    #     return value.lower()
 
 
 class ViewFileListRequest(BaseModel):
@@ -469,11 +469,11 @@ class ContributorSolutionUploadRequest(BaseModel):
     contributor_id: EmailStr
     solution_json: Dict[Union[str, int], Any]
 
-    @classmethod
-    @validator('contributor_id', pre=True)
-    def convert_to_lower(self, value):
-        """Validator to convert contributor_id to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator('contributor_id', pre=True)
+    # def convert_to_lower(self, value):
+    #     """Validator to convert contributor_id to lowercase."""
+    #     return value.lower()
 
 
 class GetUserDetailsRequest(BaseModel):
@@ -484,11 +484,11 @@ class GetUserDetailsRequest(BaseModel):
     """
     user_ids: List[EmailStr]
 
-    @classmethod
-    @validator('user_ids', each_item=True, pre=True)
-    def convert_to_lowercase(self, value):
-        """Validator to convert user_ids to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator('user_ids', each_item=True, pre=True)
+    # def convert_to_lowercase(self, value):
+    #     """Validator to convert user_ids to lowercase."""
+    #     return value.lower()
 
 
 class ProjectInitiateRequest(BaseModel):
@@ -503,11 +503,11 @@ class ProjectInitiateRequest(BaseModel):
     pm_id: EmailStr
     pm_tool: str
 
-    @classmethod
-    @validator('pm_id', pre=True)
-    def validate_pm_id(self, value):
-        """Validator to convert pm_id to lowercase."""
-        return value.lower()
+    # @classmethod
+    # @validator('pm_id', pre=True)
+    # def validate_pm_id(self, value):
+    #     """Validator to convert pm_id to lowercase."""
+    #     return value.lower()
 
 
 class GenAPIAnalytics(BaseModel):
