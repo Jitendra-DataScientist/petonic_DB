@@ -66,7 +66,7 @@ class ChangePassword:
                 WHERE email = %s;"
             ]
 
-            query_data = [(req_body["new_password"], req_body["email"])]
+            query_data = [(req_body["new_password"], req_body["email"].lower())]
 
             try:
                 res = db_no_return(queries_list, query_data)
@@ -110,7 +110,7 @@ class ChangePassword:
                     on ul.email = v.email\
                     where ul.email = %s and ul.password = %s;"
             query_data = (
-                req_body["email"],
+                req_body["email"].lower(),
                 req_body["current_password"],
             )
 
@@ -143,7 +143,7 @@ class ChangePassword:
                         logger.info(             # pylint: disable=logging-too-many-args
                             "In function: ",
                             utils.send_mail_trigger_change_pass(
-                                req_body["email"], reset_action["new_password"]
+                                req_body["email"].lower(), reset_action["new_password"]
                             ),
                         )
                         return ({"reset": True}, 201)

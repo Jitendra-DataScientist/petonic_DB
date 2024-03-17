@@ -158,7 +158,7 @@ class CAG:
             # check if approver_id exists
             query = "select count(*) from user_signup\
                     where email = %s and role = 'approver';"
-            query_data = (req_body["approver_id"],)
+            query_data = (req_body["approver_id"].lower(),)
 
             approver_id_count = db_return(query, query_data)
 
@@ -183,8 +183,8 @@ class CAG:
                     ]
             query_data = [(
                             req_body["challenge_id"],
-                            req_body["approver_id"],
-                            req_body["approver_id"],
+                            req_body["approver_id"].lower(),
+                            req_body["approver_id"].lower(),
                         ),]
 
             res = db_no_return(query, query_data)
@@ -219,7 +219,7 @@ class CAG:
 
             approver_details = db_return(query, query_data)
             if  not approver_details or not approver_details[0][0] or\
-            approver_details[0][0] != req_body["approver_id"]\
+            approver_details[0][0] != req_body["approver_id"].lower()\
             or approver_details[0][1]:
                 return {"update": False,
                         "helpText": "Invalid challenge_id/approver_id,\

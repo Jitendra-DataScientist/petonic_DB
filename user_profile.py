@@ -73,7 +73,7 @@ class UserProfile:
                     on ul.email = v.email \
                     where ul.email = %s and ul.password = %s and v.active = 'true';"
             query_data = (
-                req_body["email"],
+                req_body["email"].lower(),
                 req_body["password"],
             )
 
@@ -86,7 +86,7 @@ class UserProfile:
                             from user_signup\
                             where user_signup.email = %s;"
                     query_data = (
-                        req_body["email"],
+                        req_body["email"].lower(),
                     )
                     role = db_return(query, query_data)
                 else:
@@ -165,7 +165,7 @@ class UserProfile:
                     from user_signup\
                     where email = %s;"
             query_data = (
-                req_body["email"],
+                req_body["email"].lower(),
             )
 
             role_data = db_return(query, query_data)
@@ -182,7 +182,7 @@ class UserProfile:
             if req_body["role"] != "admin":
                 try:
                     if self.login(
-                        {"email":req_body["admin_email"],
+                        {"email":req_body["admin_email"].lower(),
                         "password":req_body["admin_password"]
                         }
                         )[1] == "admin":
@@ -208,13 +208,13 @@ class UserProfile:
 
             query_data = [
                 (
-                    req_body["email"],
+                    req_body["email"].lower(),
                     first_password,
                 ),
                 (
                     req_body["f_name"],
                     req_body["l_name"],
-                    req_body["email"],
+                    req_body["email"].lower(),
                     req_body["role"],
                     req_body["employee_id"],
                 ),
@@ -229,14 +229,14 @@ class UserProfile:
                         user_profile_data = json.load(file_handle)
 
                     # Update user profile data with new user information
-                    user_profile_data[req_body["email"]] = {req_body["role"]: [time.time()]}
+                    user_profile_data[req_body["email"].lower()] = {req_body["role"]: [time.time()]}
 
 
                     # Write updated user profile data back to the file
                     with open(self.user_profile_file, "w", encoding="utf-8") as file_handle:
                         json.dump(user_profile_data, file_handle)
 
-                    if utils.send_mail_trigger_signup(req_body["email"],                  # pylint: disable=no-else-return
+                    if utils.send_mail_trigger_signup(req_body["email"].lower(),                  # pylint: disable=no-else-return
                                                       first_password, req_body["role"]):
                         return {"user_creation": True}, 201
                     else:
@@ -274,7 +274,7 @@ class UserProfile:
             # verify admin creds
             try:
                 if self.login(
-                    {"email":req_body["admin_email"],
+                    {"email":req_body["admin_email"].lower(),
                     "password":req_body["admin_password"]
                     }
                     )[1] == "admin":
@@ -294,13 +294,13 @@ class UserProfile:
                 WHERE email = %s;"
             ]
 
-            query_data = [(new_password, req_body["email"])]
+            query_data = [(new_password, req_body["email"].lower())]
 
             try:
                 res = db_no_return(queries_list, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
-                    if utils.send_mail_trigger_signup(req_body["email"],                  # pylint: disable=no-else-return
+                    if utils.send_mail_trigger_signup(req_body["email"].lower(),                  # pylint: disable=no-else-return
                                                       new_password, req_body["role"]):
                         return {"resend": True}, 201
                     else:
@@ -339,7 +339,7 @@ class UserProfile:
             # Queries Formation
             queries_list = ["INSERT INTO validation (email, active) VALUES (%s, %s);"]
 
-            query_data = [(req_body["email"], True)]
+            query_data = [(req_body["email"].lower(), True)]
 
             try:
                 res = db_no_return(queries_list, query_data)

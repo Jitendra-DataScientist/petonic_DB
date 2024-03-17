@@ -144,7 +144,7 @@ class CAJ:
 
             # Retrieving request data
             challenge_id = req_body["challenge_id"]
-            contributor_id = req_body["contributor_id"]
+            contributor_id = req_body["contributor_id"].lower()
             solution_json = req_body["solution_json"]
 
             # check if challenge_id exists
@@ -172,11 +172,11 @@ class CAJ:
             #                 challenge in contributor_approver table"}, 400
 
 
-            if req_body["contributor_id"] != "ai_solution@petonic.in":
+            if req_body["contributor_id"].lower() != "ai_solution@petonic.in":
                 # check if contributor_id exists
                 query = "select count(*) from user_signup\
                         where email = %s and role = 'contributor';"
-                query_data = (req_body["contributor_id"],)
+                query_data = (req_body["contributor_id"].lower(),)
 
                 contributor_id_count = db_return(query, query_data)
 
