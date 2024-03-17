@@ -70,7 +70,7 @@ class Admin:
             # verify admin creds
             try:
                 if user_profile_instance.login(
-                    {"email":req_body["admin_email"],
+                    {"email":req_body["admin_email"].lower(),
                      "password":req_body["admin_password"]
                      }
                      )[1] == "admin":
@@ -91,7 +91,7 @@ class Admin:
                     WHERE ul.email = %s\
                     GROUP BY v.active"
             query_data = (
-                req_body["email"],
+                req_body["email"].lower(),
             )
             ret_data = db_return(query, query_data)
             if isinstance(ret_data[0][0], int):
@@ -101,7 +101,7 @@ class Admin:
                                     SET active = NOT active\
                                     WHERE email = %s;",]
 
-                    query_data = [(req_body["email"],),]
+                    query_data = [(req_body["email"].lower(),),]
 
                     try:
                         res = db_no_return(queries_list, query_data)
@@ -109,7 +109,7 @@ class Admin:
                         if  res == "success":   # pylint: disable=no-else-return
                             try:
                                 utils.send_mail_trigger_status_change(
-                                    req_body["email"], not ret_data[0][1]
+                                    req_body["email"].lower(), not ret_data[0][1]
                                     )
                             except Exception as mail_error:  # pylint: disable=broad-exception-caught
                                 exception_type, _, exception_traceback = sys.exc_info()
@@ -162,7 +162,7 @@ class Admin:
         # verify admin creds
         try:
             if user_profile_instance.login(
-                {"email":req_body["admin_email"],
+                {"email":req_body["admin_email"].lower(),
                  "password":req_body["admin_password"]
                  }
                  )[1] == "admin":
@@ -187,7 +187,7 @@ class Admin:
                     from user_signup\
                     where user_signup.email = %s"
             query_data = (
-                req_body["email"],
+                req_body["email"].lower(),
             )
             ret_data = db_return(query, query_data)
             if isinstance(ret_data[0][0], int):
@@ -207,7 +207,7 @@ class Admin:
                     update_query = f"UPDATE user_signup SET {set_clause} {where_clause};"
 
                     # Create a tuple of values for the query
-                    values = tuple(update_fields.values()) + (req_body["email"],)
+                    values = tuple(update_fields.values()) + (req_body["email"].lower(),)
 
                     # Now you can use these in your queries_list and query_data
                     queries_list = [update_query]
@@ -225,14 +225,14 @@ class Admin:
                                     user_profile_data = json.load(file_handle)
 
                                 # Check if the role already exists for this email
-                                if req_body["role"] in user_profile_data.get(req_body["email"], {}):
+                                if req_body["role"] in user_profile_data.get(req_body["email"].lower(), {}):
                                     # Role already exists, append the epoch to the existing list
-                                    user_profile_data[req_body["email"]][req_body["role"]].append(
+                                    user_profile_data[req_body["email"].lower()][req_body["role"]].append(
                                         time.time()
                                         )
                                 else:
                                     # Role does not exist, create a new list with the current epoch
-                                    user_profile_data.setdefault(req_body["email"], {})[
+                                    user_profile_data.setdefault(req_body["email"].lower(), {})[
                                         req_body["role"]
                                         ] = [time.time()]
 
@@ -244,7 +244,7 @@ class Admin:
                                 # send mail
                                 try:
                                     utils.send_mail_trigger_role_change(
-                                        req_body["email"], req_body["role"]
+                                        req_body["email"].lower(), req_body["role"]
                                         )
                                 except Exception as mail_error:             # pylint: disable=broad-exception-caught
                                     logger.error("Mail sending error: %s", mail_error)
