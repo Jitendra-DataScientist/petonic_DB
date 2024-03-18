@@ -421,7 +421,7 @@ class AddApproverRequest(BaseModel):
     """
     approver_id: EmailStr
     challenge_id: str
-#### bookmark
+
     # @classmethod
     # @validator('approver_id', pre=True)
     # def validate_approver_id(self, value):
