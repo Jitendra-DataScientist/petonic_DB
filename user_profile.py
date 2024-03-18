@@ -381,15 +381,18 @@ class UserProfile:
             }, 500
 
 
-    def get_user_details(self, req_body):
+    def get_user_details(self, req_Body):
         """
             function to fetch details of users
             based on email IDs.
         """
         try:
-            if not req_body["user_ids"]:
+            if not req_Body["user_ids"]:
                 return {"fetch": False,
                         "helpText": "no user_id passed",}, 400
+            else:
+                req_body = req_Body.copy()
+                req_body["user_ids"] = [item.lower() for item in req_body['user_ids']]
             # Queries Formation
             query = "SELECT us.email,us.role,us.employee_id,us.f_name,us.l_name,v.active\
                     FROM user_signup us\

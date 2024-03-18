@@ -150,11 +150,14 @@ class CAG:
     #         }, 500
 
 
-    def add_approver(self, req_body):
+    def add_approver(self, req_Body):
         """function for adding an approver_id to approver_id
            column in the contributor_approver table
         """
         try:
+            req_body = req_Body.copy()
+            req_body['approver_id'] = req_body['approver_id'].lower()
+
             # check if approver_id exists
             query = "select count(*) from user_signup\
                     where email = %s and role = 'approver';"

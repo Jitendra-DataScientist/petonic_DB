@@ -49,11 +49,13 @@ class PM:   # pylint: disable=too-few-public-methods
        this class primarily contains the functions that
        are project management related
     """
-    def project_initiation(self, req_body):
+    def project_initiation(self, req_Body):
         """ function to add project manager name and
             project management tool eing used, to DB
         """
         try:
+            req_body = req_Body.copy()
+            req_body['pm_id'] = req_body['pm_id'].lower()
             # check if the challenge_id is present in challenge table
             challenge_check = challenge_generic_instance.challenge_count(
                 {"challenge_id": req_body["challenge_id"]}
