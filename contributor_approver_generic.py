@@ -158,7 +158,7 @@ class CAG:
             # check if approver_id exists
             query = "select count(*) from user_signup\
                     where email = %s and role = 'approver';"
-            query_data = (req_body["approver_id"].lower(),)
+            query_data = (req_body["approver_id"],)
 
             approver_id_count = db_return(query, query_data)
 
@@ -183,8 +183,8 @@ class CAG:
                     ]
             query_data = [(
                             req_body["challenge_id"],
-                            req_body["approver_id"].lower(),
-                            req_body["approver_id"].lower(),
+                            req_body["approver_id"],
+                            req_body["approver_id"],
                         ),]
 
             res = db_no_return(query, query_data)
@@ -206,12 +206,14 @@ class CAG:
             }, 500
 
 
-    def add_approver_comment(self, req_body):
+    def add_approver_comment(self, req_Body):
         """function for adding approver's comment to
            contributor_approver table corresponding
            to a challenge_id
         """
         try:
+            req_body = req_Body.copy()
+            req_body['approver_id'] = req_body['approver_id'].lower()
             # check if approver_id is correct (assigned to the corresponding challenge)
             query = "select approver_id,approver_comment from\
                      contributor_approver where challenge_id=%s;"
@@ -219,7 +221,7 @@ class CAG:
 
             approver_details = db_return(query, query_data)
             if  not approver_details or not approver_details[0][0] or\
-            approver_details[0][0] != req_body["approver_id"].lower()\
+            approver_details[0][0] != req_body["approver_id"]\
             or approver_details[0][1]:
                 return {"update": False,
                         "helpText": "Invalid challenge_id/approver_id,\
