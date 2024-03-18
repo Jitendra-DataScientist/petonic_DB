@@ -240,7 +240,7 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
                         us.employee_id;
                 """
         query_data = None
-        query1 = """SELECT gaa.challenge_id, gaa.gen_ai_api, gaa.cost, gaa.tokens, gaa.timestamp, CONCAT(us.f_name, ' ', us.l_name) AS name
+        query1 = """SELECT gaa.challenge_id, gaa.gen_ai_api, gaa.cost, gaa.tokens, gaa.timestamp, CONCAT(us.f_name, ' ', us.l_name) AS name, us.employee_id
                     FROM gen_ai_analytics gaa
                     LEFT JOIN challenge c
                     ON gaa.challenge_id = c.challenge_id
@@ -256,7 +256,7 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
         ai_df = pd.DataFrame()
         u_df = pd.DataFrame()
         if res1:
-            df = pd.DataFrame(res1, columns=["challenge_id", "gen_ai_api", "cost", "tokens", "timestamp", "name"])  # pylint: disable=invalid-name
+            df = pd.DataFrame(res1, columns=["challenge_id", "gen_ai_api", "cost", "tokens", "timestamp", "name", "employee_id"])  # pylint: disable=invalid-name
             # print(df)
             condition = df['gen_ai_api'] == '/gen_ai_api/generate_solution'
             ai_df = df[condition]
@@ -271,7 +271,7 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
             filtered_df = u_df[u_df['timestamp'] >= last_12_months]
 
             # Group by 'name', 'year', and 'month' and calculate total cost and total tokens
-            grouped_df = filtered_df.rename(columns={'timestamp': 'date'}).groupby(['name', filtered_df['timestamp'].dt.year.rename('year'), filtered_df['timestamp'].dt.month_name().rename('month')]).agg({'cost': 'sum', 'tokens': 'sum'}).reset_index()
+            grouped_df = filtered_df.rename(columns={'timestamp': 'date'}).groupby(['employee_id', filtered_df['timestamp'].dt.year.rename('year'), filtered_df['timestamp'].dt.month_name().rename('month')]).agg({'cost': 'sum', 'tokens': 'sum'}).reset_index()
 
             # Convert the 'cost' column to string format
             grouped_df['cost'] = grouped_df['cost'].astype(str)
@@ -279,17 +279,18 @@ def fetch_gen_usage_user_wise(req_body):  # pylint: disable=too-many-locals,too-
             # Convert the grouped DataFrame to a nested dictionary with "month-year" as keys
             result_dict = {}
             for _, row in grouped_df.iterrows():
-                name = row['name']
+                # name = row['name']
                 year = row['year']
                 month = row['month']
                 cost = row['cost']
                 tokens = row['tokens']
+                employee_id = row['employee_id']
 
-                if name not in result_dict:
-                    result_dict[name] = {}
+                if employee_id not in result_dict:
+                    result_dict[employee_id] = {}
 
-                if f"{month}-{year}" not in result_dict[name]:
-                    result_dict[name][f"{month}-{year}"] = {'cost': cost, 'tokens': tokens}
+                if f"{month}-{year}" not in result_dict[employee_id]:
+                    result_dict[employee_id][f"{month}-{year}"] = {'cost': cost, 'tokens': tokens}
 
         if not ai_df.empty:
             ai_df = ai_df[["cost", "tokens", "timestamp"]]
