@@ -69,9 +69,11 @@ class CG:
        calling relevant pyscopg2 operation files (CRUD)
     """
 
-    def challenge_initiation(self, req_body):  # pylint: disable=too-many-locals
+    def challenge_initiation(self, req_Body):  # pylint: disable=too-many-locals
         """function for challenge initiation (an entry added in challenge table)"""
         try:
+            req_body = req_Body.copy()
+            req_body['initiator_id'] = req_body['initiator_id'].lower()
             # try:
             #     challenge_id = self.challenge_count("max_of_ch_id")[0]['count'] + 1
             # except TypeError:
@@ -111,7 +113,7 @@ class CG:
             query_data = [
                             (
                                 challenge_id,
-                                req_body["initiator_id"].lower(),
+                                req_body["initiator_id"],
                                 req_body["initiation_timestamp"],
                                 req_body["industry"],
                                 req_body["process"],
@@ -125,7 +127,7 @@ class CG:
                 if res == "success":   # pylint: disable=no-else-return
                     try:
                         utils.send_mail_trigger_ch_init(
-                                req_body["initiator_id"].lower(),
+                                req_body["initiator_id"],
                                 challenge_id,
                                 req_body["industry"],
                                 req_body["process"],
@@ -164,11 +166,13 @@ class CG:
             }, 500
 
 
-    def challenge_count(self, req_body):
+    def challenge_count(self, req_Body):
         """function for counting the number of
            challenges corresponding to a user_id
         """
         try:
+            req_body = req_Body.copy()
+            req_body['initiator_id'] = req_body['initiator_id'].lower()
             # Queries Formation
             # if req_body == "max_of_ch_id":
             #     query = "select max(challenge_id) from challenge;"
@@ -182,7 +186,7 @@ class CG:
             elif "initiator_id" in req_body:
                 query = "select count(*) from challenge where initiator_id=%s;"
                 query_data = (
-                                req_body["initiator_id"].lower(),
+                                req_body["initiator_id"],
                             )
             else:
                 query = "select count(*) from challenge where challenge_id=%s;"
@@ -333,10 +337,10 @@ class CG:
             if req_body['initiator_id']:
                 if len(req_body['initiator_id']) == 1:
                     where_elements.append(f"c.initiator_id IN \
-                                          {str(tuple(req_body['initiator_id'].lower()))[:-2]})")
+                                          {str(tuple(req_body['initiator_id']))[:-2]})")
                 else:
                     where_elements.append(f"c.initiator_id IN \
-                                          {str(tuple(req_body['initiator_id'].lower()))}")
+                                          {str(tuple(req_body['initiator_id']))}")
 
             # set WHERE clause - industry
             if req_body['industry']:
@@ -363,9 +367,9 @@ class CG:
             if req_body['approver_id']:
                 if len(req_body['approver_id']) == 1:
                     where_elements.append(f"ca.approver_id IN \
-                                          {str(tuple(req_body['approver_id'].lower()))[:-2]})")
+                                          {str(tuple(req_body['approver_id']))[:-2]})")
                 else:
-                    where_elements.append(f"ca.approver_id IN {tuple(req_body['approver_id'].lower())}")
+                    where_elements.append(f"ca.approver_id IN {tuple(req_body['approver_id'])}")
 
             # set WHERE clause - initiation_start_date and/or initiation_end_date
             if req_body['initiation_start_date'] and req_body['initiation_end_date']:
@@ -444,9 +448,17 @@ class CG:
     # def cont_name_func(self, email_list, mapping_dict):
     #     return [mapping_dict.get(element) for element in email_list]
 
-    def view_list(self, req_body=None):
+    def view_list(self, req_Body=None):
         """function for view-list page for all roles"""
         try:
+            if req_Body:
+                req_body = req_Body.copy()
+                if "initiator_id" in req_body and req_body['initiator_id']:
+                    req_body['initiator_id'] = req_body['initiator_id'].lower()
+                if "approver_id" in req_body and req_body['approver_id']:
+                    req_body['approver_id'] = req_body['approver_id'].lower()
+            else:
+                req_body = None
             query = self.view_list_query(req_body)
             if query == "Bad Request":
                 return {"fetch": False,

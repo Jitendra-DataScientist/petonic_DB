@@ -66,7 +66,7 @@ class ChangePassword:
                 WHERE email = %s;"
             ]
 
-            query_data = [(req_body["new_password"], req_body["email"].lower())]
+            query_data = [(req_body["new_password"], req_body["email"])]
 
             try:
                 res = db_no_return(queries_list, query_data)
@@ -110,7 +110,7 @@ class ChangePassword:
                     on ul.email = v.email\
                     where ul.email = %s and ul.password = %s;"
             query_data = (
-                req_body["email"].lower(),
+                req_body["email"],
                 req_body["current_password"],
             )
 
@@ -126,10 +126,12 @@ class ChangePassword:
             }
 
 
-    def change_password_main(self, req_body):             # pylint: disable=too-many-return-statements
+    def change_password_main(self, req_Body):             # pylint: disable=too-many-return-statements
         """function to trigger functions stack for
            change-password functionality
         """
+        req_body = req_Body.copy()
+        req_body['email'] = req_body['email'].lower()
         data = self.change_password_response_from_query(req_body)
         logger.info(data)
         # below 2 lines for testing
@@ -143,7 +145,7 @@ class ChangePassword:
                         logger.info(             # pylint: disable=logging-too-many-args
                             "In function: ",
                             utils.send_mail_trigger_change_pass(
-                                req_body["email"].lower(), reset_action["new_password"]
+                                req_body["email"], reset_action["new_password"]
                             ),
                         )
                         return ({"reset": True}, 201)
