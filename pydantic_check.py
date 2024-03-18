@@ -133,22 +133,22 @@ class ChangePasswordRequest(BaseModel):
     #     return value.lower()
 
 
-class DomainDropdownRequest(BaseModel):
-    """Pydantic model for the domain-dropdown request payload.
+# class DomainDropdownRequest(BaseModel):
+#     """Pydantic model for the domain-dropdown request payload.
 
-    Attributes:
-        industry_id (int): The ID of the industry.
-    """
-    industry_id: PositiveInt
+#     Attributes:
+#         industry_id (int): The ID of the industry.
+#     """
+#     industry_id: PositiveInt
 
 
-class ProcessDropdownRequest(BaseModel):
-    """Pydantic model for the process-dropdown request payload.
+# class ProcessDropdownRequest(BaseModel):
+#     """Pydantic model for the process-dropdown request payload.
 
-    Attributes:
-        domain_id (int): The ID of the domain.
-    """
-    domain_id: PositiveInt
+#     Attributes:
+#         domain_id (int): The ID of the domain.
+#     """
+#     domain_id: PositiveInt
 
 
 class UpdateChallengeStatusRequest(BaseModel):

@@ -73,7 +73,7 @@ class UserProfile:
                     on ul.email = v.email \
                     where ul.email = %s and ul.password = %s and v.active = 'true';"
             query_data = (
-                req_body["email"].lower(),
+                req_body["email"],
                 req_body["password"],
             )
 
@@ -86,7 +86,7 @@ class UserProfile:
                             from user_signup\
                             where user_signup.email = %s;"
                     query_data = (
-                        req_body["email"].lower(),
+                        req_body["email"],
                     )
                     role = db_return(query, query_data)
                 else:
@@ -116,12 +116,14 @@ class UserProfile:
             }
 
 
-    def login_trigger(self, req_body):
+    def login_trigger(self, req_Body):
         """Function to trigger above login
            funtion, and return response
         """
 
         try:
+            req_body = req_Body.copy()
+            req_body['email'] = req_body['email'].lower()
             data = self.login(req_body)
             logger.info(data)
             # below 2 lines for testing
@@ -157,15 +159,18 @@ class UserProfile:
                     }, 500
 
 
-    def signup(self, req_body):  # pylint: disable=too-many-locals,too-many-return-statements
+    def signup(self, req_Body):  # pylint: disable=too-many-locals,too-many-return-statements
         """function for signup funtionality"""
         try:
+            req_body = req_Body.copy()
+            req_body['email'] = req_body['email'].lower()
+            req_body['admin_email'] = req_body['admin_email'].lower()
             # check if admin role
             query = "select role \
                     from user_signup\
                     where email = %s;"
             query_data = (
-                req_body["email"].lower(),
+                req_body["email"],
             )
 
             role_data = db_return(query, query_data)
@@ -182,7 +187,7 @@ class UserProfile:
             if req_body["role"] != "admin":
                 try:
                     if self.login(
-                        {"email":req_body["admin_email"].lower(),
+                        {"email":req_body["admin_email"],
                         "password":req_body["admin_password"]
                         }
                         )[1] == "admin":
@@ -208,13 +213,13 @@ class UserProfile:
 
             query_data = [
                 (
-                    req_body["email"].lower(),
+                    req_body["email"],
                     first_password,
                 ),
                 (
                     req_body["f_name"],
                     req_body["l_name"],
-                    req_body["email"].lower(),
+                    req_body["email"],
                     req_body["role"],
                     req_body["employee_id"],
                 ),
@@ -229,14 +234,14 @@ class UserProfile:
                         user_profile_data = json.load(file_handle)
 
                     # Update user profile data with new user information
-                    user_profile_data[req_body["email"].lower()] = {req_body["role"]: [time.time()]}
+                    user_profile_data[req_body["email"]] = {req_body["role"]: [time.time()]}
 
 
                     # Write updated user profile data back to the file
                     with open(self.user_profile_file, "w", encoding="utf-8") as file_handle:
                         json.dump(user_profile_data, file_handle)
 
-                    if utils.send_mail_trigger_signup(req_body["email"].lower(),                  # pylint: disable=no-else-return
+                    if utils.send_mail_trigger_signup(req_body["email"],                  # pylint: disable=no-else-return
                                                       first_password, req_body["role"]):
                         return {"user_creation": True}, 201
                     else:
@@ -267,14 +272,17 @@ class UserProfile:
             }, 500
 
 
-    def resend_mail_signup(self, req_body):  # pylint: disable=too-many-return-statements
+    def resend_mail_signup(self, req_Body):  # pylint: disable=too-many-return-statements
         """funtionality to resend signup mail with a
            different password, rest creds remain the same"""
         try:
+            req_body = req_Body.copy()
+            req_body['email'] = req_body['email'].lower()
+            req_body['admin_email'] = req_body['admin_email'].lower()
             # verify admin creds
             try:
                 if self.login(
-                    {"email":req_body["admin_email"].lower(),
+                    {"email":req_body["admin_email"],
                     "password":req_body["admin_password"]
                     }
                     )[1] == "admin":
@@ -294,13 +302,13 @@ class UserProfile:
                 WHERE email = %s;"
             ]
 
-            query_data = [(new_password, req_body["email"].lower())]
+            query_data = [(new_password, req_body["email"])]
 
             try:
                 res = db_no_return(queries_list, query_data)
 
                 if res == "success":   # pylint: disable=no-else-return
-                    if utils.send_mail_trigger_signup(req_body["email"].lower(),                  # pylint: disable=no-else-return
+                    if utils.send_mail_trigger_signup(req_body["email"],                  # pylint: disable=no-else-return
                                                       new_password, req_body["role"]):
                         return {"resend": True}, 201
                     else:
@@ -331,15 +339,17 @@ class UserProfile:
                 }, 500
 
 
-    def validation(self, req_body):
+    def validation(self, req_Body):
         """function for email-validation funtionality
            after user signup
         """
         try:
+            req_body = req_Body.copy()
+            req_body['email'] = req_body['email'].lower()
             # Queries Formation
             queries_list = ["INSERT INTO validation (email, active) VALUES (%s, %s);"]
 
-            query_data = [(req_body["email"].lower(), True)]
+            query_data = [(req_body["email"], True)]
 
             try:
                 res = db_no_return(queries_list, query_data)
