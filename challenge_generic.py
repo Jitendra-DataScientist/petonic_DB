@@ -454,9 +454,9 @@ class CG:
             if req_Body:
                 req_body = req_Body.copy()
                 if "initiator_id" in req_body and req_body['initiator_id']:
-                    req_body['initiator_id'] = req_body['initiator_id'].lower()
+                    req_body['initiator_id'] = [item.lower() for item in req_body['initiator_id']]
                 if "approver_id" in req_body and req_body['approver_id']:
-                    req_body['approver_id'] = req_body['approver_id'].lower()
+                    req_body['approver_id'] = [item.lower() for item in req_body['approver_id']]
             else:
                 req_body = None
             query = self.view_list_query(req_body)
