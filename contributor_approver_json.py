@@ -144,7 +144,7 @@ class CAJ:
 
             # Retrieving request data
             challenge_id = req_body["challenge_id"]
-            contributor_id = req_body["contributor_id"]
+            contributor_id = req_body["contributor_id"].lower()
             solution_json = req_body["solution_json"]
 
             # check if challenge_id exists
