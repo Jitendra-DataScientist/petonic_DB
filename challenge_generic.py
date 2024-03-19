@@ -172,7 +172,7 @@ class CG:
         """
         try:
             req_body = req_Body.copy()
-            if 'initiator_id' in req_body['initiator_id']:
+            if 'initiator_id' in req_body:
                 req_body['initiator_id'] = req_body['initiator_id'].lower()
             # Queries Formation
             # if req_body == "max_of_ch_id":
