@@ -7,6 +7,7 @@ import os
 import sys
 import time
 import logging
+import threading
 import json
 from db_return import db_return
 from db_no_return import db_no_return
@@ -121,6 +122,11 @@ class CS:
             try:
                 res = db_no_return(query, query_data)
                 if res == "success":   # pylint: disable=no-else-return
+                    if req_body["challenge_status"] == 'CC':
+                        threading.Thread(target=self.update_creation_timestamp, args=(
+                                req_body["challenge_id"],
+                                )
+                            ).start()
                     return {"update": True}, 201
                 else:
                     res.update({"update": False})
@@ -145,6 +151,27 @@ class CS:
                 "update": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
+
+
+    def update_creation_timestamp(self, challenge_id):
+        """function updating creation_timestamp in the  challenge table
+           when the status is set to 'CC' (Challenge Created)."""
+        try:
+            query = ["""UPDATE challenge
+                        SET creation_timestamp = %s
+                        WHERE challenge_id = %s"""]
+            query_data = [ (
+                time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime()),
+                challenge_id,
+            ),]
+
+            db_no_return(query, query_data)
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)    # pylint: disable=line-too-long
 
 
     def fetch_challenge_status(self,req_body):
