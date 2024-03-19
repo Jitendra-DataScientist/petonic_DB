@@ -116,13 +116,13 @@ class UserProfile:
             }
 
 
-    def login_trigger(self, req_Body):
+    def login_trigger(self, request_body):
         """Function to trigger above login
            funtion, and return response
         """
 
         try:
-            req_body = req_Body.copy()
+            req_body = request_body.copy()
             req_body['email'] = req_body['email'].lower()
             data = self.login(req_body)
             logger.info(data)
@@ -159,10 +159,10 @@ class UserProfile:
                     }, 500
 
 
-    def signup(self, req_Body):  # pylint: disable=too-many-locals,too-many-return-statements
+    def signup(self, request_body):  # pylint: disable=too-many-locals,too-many-return-statements
         """function for signup funtionality"""
         try:
-            req_body = req_Body.copy()
+            req_body = request_body.copy()
             req_body['email'] = req_body['email'].lower()
             req_body['admin_email'] = req_body['admin_email'].lower()
             # check if admin role
@@ -272,11 +272,11 @@ class UserProfile:
             }, 500
 
 
-    def resend_mail_signup(self, req_Body):  # pylint: disable=too-many-return-statements
+    def resend_mail_signup(self, request_body):  # pylint: disable=too-many-return-statements
         """funtionality to resend signup mail with a
            different password, rest creds remain the same"""
         try:
-            req_body = req_Body.copy()
+            req_body = request_body.copy()
             req_body['email'] = req_body['email'].lower()
             req_body['admin_email'] = req_body['admin_email'].lower()
             # verify admin creds
@@ -339,12 +339,12 @@ class UserProfile:
                 }, 500
 
 
-    def validation(self, req_Body):
+    def validation(self, request_body):
         """function for email-validation funtionality
            after user signup
         """
         try:
-            req_body = req_Body.copy()
+            req_body = request_body.copy()
             req_body['email'] = req_body['email'].lower()
             # Queries Formation
             queries_list = ["INSERT INTO validation (email, active) VALUES (%s, %s);"]
@@ -381,17 +381,17 @@ class UserProfile:
             }, 500
 
 
-    def get_user_details(self, req_Body):
+    def get_user_details(self, request_body):
         """
             function to fetch details of users
             based on email IDs.
         """
         try:
-            if not req_Body["user_ids"]:
+            if not request_body["user_ids"]:    # pylint: disable=no-else-return
                 return {"fetch": False,
                         "helpText": "no user_id passed",}, 400
             else:
-                req_body = req_Body.copy()
+                req_body = request_body.copy()
                 req_body["user_ids"] = [item.lower() for item in req_body['user_ids']]
             # Queries Formation
             query = "SELECT us.email,us.role,us.employee_id,us.f_name,us.l_name,v.active\
