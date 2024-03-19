@@ -252,20 +252,34 @@ class CG:
                     }, 400
 
             # Queries Formation
-            query = ["UPDATE challenge\
-                      SET \
-                      creation_timestamp = %s,\
-                      name = %s,\
-                      description = %s\
-                      WHERE challenge_id = %s;",]
-            query_data = [
-                            (
-                                req_body["creation_timestamp"],
-                                req_body["name"],
-                                req_body["description"],
-                                req_body["challenge_id"],
-                            ),
-                        ]
+            if req_body["creation_timestamp"]:
+                query = ["UPDATE challenge\
+                        SET \
+                        creation_timestamp = %s,\
+                        name = %s,\
+                        description = %s\
+                        WHERE challenge_id = %s;",]
+                query_data = [
+                                (
+                                    req_body["creation_timestamp"],
+                                    req_body["name"],
+                                    req_body["description"],
+                                    req_body["challenge_id"],
+                                ),
+                            ]
+            else:
+                query = ["UPDATE challenge\
+                        SET \
+                        name = %s,\
+                        description = %s\
+                        WHERE challenge_id = %s;",]
+                query_data = [
+                                (
+                                    req_body["name"],
+                                    req_body["description"],
+                                    req_body["challenge_id"],
+                                ),
+                            ]
 
             try:
                 res = db_no_return(query, query_data)

@@ -263,7 +263,7 @@ class ChallengeCreationRequest(BaseModel):
         description (str): Description of the challenge.
     """
     challenge_id: str
-    creation_timestamp: constr(pattern=r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')
+    creation_timestamp: Optional[constr(pattern=r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')] = None
     name: str
     description: str
 
