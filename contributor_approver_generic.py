@@ -150,12 +150,12 @@ class CAG:
     #         }, 500
 
 
-    def add_approver(self, req_Body):
+    def add_approver(self, request_body):
         """function for adding an approver_id to approver_id
            column in the contributor_approver table
         """
         try:
-            req_body = req_Body.copy()
+            req_body = request_body.copy()
             req_body['approver_id'] = req_body['approver_id'].lower()
 
             # check if approver_id exists
@@ -209,13 +209,13 @@ class CAG:
             }, 500
 
 
-    def add_approver_comment(self, req_Body):
+    def add_approver_comment(self, request_body):
         """function for adding approver's comment to
            contributor_approver table corresponding
            to a challenge_id
         """
         try:
-            req_body = req_Body.copy()
+            req_body = request_body.copy()
             req_body['approver_id'] = req_body['approver_id'].lower()
             # check if approver_id is correct (assigned to the corresponding challenge)
             query = "select approver_id,approver_comment from\

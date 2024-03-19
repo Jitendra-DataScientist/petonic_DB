@@ -126,11 +126,11 @@ class ChangePassword:
             }
 
 
-    def change_password_main(self, req_Body):             # pylint: disable=too-many-return-statements
+    def change_password_main(self, request_body):             # pylint: disable=too-many-return-statements
         """function to trigger functions stack for
            change-password functionality
         """
-        req_body = req_Body.copy()
+        req_body = request_body.copy()
         req_body['email'] = req_body['email'].lower()
         data = self.change_password_response_from_query(req_body)
         logger.info(data)

@@ -59,7 +59,7 @@ class Admin:
                 file_handle.write("{}")
 
 
-    def flip_user_status(self, req_Body):  # pylint: disable=too-many-return-statements)
+    def flip_user_status(self, request_body):  # pylint: disable=too-many-return-statements)
         """
             function to deactivate or reactivate
             a particular user profile on User
@@ -67,7 +67,7 @@ class Admin:
             admin).
         """
         try:  # pylint: disable=too-many-nested-blocks
-            req_body = req_Body.copy()
+            req_body = request_body.copy()
             req_body['email'] = req_body['email'].lower()
             req_body['admin_email'] = req_body['admin_email'].lower()
             # verify admin creds
@@ -156,15 +156,15 @@ class Admin:
             }, 500
 
 
-    def edit_details(self, req_body):  # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
+    def edit_details(self, request_body):  # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
         """
             function to edit first name, last name,
             employee id and/or role.
         """
-        print (json.dumps(req_body,indent=4))
+        print (json.dumps(request_body,indent=4))
         # verify admin creds
         try:
-            req_body = req_Body.copy()
+            req_body = request_body.copy()
             req_body['email'] = req_body['email'].lower()
             req_body['admin_email'] = req_body['admin_email'].lower()
 
