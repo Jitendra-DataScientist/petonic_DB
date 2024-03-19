@@ -172,7 +172,8 @@ class CG:
         """
         try:
             req_body = req_Body.copy()
-            req_body['initiator_id'] = req_body['initiator_id'].lower()
+            if 'initiator_id' in req_body['initiator_id']:
+                req_body['initiator_id'] = req_body['initiator_id'].lower()
             # Queries Formation
             # if req_body == "max_of_ch_id":
             #     query = "select max(challenge_id) from challenge;"
