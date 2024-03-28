@@ -463,9 +463,9 @@ class CG:
     # def cont_name_func(self, email_list, mapping_dict):
     #     return [mapping_dict.get(element) for element in email_list]
 
-    def view_list(self, req_Body=None):
+    def view_list(self, req_Body=None):    # pylint: disable=too-many-branches,too-many-locals
         """function for view-list page for all roles"""
-        try:
+        try:    # pylint: disable=too-many-nested-blocks
             if req_Body:
                 req_body = req_Body.copy()
                 if "initiator_id" in req_body and req_body['initiator_id']:
@@ -528,6 +528,14 @@ class CG:
                                                     lambda x: None if x == " " else x,sublist
                                                     )),
                                                 modified_ret_data))
+                    for individual_list in modified_ret_data:
+                        if individual_list:
+                            if individual_list[-6]:
+                                individual_list.append(
+                                    max(json.loads(individual_list[-6]).values())
+                                    )
+                            else:
+                                individual_list.append(None)
                     return {"fetch": True,
                             "data": json.loads(
                                             json.dumps(modified_ret_data, cls=DjangoJSONEncoder)
@@ -538,7 +546,7 @@ class CG:
                                        "pm_id", "pm_tool","pm_name",
                                        "current_challenge_status", "challenge_status_json",
                                        "contributor_ids","approver_id","approver_name",
-                                        "approver_comment","contributor_names"]
+                                        "approver_comment","contributor_names", "last_modified"]
                             }, 200
                 else:
                     return {"fetch": False,
