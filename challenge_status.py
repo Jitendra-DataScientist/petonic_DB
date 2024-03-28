@@ -57,6 +57,7 @@ class CS:
     def update_challenge_status(self, req_body):
         """function adding/updating an entry in the challenge_status table"""
         try:
+            current_epoch = time.time()
             # read the json (if present) for the corresponding
             # challenge_id from challenge_status table
             query = "select challenge_status_json from challenge_status where challenge_id=%s;"
@@ -112,10 +113,10 @@ class CS:
                         req_body["challenge_id"],
                         req_body["challenge_status"],
                         req_body["challenge_status"],
-                        time.time(),
+                        current_epoch,
                         req_body["challenge_status"],
                         req_body["challenge_status"],
-                        time.time(),
+                        current_epoch,
                     )
                 ]
 
@@ -125,6 +126,7 @@ class CS:
                     if req_body["challenge_status"] == 'CC':
                         threading.Thread(target=self.update_creation_timestamp, args=(
                                 req_body["challenge_id"],
+                                current_epoch,
                                 )
                             ).start()
                     return {"update": True}, 201
@@ -153,15 +155,19 @@ class CS:
             }, 500
 
 
-    def update_creation_timestamp(self, challenge_id):
+    def update_creation_timestamp(self, challenge_id, current_epoch):
         """function updating creation_timestamp in the  challenge table
            when the status is set to 'CC' (Challenge Created)."""
         try:
             query = ["""UPDATE challenge
                         SET creation_timestamp = %s
                         WHERE challenge_id = %s"""]
+            # query_data = [ (
+            #     time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime()),
+            #     challenge_id,
+            # ),]
             query_data = [ (
-                time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime()),
+                time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(current_epoch)),
                 challenge_id,
             ),]
 
