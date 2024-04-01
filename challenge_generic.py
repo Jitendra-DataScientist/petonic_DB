@@ -15,6 +15,7 @@ from db_return import db_return
 from db_no_return import db_no_return
 from view_list_query_templates import ViewListQueryTemplates
 from utils import Utils
+from file_transfer import FT
 
 
 # Determine the directory for logs
@@ -48,6 +49,7 @@ logger.addHandler(file_handler)
 
 
 utils = Utils()
+file_transfer_instance = FT()
 view_list_query_templates_instance = ViewListQueryTemplates()
 
 
@@ -536,6 +538,7 @@ class CG:
                                     )
                             else:
                                 individual_list.append(None)
+
                     return {"fetch": True,
                             "data": json.loads(
                                             json.dumps(modified_ret_data, cls=DjangoJSONEncoder)
@@ -546,7 +549,10 @@ class CG:
                                        "pm_id", "pm_tool","pm_name",
                                        "current_challenge_status", "challenge_status_json",
                                        "contributor_ids","approver_id","approver_name",
-                                        "approver_comment","contributor_names", "last_modified"]
+                                        "approver_comment","contributor_names", "last_modified"],
+                            "profile_pics": file_transfer_instance.view_file_list({
+                                        "path_key_prefix": "pp"
+                                    })
                             }, 200
                 else:
                     return {"fetch": False,
