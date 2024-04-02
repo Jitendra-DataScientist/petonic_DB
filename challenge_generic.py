@@ -539,6 +539,25 @@ class CG:
                             else:
                                 individual_list.append(None)
 
+                    profile_pics = file_transfer_instance.view_file_list({
+                                        "path_key_prefix": "pp"
+                                    })
+                    if profile_pics and len(profile_pics)>1 and profile_pics[0] and isinstance(profile_pics[0], dict) and "list_fetch" in profile_pics[0] and profile_pics[0]["list_fetch"] and len(profile_pics[0]["folder_structure"])>0:
+                        # Create a dictionary to store the latest keys
+                        filtered_data = {}
+
+                        # Loop through the data to preserve keys with the latest epoch
+                        for key in profile_pics[0]["folder_structure"]:
+                            prefix, epoch = key.rsplit('_', 1)  # Split at the last underscore
+                            if prefix in filtered_data:
+                                if epoch > filtered_data[prefix].rsplit('_', 1)[-1]:  # Compare epochs as strings
+                                    filtered_data[prefix] = key  # Store the latest key
+                            else:
+                                filtered_data[prefix] = key
+
+                        # Create the final filtered dictionary
+                        final_profile_pics = {value: profile_pics[0]["folder_structure"][value] for value in filtered_data.values()}
+                        profile_pics[0]["folder_structure"] = final_profile_pics
                     return {"fetch": True,
                             "data": json.loads(
                                             json.dumps(modified_ret_data, cls=DjangoJSONEncoder)
@@ -550,9 +569,7 @@ class CG:
                                        "current_challenge_status", "challenge_status_json",
                                        "contributor_ids","approver_id","approver_name",
                                         "approver_comment","contributor_names", "last_modified"],
-                            "profile_pics": file_transfer_instance.view_file_list({
-                                        "path_key_prefix": "pp"
-                                    })
+                            "profile_pics": profile_pics
                             }, 200
                 else:
                     return {"fetch": False,
