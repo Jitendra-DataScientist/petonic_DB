@@ -75,7 +75,7 @@ async def gen_log_write(payload: pydantic_check.GenAPIAnalytics):
 
     # req_body = await payload.json()
     response, status_code = gen_res_write(vars(payload))
-    logger.info("Response: %s, Status Code: %s", response, status_code)
+    logger.info("Response: %s, Status Code: %s, payload: %s", response, status_code, vars(payload))
     return JSONResponse(content=response, status_code=status_code)
 
 
