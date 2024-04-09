@@ -564,7 +564,7 @@ class CG:
                         query_data = (str(tuple(init_lst)))
                         ch_jsons = db_return(query, query_data)
                         is_mod_lst = {element[0]: element[1]['isModified'] if 'isModified' in element[1] and element[1]['isModified'] else False for element in ch_jsons}
-                        new_ret_data = [element.append(is_mod_lst[element[1]]) for element in modified_ret_data]
+                        new_ret_data = [element + [is_mod_lst.get(element[1], False)] for element in modified_ret_data]
                         return {"fetch": True,
                                 "data": json.loads(
                                                 json.dumps(new_ret_data, cls=DjangoJSONEncoder)
