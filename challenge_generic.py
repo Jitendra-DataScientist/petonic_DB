@@ -560,8 +560,10 @@ class CG:
                         profile_pics[0]["folder_structure"] = final_profile_pics
                     if "initiator_id" in req_body and req_body['initiator_id'] and modified_ret_data:
                         init_lst = [element[0] for element in modified_ret_data]
-                        query = "select challenge_id, challenge_json from challenge_json_data where challenge_id in %s;"
-                        query_data = (str(tuple(init_lst)))
+                        # Create a string of placeholders for each element in init_lst
+                        placeholders = ', '.join(['%s'] * len(init_lst))
+                        query = f"SELECT challenge_id, challenge_json FROM challenge_json_data WHERE challenge_id IN ({placeholders});"
+                        query_data = tuple(init_lst)
                         ch_jsons = db_return(query, query_data)
                         is_mod_lst = {element[0]: element[1]['isModified'] if 'isModified' in element[1] and element[1]['isModified'] else False for element in ch_jsons}
                         new_ret_data = [element + [is_mod_lst.get(element[1], False)] for element in modified_ret_data]
