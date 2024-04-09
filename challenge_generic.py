@@ -576,7 +576,7 @@ class CG:
                                         "pm_id", "pm_tool","pm_name",
                                         "current_challenge_status", "challenge_status_json",
                                         "contributor_ids","approver_id","approver_name",
-                                            "approver_comment","contributor_names", "last_modified"],
+                                            "approver_comment","contributor_names", "last_modified","isModified"],
                                 "profile_pics": profile_pics
                                 }, 200
                     else:
