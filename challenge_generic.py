@@ -559,19 +559,40 @@ class CG:
                         # Create the final filtered dictionary
                         final_profile_pics = {value: profile_pics[0]["folder_structure"][value] for value in filtered_data.values()}
                         profile_pics[0]["folder_structure"] = final_profile_pics
-                    return {"fetch": True,
-                            "data": json.loads(
-                                            json.dumps(modified_ret_data, cls=DjangoJSONEncoder)
-                                            ),
-                            "fields": ["challenge_id","initiator_id","initiator_name",
-                                       "initiation_timestamp","industry","domain","process",
-                                       "creation_timestamp","name","description",
-                                       "pm_id", "pm_tool","pm_name",
-                                       "current_challenge_status", "challenge_status_json",
-                                       "contributor_ids","approver_id","approver_name",
-                                        "approver_comment","contributor_names", "last_modified"],
-                            "profile_pics": profile_pics
-                            }, 200
+                    if "initiator_id" in req_body and req_body['initiator_id'] and modified_ret_data:
+                        init_lst = [element[0] for element in modified_ret_data]
+                        query = "select challenge_id, challenge_json from challenge_json_data where challenge_id in %s;"
+                        query_data = (str(tuple(init_lst)))
+                        ch_jsons = db_return(query, query_data)
+                        is_mod_lst = {element[0]: element[1]['isModified'] if 'isModified' in element[1] and element[1]['isModified'] else False for element in ch_jsons}
+                        new_ret_data = [element.append(is_mod_lst[element[1]]) for element in modified_ret_data]
+                        return {"fetch": True,
+                                "data": json.loads(
+                                                json.dumps(new_ret_data, cls=DjangoJSONEncoder)
+                                                ),
+                                "fields": ["challenge_id","initiator_id","initiator_name",
+                                        "initiation_timestamp","industry","domain","process",
+                                        "creation_timestamp","name","description",
+                                        "pm_id", "pm_tool","pm_name",
+                                        "current_challenge_status", "challenge_status_json",
+                                        "contributor_ids","approver_id","approver_name",
+                                            "approver_comment","contributor_names", "last_modified"],
+                                "profile_pics": profile_pics
+                                }, 200
+                    else:
+                        return {"fetch": True,
+                                "data": json.loads(
+                                                json.dumps(modified_ret_data, cls=DjangoJSONEncoder)
+                                                ),
+                                "fields": ["challenge_id","initiator_id","initiator_name",
+                                        "initiation_timestamp","industry","domain","process",
+                                        "creation_timestamp","name","description",
+                                        "pm_id", "pm_tool","pm_name",
+                                        "current_challenge_status", "challenge_status_json",
+                                        "contributor_ids","approver_id","approver_name",
+                                            "approver_comment","contributor_names", "last_modified"],
+                                "profile_pics": profile_pics
+                                }, 200
                 else:
                     return {"fetch": False,
                             "data": [],
