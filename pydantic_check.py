@@ -288,6 +288,7 @@ class ViewListRequest(BaseModel):
         domain: Optional[List[str]] = related domain of challenge
         process: Optional[List[str]] = related process of challenge
         approver_id: Optional[List[EmailStr]] = The email ID of approver (optional).
+        contributor: Optional[bool] = None
     """
     # initiator_id: constr(
     #     pattern=r'^(initiator|approver|contributor)_[\w.-]+@[a-zA-Z.-]+\.[a-zA-Z]{2,}$'
@@ -305,6 +306,7 @@ class ViewListRequest(BaseModel):
     domain: Optional[List[str]] = None
     process: Optional[List[str]] = None
     approver_id: Optional[List[EmailStr]] = None
+    contributor: Optional[bool] = None
 
     # @classmethod
     # @validator("initiator_id", "approver_id", pre=True)
