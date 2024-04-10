@@ -559,7 +559,7 @@ class CG:
                         # Create the final filtered dictionary
                         final_profile_pics = {value: profile_pics[0]["folder_structure"][value] for value in filtered_data.values()}
                         profile_pics[0]["folder_structure"] = final_profile_pics
-                    if "initiator_id" in req_body and req_body['initiator_id'] and modified_ret_data:
+                    if ("initiator_id" in req_body and req_body['initiator_id'] and modified_ret_data) or ("contributor" in req_body and req_body['contributor'] and modified_ret_data):
                         init_lst = [element[0] for element in modified_ret_data]
                         # Create a string of placeholders for each element in init_lst
                         placeholders = ', '.join(['%s'] * len(init_lst))
