@@ -504,6 +504,7 @@ class CG:
                     #                      for element in ret_data]
                 cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
                 cont_name_dict["ai_solution"] = "GenAI Solution"
+                cont_name_dict["solveai@petonic.in"] = "SolveAI Solution"
                 modified_ret_data = [element+(list(map(
                                     lambda x: cont_name_dict[x] if x else None,element[-4]
                                             )),)
