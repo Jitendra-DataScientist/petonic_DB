@@ -104,11 +104,14 @@ class ChangePassword:
         """
 
         try:
-            query = "select count(*)\
-                    from user_login as ul\
-                    inner join validation as v\
-                    on ul.email = v.email\
-                    where ul.email = %s and ul.password = %s;"
+            # query = "select count(*)\
+            #         from user_login as ul\
+            #         inner join validation as v\
+            #         on ul.email = v.email\
+            #         where ul.email = %s and ul.password = %s;"
+            query = "SELECT COUNT(*)\
+                    FROM user_login\
+                    WHERE email = %s AND password = %s;"
             query_data = (
                 req_body["email"],
                 req_body["current_password"],
