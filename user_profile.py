@@ -184,17 +184,17 @@ class UserProfile:
 
             role_data = db_return(query, query_data)
 
-            if req_body['role'] == 'admin':
-                query = "select count(*) from subscription where email = %s;"
-                query_data = (
-                    req_body["email"],
-                )
-                subscription_data = db_return(query, query_data)
-                if subscription_data and subscription_data[0] and subscription_data[0][0]==1:
-                    pass
-                else:
-                    return {"user_creation": False,
-                            "helpText": "mail not in subscription"}, 400
+            # if req_body['role'] == 'admin':
+            query = "select count(*) from subscription where email = %s;"
+            query_data = (
+                req_body["email"],
+            )
+            subscription_data = db_return(query, query_data)
+            if subscription_data and subscription_data[0] and subscription_data[0][0]==1:
+                pass
+            else:
+                return {"user_creation": False,
+                        "helpText": "mail not in subscription"}, 400
 
 
             if role_data and role_data[0] and role_data[0][0]=='admin'\
