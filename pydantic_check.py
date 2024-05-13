@@ -579,6 +579,12 @@ class FirstAdd(BaseModel):
 
 
 class VerifyOTP(BaseModel):
-    """Pydantic model for firstAdd request payload."""
+    """Pydantic model for verify-otp request payload."""
     subscription_id: str
     otp: str
+
+
+class ResendOTP(BaseModel):
+    """Pydantic model for resend-otp request payload."""
+    subscription_id: str
+    email: EmailStr

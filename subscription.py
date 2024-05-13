@@ -114,6 +114,7 @@ class Subscription:
             line_number = exception_traceback.tb_lineno
             logger.error("%s||||%s||||%s", exception_type, filename, line_number)
             return {
+                "creation": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}"    # pylint: disable=line-too-long
             }, 500
 
@@ -154,5 +155,40 @@ class Subscription:
             line_number = exception_traceback.tb_lineno
             logger.error("%s||||%s||||%s", exception_type, filename, line_number)
             return {
+                "validation": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}"    # pylint: disable=line-too-long
+            }, 500
+
+
+    def resendOTP(self, req_body):
+        """Function for otp verification"""
+
+        try:
+            otp = utils.generate_random_string(str_len=10)
+            query = ["""
+                        UPDATE subscription
+                        SET otp = %s
+                        WHERE subscription_id = %s
+                        """]
+            query_data = [(otp,req_body["subscription_id"],),]
+            update_res = db_no_return(query, query_data)
+            if update_res == "success":
+                if utils.subscription_mail_verify(req_body["email"], otp):
+                    return {"resend":True}, 201
+                else:
+                    return {"resend":False,
+                            "helpText":"failed to send mail"}, 500
+            else:
+                return {"resend":False,
+                        "helpText":"failed to update OTP in DB"}, 500
+
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%s", exception_type, filename, line_number)
+            return {
+                "resend":False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}"    # pylint: disable=line-too-long
             }, 500
