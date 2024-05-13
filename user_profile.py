@@ -185,9 +185,9 @@ class UserProfile:
             role_data = db_return(query, query_data)
 
             # if req_body['role'] == 'admin':
-            query = "select count(*) from subscription where email = %s;"
+            query = "select count(*) from subscription where subscription_id = %s;"
             query_data = (
-                req_body["email"],
+                req_body["subscription_id"],
             )
             subscription_data = db_return(query, query_data)
             if subscription_data and subscription_data[0] and subscription_data[0][0]==1:
