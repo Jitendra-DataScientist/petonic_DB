@@ -49,6 +49,7 @@ class SignupRequest(BaseModel):
     employee_id: Any
     admin_email: EmailStr = None
     admin_password: str = None
+    subscription_id: str = None
 
     # @classmethod
     # @validator("email", "admin_email", pre=True)
@@ -556,3 +557,28 @@ class GenAITokenCostUserWise(BaseModel):
     """
     start_epoch: float
     end_epoch: float
+
+
+class FirstAdd(BaseModel):
+    """Pydantic model for firstAdd request payload."""
+    email: EmailStr
+    f_name: str
+    l_name: str
+    # company_id: Union[str, int]
+    employee_id: Any
+    admin_email: EmailStr = None
+    admin_password: str = None
+    subscription_id: str = None
+    plan: str = None
+    users_count: int = None
+    company_name: str = None
+    phone: str = None
+    country: str = None
+    address_line1: str = None
+    address_line2: str = None
+
+
+class VerifyOTP(BaseModel):
+    """Pydantic model for firstAdd request payload."""
+    subscription_id: str
+    otp: str

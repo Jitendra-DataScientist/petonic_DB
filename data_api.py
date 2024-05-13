@@ -23,6 +23,7 @@ from file_transfer import FT
 import pydantic_check
 from admin import Admin
 from project_management import PM
+from subscription import Subscription
 
 
 # Determine the directory for logs
@@ -69,6 +70,7 @@ challenge_generic_inst = CG()
 user_details_instance = Admin()
 file_transfer_instance = FT()
 project_management_instance = PM()
+subscription_instance = Subscription()
 
 
 # Create a FastAPI instance
@@ -478,5 +480,25 @@ async def project_initiate_api(payload: pydantic_check.ProjectInitiateRequest):
     """
 
     response, status_code = project_management_instance.project_initiation(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/first-add")
+async def first_add(payload: pydantic_check.FirstAdd):
+    """Route function to add first basic details of subscriber
+    """
+
+    response, status_code = subscription_instance.firstAdd(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/verify-otp")
+async def first_add(payload: pydantic_check.VerifyOTP):
+    """Route function to verify OTP of subsciber
+    """
+
+    response, status_code = subscription_instance.verifyOTP(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
