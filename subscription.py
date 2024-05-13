@@ -192,3 +192,44 @@ class Subscription:
                 "resend":False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}"    # pylint: disable=line-too-long
             }, 500
+
+
+    def emailModify(self, req_body):
+        """Function for modify email"""
+
+        try:
+            query = "select count(*) \
+                    from subscription\
+                    where subscription_id = %s;"
+            query_data = (
+                req_body["subscription_id"],
+            )
+
+            subscription_data = db_return(query, query_data)
+            if subscription_data and subscription_data[0] and subscription_data[0][0]>=1:
+                pass
+            else:
+                return {"modification":False,
+                        "update":"invalid subscription ID"}, 400
+            query = ["""
+                        UPDATE subscription
+                        SET email = %s
+                        WHERE subscription_id = %s
+                        """]
+            query_data = [(req_body["new_email"],req_body["subscription_id"],),]
+            update_res = db_no_return(query, query_data)
+            if update_res == "success":
+                return {"update":True}, 201
+            else:
+                update_res.update({"update": False})
+                return update_res, 400
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%s", exception_type, filename, line_number)
+            return {
+                "update": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}"    # pylint: disable=line-too-long
+            }, 500

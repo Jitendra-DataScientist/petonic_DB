@@ -588,3 +588,9 @@ class ResendOTP(BaseModel):
     """Pydantic model for resend-otp request payload."""
     subscription_id: str
     email: EmailStr
+
+
+class EmailModify(BaseModel):
+    """Pydantic model for resend-otp request payload."""
+    subscription_id: str
+    new_email: EmailStr

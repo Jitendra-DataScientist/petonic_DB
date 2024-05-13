@@ -512,3 +512,13 @@ async def resend_otp(payload: pydantic_check.ResendOTP):
     response, status_code = subscription_instance.resendOTP(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/email-modify")
+async def email_modify(payload: pydantic_check.EmailModify):
+    """Route function to resend OTP of subsciber
+    """
+
+    response, status_code = subscription_instance.emailModify(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
