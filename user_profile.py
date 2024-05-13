@@ -164,7 +164,10 @@ class UserProfile:
         try:
             req_body = request_body.copy()
             req_body['email'] = req_body['email'].lower()
-            req_body['admin_email'] = req_body['admin_email'].lower()
+            try:
+                req_body['admin_email'] = req_body['admin_email'].lower()
+            except AttributeError:
+                pass
             # check if admin role
             query = "select role \
                     from user_signup\
@@ -178,7 +181,7 @@ class UserProfile:
             if role_data and role_data[0] and role_data[0][0]=='admin'\
                     and req_body["role"] == "admin":  # pylint: disable=no-else-return
                 return {"user_creation": False,
-                        "helpText": "admin role already created"}, 400
+                        "helpText": "admin role already created for this email"}, 400
             elif role_data and role_data[0] and role_data[0][0]=='admin':
                 return {"user_creation": False,
                         "helpText": "Primary-key Violation Error"}, 400

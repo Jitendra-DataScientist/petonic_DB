@@ -521,3 +521,55 @@ class Utils:
                     logger.info("Mail sent to %s !!", email)
         except Exception as mail_error:  # pylint: disable=broad-exception-caught
             logger.critical("Mail sending error: %s", mail_error)
+
+
+    def subscription_mail_verify(self, to_email, otp):             # pylint: disable=too-many-arguments
+        """mail sender trigger function for verifying
+           email entered during subscription
+        """
+
+        subject = "Welcome Onboard !!"
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    An account is being created with PetonicAI, and the associated email is yours.
+                    To verify this action, use this OTP:<br>
+                    <strong>{otp}</strong><br>
+                    <br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    An account is being created with PetonicAI, and the associated email is yours.
+                    To verify this action, use this OTP:<br>
+                    <strong>{otp}</strong><br>
+                    <br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
+
+        # SMTP server details
+        smtp_server = "smtp.gmail.com"
+        try:
+            sender_email = os.getenv("sender_email")
+            sender_password = os.getenv("sender_password")
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
+
+        try:
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
+            logger.info("mail sent !!")
+            print ("sent!!")
+            return True
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
+            logger.error("Mail sending error: ", mail_error)
+            return False
