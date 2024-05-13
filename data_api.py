@@ -495,10 +495,30 @@ async def first_add(payload: pydantic_check.FirstAdd):
 
 
 @app.post("/data-api/verify-otp")
-async def first_add(payload: pydantic_check.VerifyOTP):
+async def verify_otp(payload: pydantic_check.VerifyOTP):
     """Route function to verify OTP of subsciber
     """
 
     response, status_code = subscription_instance.verifyOTP(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/resend-otp")
+async def resend_otp(payload: pydantic_check.ResendOTP):
+    """Route function to resend OTP of subsciber
+    """
+
+    response, status_code = subscription_instance.resendOTP(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/email-modify")
+async def email_modify(payload: pydantic_check.EmailModify):
+    """Route function to resend OTP of subsciber
+    """
+
+    response, status_code = subscription_instance.emailModify(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)

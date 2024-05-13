@@ -49,7 +49,7 @@ class SignupRequest(BaseModel):
     employee_id: Any
     admin_email: EmailStr = None
     admin_password: str = None
-    subscription_id: str = None
+    subscription_id: str
 
     # @classmethod
     # @validator("email", "admin_email", pre=True)
@@ -579,6 +579,18 @@ class FirstAdd(BaseModel):
 
 
 class VerifyOTP(BaseModel):
-    """Pydantic model for firstAdd request payload."""
+    """Pydantic model for verify-otp request payload."""
     subscription_id: str
     otp: str
+
+
+class ResendOTP(BaseModel):
+    """Pydantic model for resend-otp request payload."""
+    subscription_id: str
+    email: EmailStr
+
+
+class EmailModify(BaseModel):
+    """Pydantic model for resend-otp request payload."""
+    subscription_id: str
+    new_email: EmailStr
