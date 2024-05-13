@@ -82,9 +82,11 @@ class UserProfile:
             role = None
             if isinstance(ret_data[0][0], int):
                 if ret_data[0][0] >= 1:
-                    query = "select role, f_name, l_name, employee_id\
-                            from user_signup\
-                            where user_signup.email = %s;"
+                    query = "select us.role, us.f_name, us.l_name, us.employee_id, ul.subscription_id\
+                            from user_signup us\
+                            join user_login ul\
+                            on us.email=ul.email\
+                            where us.email = %s;"
                     query_data = (
                         req_body["email"],
                     )
@@ -93,13 +95,16 @@ class UserProfile:
                     role = [("incorrect creds / inactive account / email not validated",
                              "incorrect creds / inactive account / email not validated",
                              "incorrect creds / inactive account / email not validated",
+                             "incorrect creds / inactive account / email not validated",
                              "incorrect creds / inactive account / email not validated",)]
             try:
                 ret_data.append(role[0][0])
                 ret_data.append(role[0][1])
                 ret_data.append(role[0][2])
                 ret_data.append(role[0][3])
+                ret_data.append(role[0][4])
             except KeyError:
+                ret_data.append(None)
                 ret_data.append(None)
                 ret_data.append(None)
                 ret_data.append(None)
@@ -135,7 +140,8 @@ class UserProfile:
                             "role": data[1],
                             "f_name": data[2],
                             "l_name": data[3],
-                            "employee_id": data[4]}, 200
+                            "employee_id": data[4],
+                            "subscription_id": data[5]}, 200
                 elif data[0][0] == 0:
                     return {"login": False,
                             "helpText": data[1]}, 401
@@ -178,6 +184,19 @@ class UserProfile:
 
             role_data = db_return(query, query_data)
 
+            if req_body['role'] == 'admin':
+                query = "select count(*) from subscription where email = %s;"
+                query_data = (
+                    req_body["email"],
+                )
+                subscription_data = db_return(query, query_data)
+                if subscription_data and subscription_data[0] and subscription_data[0][0]==1:
+                    pass
+                else:
+                    return {"user_creation": False,
+                            "helpText": "mail not in subscription"}, 400
+
+
             if role_data and role_data[0] and role_data[0][0]=='admin'\
                     and req_body["role"] == "admin":  # pylint: disable=no-else-return
                 return {"user_creation": False,
@@ -207,8 +226,8 @@ class UserProfile:
             first_password = utils.generate_random_string(str_len=8)
 
             queries_list = [
-                "INSERT INTO user_login (email, password)\
-                VALUES (%s, %s);",
+                "INSERT INTO user_login (email, password, subscription_id)\
+                VALUES (%s, %s, %s);",
                 "INSERT INTO user_signup\
                 (f_name, l_name, email, role, employee_id)\
                 VALUES (%s, %s, %s, %s, %s);",
@@ -218,6 +237,7 @@ class UserProfile:
                 (
                     req_body["email"],
                     first_password,
+                    req_body["subscription_id"],
                 ),
                 (
                     req_body["f_name"],

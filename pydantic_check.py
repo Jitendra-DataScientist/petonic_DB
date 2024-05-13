@@ -49,7 +49,7 @@ class SignupRequest(BaseModel):
     employee_id: Any
     admin_email: EmailStr = None
     admin_password: str = None
-    subscription_id: str = None
+    subscription_id: str
 
     # @classmethod
     # @validator("email", "admin_email", pre=True)
