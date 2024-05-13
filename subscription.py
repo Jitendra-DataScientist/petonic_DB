@@ -139,6 +139,9 @@ class Subscription:
                 query_data = [(req_body["subscription_id"],),]
                 update_res = db_no_return(query, query_data)
                 return {"validation": True,"update_res":update_res}, 200
+            elif otp_data and otp_data[0] and (otp_data[0][0]!=req_body["otp"] and otp_data[0][0]!='verified'):
+                return {"validation": False,
+                        "helpText":"incorrect OTP"}, 403
             elif otp_data and otp_data[0] and otp_data[0][0]=='verified':
                 return {"validation": False,
                         "helpText":"mail already verified"}, 400
