@@ -239,6 +239,17 @@ class Subscription:
         """Function to add payment related details of user"""
 
         try:
+            query = """SELECT COUNT(*)
+                    FROM subscription
+                    WHERE subscription_id = %s;"""
+            query_data = (
+                req_body["subscription_id"],
+            )
+            count_data = db_return(query, query_data)
+            if count_data and count_data[0] and count_data[0][0]==0:
+                return {"update": False,
+                        "helpText":"Invalid subscription ID"}, 400
+
             query = "select payment_mode, amount, payment_status \
                     from subscription\
                     where subscription_id = %s;"
