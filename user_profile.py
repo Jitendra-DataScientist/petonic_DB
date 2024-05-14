@@ -473,3 +473,45 @@ class UserProfile:
                 "first_user": True,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
+
+
+    def flipFirstUserStatus(self, req_body):
+        """function to flip first-time-user-status
+        after first-time user changes password
+        """
+        try:
+            query = "select count(*) from user_login where email = %s;"
+            query_data = (
+                req_body["email"],
+            )
+            count = db_return(query, query_data)
+            if count and count[0] and count[0][0]==0:
+                return {"flip":False,
+                        "helpText":"email not is records"}, 400
+            elif count and count[0] and count[0][0]>0:
+                queries_list = ["UPDATE user_login\
+                                SET first_time = NOT first_time\
+                                WHERE email = %s;",]
+
+                query_data = [(req_body["email"],),]
+
+                res = db_no_return(queries_list, query_data)
+                if  res == "success":
+                    return {"flip":True}, 200
+                else:
+                    res.update({"flip": False})
+                    return res, 500
+            else:
+                count.update({"flip": False})
+                return count, 500
+
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+            return {
+                "flip": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500

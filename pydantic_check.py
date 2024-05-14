@@ -605,5 +605,10 @@ class SecondAdd(BaseModel):
 
 
 class FirstUser(BaseModel):
-    """Pydantic model for second-add request payload."""
+    """Pydantic model for first-user request payload."""
+    email: EmailStr
+
+
+class FlipFirstUserStatus(BaseModel):
+    """Pydantic model for flip-first-user-status request payload."""
     email: EmailStr

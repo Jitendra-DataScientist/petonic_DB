@@ -542,3 +542,13 @@ async def firstUser(payload: pydantic_check.FirstUser):
     response, status_code = user_profile_inst.checkFirstUser(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/flip-first-user-status")
+async def flipFirstUserStatus(payload: pydantic_check.FlipFirstUserStatus):
+    """Route function to check if a user is a first time user
+    """
+
+    response, status_code = user_profile_inst.flipFirstUserStatus(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
