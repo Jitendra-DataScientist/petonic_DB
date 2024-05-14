@@ -233,3 +233,60 @@ class Subscription:
                 "update": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}"    # pylint: disable=line-too-long
             }, 500
+
+
+    def secondAdd(self, req_body):
+        """Function to add payment related details of user"""
+
+        try:
+            query = "select payment_mode, amount, payment_status \
+                    from subscription\
+                    where subscription_id = %s;"
+            query_data = (
+                req_body["subscription_id"],
+            )
+
+            subscription_data = db_return(query, query_data)
+            payment_mode, amount, payment_status = subscription_data[0]
+            if not payment_mode:
+                payment_mode = {1:{"value":req_body["payment_mode"],"epoch":time.time()}}
+            else:
+                new_key1 = max([int(key) for key in payment_mode.keys()])+1
+                payment_mode[new_key1] = {"value":req_body["payment_mode"],"epoch":time.time()}
+            if not amount:
+                amount = {1:{"value":req_body["amount"],"epoch":time.time()}}
+            else:
+                new_key2 = max([int(key) for key in amount.keys()])+1
+                amount[new_key2] = {"value":req_body["amount"],"epoch":time.time()}
+            if not payment_status:
+                payment_status = {1:{"value":req_body["payment_status"],"epoch":time.time()}}
+            else:
+                new_key3 = max([int(key) for key in payment_status.keys()])+1
+                payment_status[new_key3] = {"value":req_body["payment_status"],"epoch":time.time()}
+            query = ["""UPDATE subscription
+                        SET payment_mode = %s,
+                            amount = %s,
+                            payment_status = %s
+                        WHERE subscription_id = %s;
+                    """]
+            query_data = [(json.dumps(payment_mode),
+                        json.dumps(amount),
+                        json.dumps(payment_status),
+                        req_body["subscription_id"],
+                        ),]
+            update_res = db_no_return(query, query_data)
+            if update_res == "success":
+                return {"update":True}, 201
+            else:
+                update_res.update({"update": False})
+                return update_res, 500
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%s", exception_type, filename, line_number)
+            return {
+                "update": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}"    # pylint: disable=line-too-long
+            }, 500

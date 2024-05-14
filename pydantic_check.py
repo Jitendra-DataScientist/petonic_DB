@@ -594,3 +594,11 @@ class EmailModify(BaseModel):
     """Pydantic model for resend-otp request payload."""
     subscription_id: str
     new_email: EmailStr
+
+
+class SecondAdd(BaseModel):
+    """Pydantic model for second-add request payload."""
+    subscription_id: str
+    payment_mode: str
+    amount: str
+    payment_status: str
