@@ -522,3 +522,13 @@ async def email_modify(payload: pydantic_check.EmailModify):
     response, status_code = subscription_instance.emailModify(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/second-add")
+async def second_add(payload: pydantic_check.SecondAdd):
+    """Route function to add payment details of subscriber
+    """
+
+    response, status_code = subscription_instance.secondAdd(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
