@@ -566,14 +566,11 @@ class FirstAdd(BaseModel):
     l_name: str
     # company_id: Union[str, int]
     employee_id: Any
-    admin_email: EmailStr = None
-    admin_password: str = None
-    subscription_id: str = None
-    plan: str = None
-    users_count: int = None
-    company_name: str = None
-    phone: str = None
-    country: str = None
+    plan: str
+    users_count: int
+    company_name: str
+    phone: str
+    country: str
     address_line1: str = None
     address_line2: str = None
 

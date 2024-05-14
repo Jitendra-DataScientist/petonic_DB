@@ -73,8 +73,9 @@ class Subscription:
                     country,
                     address_line1,
                     address_line2,
-                    otp
-                ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+                    otp,
+                    employee_id
+                ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
             ]
 
             query_data = [
@@ -90,7 +91,8 @@ class Subscription:
                     req_body["country"],
                     req_body["address_line1"],
                     req_body["address_line2"],
-                    otp
+                    otp,
+                    req_body["employee_id"],
                 )
             ]
 
