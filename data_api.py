@@ -532,3 +532,13 @@ async def second_add(payload: pydantic_check.SecondAdd):
     response, status_code = subscription_instance.secondAdd(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/first-user")
+async def firstUser(payload: pydantic_check.FirstUser):
+    """Route function to check if a user is a first time user
+    """
+
+    response, status_code = user_profile_inst.checkFirstUser(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)

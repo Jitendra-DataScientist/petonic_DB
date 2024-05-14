@@ -602,3 +602,8 @@ class SecondAdd(BaseModel):
     payment_mode: str
     amount: str
     payment_status: str
+
+
+class FirstUser(BaseModel):
+    """Pydantic model for second-add request payload."""
+    email: EmailStr

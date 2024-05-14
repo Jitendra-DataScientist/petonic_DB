@@ -226,8 +226,8 @@ class UserProfile:
             first_password = utils.generate_random_string(str_len=8)
 
             queries_list = [
-                "INSERT INTO user_login (email, password, subscription_id)\
-                VALUES (%s, %s, %s);",
+                "INSERT INTO user_login (email, password, subscription_id, first_time)\
+                VALUES (%s, %s, %s, %s);",
                 "INSERT INTO user_signup\
                 (f_name, l_name, email, role, employee_id)\
                 VALUES (%s, %s, %s, %s, %s);",
@@ -238,6 +238,7 @@ class UserProfile:
                     req_body["email"],
                     first_password,
                     req_body["subscription_id"],
+                    True
                 ),
                 (
                     req_body["f_name"],
@@ -441,5 +442,34 @@ class UserProfile:
             return {
                 "fetch": False,
                 "fields":["role", "employee_id", "f_name", "l_name", "active"],
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
+
+
+    def checkFirstUser(self, req_body):
+        """function to check if a user is a first time user
+        """
+        try:
+            query = "select first_time from user_login where email = %s;"
+            query_data = (
+                req_body["email"],
+            )
+            first_user_data = db_return(query, query_data)
+            if not first_user_data:
+                return {"first_user":True,
+                        "helpText":"email not is records"}, 400
+            elif first_user_data and first_user_data[0]:
+                return {"first_user": first_user_data[0][0]}, 200
+            else:
+                first_user_data.update({"first_user": True})
+                return first_user_data, 400
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d", exception_type, filename, line_number)
+            return {
+                "first_user": True,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
