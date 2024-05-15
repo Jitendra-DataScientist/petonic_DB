@@ -370,6 +370,12 @@ class EditUserDetailsRequest(BaseModel):
     #     return value.lower()
 
 
+class AdminViewListRequest(BaseModel):
+    """Pydantic model for the admin-view-list request
+    """
+    subscription_id: str
+
+
 class SettinParamaterKeyParametersRequest(BaseModel):
     """Pydantic model for the setting-parameter-key-parameters request payload.
 

@@ -287,17 +287,21 @@ class Admin:
             }, 500
 
 
-    def admin_view_list(self):
+    def admin_view_list(self, req_body):
         """
             function to fetch details of all users
             for the admin view list.
         """
         try:
             # Queries Formation
-            query = "SELECT us.email,us.role,us.employee_id,us.f_name,us.l_name,v.active\
-                    FROM user_signup us\
-                    LEFT JOIN validation v ON us.email = v.email;"
-            query_data = None
+            query = """SELECT us.email,us.role,us.employee_id,us.f_name,us.l_name,v.active
+                    FROM user_signup us
+                    LEFT JOIN validation v ON us.email = v.email
+                    LEFT JOIN user_login ul ON ul.email = v.email
+                    WHERE ul.subscription_id = %s;"""
+            query_data = (
+                req_body["subscription_id"],
+            )
             ret_data = db_return(query, query_data)
             return {"fetch": True,
                     "data": ret_data,

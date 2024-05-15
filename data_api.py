@@ -330,11 +330,11 @@ async def edit_user_api(payload: pydantic_check.EditUserDetailsRequest):
     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.get("/data-api/admin-view-list")
-async def admin_view_list_api():
+@app.post("/data-api/admin-view-list")
+async def admin_view_list_api(payload: pydantic_check.AdminViewListRequest):
     """Route function to fetch data for admin list view"""
 
-    response, status_code = user_details_instance.admin_view_list()
+    response, status_code = user_details_instance.admin_view_list(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
