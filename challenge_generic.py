@@ -436,7 +436,7 @@ class CG:
                     where_elements.append(f"cs.challenge_status IN \
                                           {str(tuple(req_body['status']))}")
 
-
+            where_elements.append(f"ul.subscription_id IN ('{str(req_body['subscription_id'])}')")
             if where_elements and limit_offset:
                 query_template = view_list_query_templates_instance.where_limit
                 if len(where_elements) == 1:
@@ -460,6 +460,7 @@ class CG:
                 return "Bad Request", None
         else:
             query = view_list_query_templates_instance.no_filter
+
         return query
 
     # def cont_name_func(self, email_list, mapping_dict):
@@ -483,6 +484,7 @@ class CG:
             if query == "Bad Request. lower_index < 1":
                 return {"fetch": False,
                         "helpText": "Bad Request. lower_index < 1"}, 400
+
             try:
                 ret_data = db_return(query, query_data = None)
                 # print ("\n\n\n\n")
@@ -506,6 +508,7 @@ class CG:
                 cont_name_dict["ai_solution@petonic.in"] = "GenAI Solution"
                 cont_name_dict["ai_solution"] = "GenAI Solution"
                 cont_name_dict["solveai@petonic.in"] = "SolveAI Solution"
+
                 modified_ret_data = [element+(list(map(
                                     lambda x: cont_name_dict[x] if x else None,element[-4]
                                             )),)

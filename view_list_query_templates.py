@@ -41,6 +41,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     user_signup ua ON ca.approver_id = ua.email
                 LEFT JOIN 
                     user_signup um ON c.pm_id = um.email
+                LEFT JOIN 
+                    user_login ul ON ul.email = ui.email OR ul.email = ua.email OR ul.email = um.email
                 WHERE
                     %s
                 GROUP BY
@@ -106,6 +108,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     user_signup ua ON ca.approver_id = ua.email
                 LEFT JOIN 
                     user_signup um ON c.pm_id = um.email
+                LEFT JOIN 
+                    user_login ul ON ul.email = ui.email OR ul.email = ua.email OR ul.email = um.email
                 WHERE
                     %s
                 GROUP BY
@@ -170,6 +174,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                     user_signup ua ON ca.approver_id = ua.email
                 LEFT JOIN 
                     user_signup um ON c.pm_id = um.email
+                LEFT JOIN 
+                    user_login ul ON ul.email = ui.email OR ul.email = ua.email OR ul.email = um.email
                 GROUP BY
                     c.challenge_id, 
                     c.initiator_id, 
@@ -233,6 +239,8 @@ class ViewListQueryTemplates:   #pylint: disable=too-few-public-methods
                         user_signup ua ON ca.approver_id = ua.email
                     LEFT JOIN 
                         user_signup um ON c.pm_id = um.email
+                    LEFT JOIN 
+                        user_login ul ON ul.email = ui.email OR ul.email = ua.email OR ul.email = um.email
                     GROUP BY
                         c.challenge_id, 
                         c.initiator_id, 

@@ -308,6 +308,7 @@ class ViewListRequest(BaseModel):
     process: Optional[List[str]] = None
     approver_id: Optional[List[EmailStr]] = None
     contributor: Optional[bool] = None
+    subscription_id: str
 
     # @classmethod
     # @validator("initiator_id", "approver_id", pre=True)

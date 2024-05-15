@@ -291,23 +291,32 @@ async def challenge_creation_api(payload: pydantic_check.ChallengeCreationReques
 #     return JSONResponse(content=response, status_code=status_code)
 
 
-@app.route("/data-api/view-list", methods=["GET", "POST"])
-async def view_list_api(request: Request = Depends()):
+# @app.route("/data-api/view-list", methods=["GET", "POST"])
+# async def view_list_api(request: Request = Depends()):
+#     """Route function for view-list page for all roles"""
+
+#     if request.method == "GET":
+#         response, status_code = challenge_generic_inst.view_list()
+#     elif request.method == "POST":
+#         try:
+#             payload = pydantic_check.ViewListRequest(**await request.json())
+#         except ValueError:
+#             return JSONResponse(content={"fetch": False,
+#                                          "data": None,
+#                                          "helpText":"Invalid format in the request body"},
+#                                 status_code=400)
+
+#         response, status_code = challenge_generic_inst.view_list(vars(payload))
+
+#     logger.info(response)
+#     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/view-list")
+async def view_list_api(payload: pydantic_check.ViewListRequest):
     """Route function for view-list page for all roles"""
 
-    if request.method == "GET":
-        response, status_code = challenge_generic_inst.view_list()
-    elif request.method == "POST":
-        try:
-            payload = pydantic_check.ViewListRequest(**await request.json())
-        except ValueError:
-            return JSONResponse(content={"fetch": False,
-                                         "data": None,
-                                         "helpText":"Invalid format in the request body"},
-                                status_code=400)
-
-        response, status_code = challenge_generic_inst.view_list(vars(payload))
-
+    response, status_code = challenge_generic_inst.view_list(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
