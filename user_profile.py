@@ -174,6 +174,8 @@ class UserProfile:
                 req_body['admin_email'] = req_body['admin_email'].lower()
             except AttributeError:
                 pass
+            except KeyError:
+                pass
             # check if admin role
             query = "select role \
                     from user_signup\
@@ -221,6 +223,32 @@ class UserProfile:
                     logger.info("admin_auth: %s", admin_auth)
                     return {"user_creation": False,
                             "helpText": "admin authorisation error"}, 500
+
+            # verify if the subscription plan permits addition of more users
+            if req_body["role"] != "admin":
+                try:
+                    query = "select users_count from subscription where subscription_id = %s;"
+                    query_data = (
+                        req_body["subscription_id"],
+                    )
+                    user_count_allowed = db_return(query, query_data)
+                    query = """SELECT count(*)
+                            FROM user_login ul
+                            LEFT JOIN user_signup us
+                            ON ul.email = us.email
+                            WHERE ul.subscription_id = %s
+                            AND us.role <> 'admin';"""
+                    query_data = (
+                        req_body["subscription_id"],
+                    )
+                    user_count_actual = db_return(query, query_data)
+                    if user_count_actual >= user_count_allowed:
+                        return {"user_creation": False,
+                                "helpText": "subscription user count limit reached"}, 401
+                except Exception as count_error:
+                    return {"user_creation": False,
+                            "helpText": count_error}, 500
+
 
             # Queries Formation
             first_password = utils.generate_random_string(str_len=8)
@@ -515,3 +543,15 @@ class UserProfile:
                 "flip": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
+
+# obj = UserProfile()
+# print(obj.signup({
+#     "email": "automaizxcl3qas.petonic@gmail.com",
+#     "role": "initiator",
+#     "f_name": "Jitendra",
+#     "l_name": "Nayak",
+#     "employee_id": "NEW004",
+#     "subscription_id": "RfxC5qfaff_automail.petonic@gmail.com",
+#     "admin_email": "automail.petonic@gmail.com",
+#     "admin_password": "xkAtdCD1"
+# }))
