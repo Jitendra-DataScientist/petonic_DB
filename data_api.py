@@ -24,6 +24,7 @@ import pydantic_check
 from admin import Admin
 from project_management import PM
 from subscription import Subscription
+from leaderboard import Leaderboard
 
 
 # Determine the directory for logs
@@ -71,6 +72,7 @@ user_details_instance = Admin()
 file_transfer_instance = FT()
 project_management_instance = PM()
 subscription_instance = Subscription()
+leaderboard_instance = Leaderboard()
 
 
 # Create a FastAPI instance
@@ -559,5 +561,16 @@ async def flipFirstUserStatus(payload: pydantic_check.FlipFirstUserStatus):
     """
 
     response, status_code = user_profile_inst.flipFirstUserStatus(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/leaderboard/best-project")
+async def leaderboard_best_project(payload: pydantic_check.LeaderboardBestProject):
+    """Route function to return the details of approved
+       challenges for projects (for leaderboard page)
+    """
+
+    response, status_code = leaderboard_instance.best_project(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)

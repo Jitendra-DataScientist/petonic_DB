@@ -616,3 +616,8 @@ class FirstUser(BaseModel):
 class FlipFirstUserStatus(BaseModel):
     """Pydantic model for flip-first-user-status request payload."""
     email: EmailStr
+
+
+class LeaderboardBestProject(BaseModel):
+    """Pydantic model for leaderboard/best-project request payload."""
+    subscription_id: str
