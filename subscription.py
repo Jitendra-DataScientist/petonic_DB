@@ -197,7 +197,7 @@ class Subscription:
 
 
     def emailModify(self, req_body):
-        """Function for modify email"""
+        """Function to update (change) email address."""
 
         try:
             query = "select count(*) \
