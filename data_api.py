@@ -527,7 +527,7 @@ async def resend_otp(payload: pydantic_check.ResendOTP):
 
 @app.post("/data-api/email-modify")
 async def email_modify(payload: pydantic_check.EmailModify):
-    """Route function to resend OTP of subsciber
+    """Route function to update (change) email address.
     """
 
     response, status_code = subscription_instance.emailModify(vars(payload))
@@ -557,7 +557,8 @@ async def firstUser(payload: pydantic_check.FirstUser):
 
 @app.post("/data-api/flip-first-user-status")
 async def flipFirstUserStatus(payload: pydantic_check.FlipFirstUserStatus):
-    """Route function to check if a user is a first time user
+    """Route function to flip first-time-user-status
+       after first-time user changes password
     """
 
     response, status_code = user_profile_inst.flipFirstUserStatus(vars(payload))

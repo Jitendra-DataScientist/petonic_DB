@@ -53,8 +53,8 @@ class Leaderboard:
 
 
     def best_project(self, req_body):
-        """Function for adding basic
-           subscription details
+        """function to return the details of approved challenges
+           for projects (for leaderboard page).
         """
 
         try:
