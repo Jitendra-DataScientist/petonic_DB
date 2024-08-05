@@ -89,7 +89,7 @@ class Support:
             # Queries Formation
             query = ["""INSERT INTO petonicai_support
                      (email, name, phone, query)
-                     VALUES (%s, %s,%s,%s,%s);""",]
+                     VALUES (%s, %s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
