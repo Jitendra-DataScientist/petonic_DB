@@ -25,6 +25,7 @@ from admin import Admin
 from project_management import PM
 from subscription import Subscription
 from leaderboard import Leaderboard
+from support import Support
 
 
 # Determine the directory for logs
@@ -73,6 +74,7 @@ file_transfer_instance = FT()
 project_management_instance = PM()
 subscription_instance = Subscription()
 leaderboard_instance = Leaderboard()
+support_instance = Support()
 
 
 # Create a FastAPI instance
@@ -573,5 +575,25 @@ async def leaderboard_best_project(payload: pydantic_check.LeaderboardBestProjec
     """
 
     response, status_code = leaderboard_instance.best_project(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/solvai-support")
+async def solvai_support(payload: pydantic_check.SolvaiSupport):
+    """Route function for SolvAI support feature.
+    """
+
+    response, status_code = support_instance.solvai_support(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/petonicai-support")
+async def petonicai_support(payload: pydantic_check.PetonicaiSupport):
+    """Route function for PetonicAI support feature.
+    """
+
+    response, status_code = support_instance.petonicai_support(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
