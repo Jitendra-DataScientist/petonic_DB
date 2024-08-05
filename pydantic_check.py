@@ -621,3 +621,20 @@ class FlipFirstUserStatus(BaseModel):
 class LeaderboardBestProject(BaseModel):
     """Pydantic model for leaderboard/best-project request payload."""
     subscription_id: str
+
+
+class SolvaiSupport(BaseModel):
+    """Pydantic model for solvai-support request payload."""
+    subscription_id: str
+    email: EmailStr
+    name: str
+    phone: str
+    query: str
+
+
+class PetonicaiSupport(BaseModel):
+    """Pydantic model for petonicai-support request payload."""
+    email: EmailStr
+    name: str
+    phone: str
+    query: str
