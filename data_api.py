@@ -26,6 +26,7 @@ from project_management import PM
 from subscription import Subscription
 from leaderboard import Leaderboard
 from support import Support
+from demo import Demo
 
 
 # Determine the directory for logs
@@ -75,6 +76,7 @@ project_management_instance = PM()
 subscription_instance = Subscription()
 leaderboard_instance = Leaderboard()
 support_instance = Support()
+demo_instance = Demo()
 
 
 # Create a FastAPI instance
@@ -595,5 +597,15 @@ async def petonicai_support(payload: pydantic_check.PetonicaiSupport):
     """
 
     response, status_code = support_instance.petonicai_support(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/solvai-demo")
+async def solvai_demo(payload: pydantic_check.SolvaiDemo):
+    """Route function for Request-Demo support feature of SolvAI.
+    """
+
+    response, status_code = demo_instance.solvai_demo(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)

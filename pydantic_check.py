@@ -638,3 +638,11 @@ class PetonicaiSupport(BaseModel):
     name: str
     phone: str
     query: str
+
+
+class SolvaiDemo(BaseModel):
+    """Pydantic model for solvai-demo request payload."""
+    email: EmailStr
+    name: str
+    company_name: str
+    details: str
