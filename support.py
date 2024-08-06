@@ -5,7 +5,6 @@
 import os
 import sys
 import logging
-from db_return import db_return
 from db_no_return import db_no_return
 
 
