@@ -628,7 +628,7 @@ class SolvaiSupport(BaseModel):
     subscription_id: str
     email: EmailStr
     name: str
-    phone: str
+    phone: Optional[str] = None
     query: str
 
 
