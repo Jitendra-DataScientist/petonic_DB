@@ -193,7 +193,7 @@ class UserProfile:
                 else:
                     return {"helpText": "unable to identify associated subscription_id",
                             "login": False,
-                            "data": data}, 401
+                            "data": data}, 400
 
             else:
                 return {"helpText":
