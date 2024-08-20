@@ -8,6 +8,7 @@ import sys
 import logging
 import json
 import time
+import requests
 from db_return import db_return
 from db_no_return import db_no_return
 from utils import Utils
@@ -121,6 +122,17 @@ class UserProfile:
             }
 
 
+    def fetch_online_status(sub_id, chat_ip, chat_port, fetch_online_status_payload):
+
+        url = f"http://{str(chat_ip)}:{str(chat_port)}/fetch-online-users"
+        payload = {
+            "subscription_id": sub_id,
+            "user_ids": "all"
+        }
+        res = requests.post(url=url,json=fetch_online_status_payload).json()
+        return res
+
+
     def login_trigger(self, request_body):
         """Function to trigger above login
            funtion, and return response
@@ -135,25 +147,58 @@ class UserProfile:
             # data[0] = ("qw",0)
             # data[0] = (12,0)
             if isinstance(data[0][0], int):
-                if data[0][0] == 1:                  # pylint: disable=no-else-return
-                    return {"login": True,
-                            "role": data[1],
-                            "f_name": data[2],
-                            "l_name": data[3],
-                            "employee_id": data[4],
-                            "subscription_id": data[5]}, 200
-                elif data[0][0] == 0:
-                    return {"login": False,
-                            "helpText": data[1]}, 401
+                if len(data) > 5:
+                    sub_id = data[5]
+                    chat_ip = os.getenv("chat_ip", "125.63.120.194")
+                    chat_port = os.getenv("chat_port", 8011)
+                    fetch_online_status_payload = {
+                                                "subscription_id": data[5],
+                                                "user_ids": "all"
+                                            }
+                    online_status = self.online_status(sub_id, chat_ip, chat_port, fetch_online_status_payload)
+                    if isinstance(online_status, dict):
+                        if "fetch" not in online_status:
+                            return {"login": False,
+                                    "helpText":"failed to retrieve proper response from fetch-online-users API"}, 500
+                        else:
+                            if not online_status["fetch"]:
+                                return {"login": False,
+                                        "helpText":"failed to retrieve proper response from fetch-online-users API with fetch as False"}, 500
+                            else:
+                                if req_body['email'] in online_status["data"]:
+                                    if online_status["data"][req_body['email']]['status']:
+                                        return {"login": False,
+                                                "helpText":"user already logged in"}, 400
+                    else:
+                        return {"login": False,
+                                "helpText":"failed to load online statuses"}, 500
+
+                    if data[0][0] == 1:                  # pylint: disable=no-else-return
+                        return {"login": True,
+                                "role": data[1],
+                                "f_name": data[2],
+                                "l_name": data[3],
+                                "employee_id": data[4],
+                                "subscription_id": data[5]}, 200
+                    elif data[0][0] == 0:
+                        return {"login": False,
+                                "helpText": data[1]}, 401
+                    else:
+                        return {"login": True,
+                                "IT_alert": True,
+                                "role": data[1],
+                                "f_name": data[2],
+                                "l_name": data[3],
+                                "employee_id": data[4]}, 202
                 else:
-                    return {"login": True,
-                            "IT_alert": True,
-                            "role": data[1],
-                            "f_name": data[2],
-                            "l_name": data[3],
-                            "employee_id": data[4]}, 202
+                    return {"helpText": "unable to identify associated subscription_id",
+                            "login": False,
+                            "data": data}, 401
+
             else:
-                return {"helpText": {"data": data}, "login": False}, 401
+                return {"helpText":
+                           {"data":data},
+                        "login": False}, 401
 
         except Exception as db_error:  # pylint: disable=broad-exception-caught
             exception_type, _, exception_traceback = sys.exc_info()
