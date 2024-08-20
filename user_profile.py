@@ -122,7 +122,7 @@ class UserProfile:
             }
 
 
-    def fetch_online_status(sub_id, chat_ip, chat_port, fetch_online_status_payload):
+    def fetch_online_status(self, sub_id, chat_ip, chat_port, fetch_online_status_payload):
 
         url = f"http://{str(chat_ip)}:{str(chat_port)}/fetch-online-users"
         payload = {
