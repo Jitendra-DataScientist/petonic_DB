@@ -155,7 +155,7 @@ class UserProfile:
                                                 "subscription_id": data[5],
                                                 "user_ids": "all"
                                             }
-                    online_status = self.online_status(sub_id, chat_ip, chat_port, fetch_online_status_payload)
+                    online_status = self.fetch_online_status(sub_id, chat_ip, chat_port, fetch_online_status_payload)
                     if isinstance(online_status, dict):
                         if "fetch" not in online_status:
                             return {"login": False,
