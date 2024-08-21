@@ -162,8 +162,12 @@ class UserProfile:
                                     "helpText":"failed to retrieve proper response from fetch-online-users API"}, 500
                         else:
                             if not online_status["fetch"]:
-                                return {"login": False,
-                                        "helpText":"failed to retrieve proper response from fetch-online-users API with fetch as False"}, 500
+                                if online_status["helpText"] == "unknown subscription_id" and data[5] == "incorrect creds / inactive account / email not validated":
+                                    return {"login": False,
+                                            "helpText": "incorrect creds / inactive account / email not validated"}, 400
+                                else:
+                                    return {"login": False, "online_status": online_status, "subscription_id": data[5],
+                                            "helpText": "failed to retrieve proper response from fetch-online-users API with fetch as False"}, 500
                             else:
                                 if req_body['email'] in online_status["data"]:
                                     if online_status["data"][req_body['email']]['status']:
