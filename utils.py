@@ -417,7 +417,6 @@ class Utils:
             return True
         except Exception as mail_error:             # pylint: disable=broad-exception-caught
             logger.critical("Mail sending error: %s", mail_error)
-            logger.error("Mail sending error: ", mail_error)
             return False
 
 
@@ -455,5 +454,4 @@ class Utils:
             return True
         except Exception as mail_error:             # pylint: disable=broad-exception-caught
             logger.critical("Mail sending error: %s", mail_error)
-            logger.error("Mail sending error: ", mail_error)
             return False
