@@ -8,6 +8,7 @@ import time
 import logging
 import threading
 from db_no_return import db_no_return
+from utils import Utils
 
 
 # Determine the directory for logs
@@ -40,6 +41,8 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
+utils_instance = Utils()
+
 
 class Demo:
     """
@@ -68,7 +71,7 @@ class Demo:
 
             if res == "success":   # pylint: disable=no-else-return
                 threading.Thread(
-                    target=self.solvai_demo, args=(
+                    target=utils_instance.solvai_demo, args=(
                                 req_body["email"],
                                 req_body["name"],
                                 req_body["company_name"],
