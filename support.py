@@ -6,7 +6,9 @@ import os
 import sys
 import logging
 import time
+import threading
 from db_no_return import db_no_return
+from utils import Utils
 
 
 # Determine the directory for logs
@@ -39,6 +41,8 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
+utils_instance = Utils()
+
 
 class Support:
     """
@@ -67,6 +71,14 @@ class Support:
             res = db_no_return(query, query_data)
 
             if res == "success":   # pylint: disable=no-else-return
+                threading.Thread(
+                    target=utils_instance.solvai_support, args=(
+                                req_body["email"],
+                                req_body["name"],
+                                req_body["phone"],
+                                req_body["query"]
+                                )
+                    ).start()
                 return {"update": True}, 201
 
             else:
@@ -104,6 +116,14 @@ class Support:
             res = db_no_return(query, query_data)
 
             if res == "success":   # pylint: disable=no-else-return
+                threading.Thread(
+                    target=utils_instance.petonicai_support, args=(
+                                req_body["email"],
+                                req_body["name"],
+                                req_body["phone"],
+                                req_body["query"]
+                                )
+                    ).start()
                 return {"update": True}, 201
 
             else:
