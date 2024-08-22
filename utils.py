@@ -430,8 +430,8 @@ class Utils:
                 A demo has been booked for SolvAI feature showcasing. Following are the details for the demo:<br>
                 <strong>Attendee</strong>: {receiver_name}<br>
                 <strong>Company Name</strong>: {company_name}<br>
-                <strong>Details Requested</strong>: {details}<br>
-                Some one from the concerned team would get back to the attendee shortly.
+                <strong>Details Requested</strong>: {details}
+                <p>Some one from the concerned team would get back to the attendee shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
@@ -465,8 +465,8 @@ class Utils:
                 A request for support has been raised on SolvAI with following details:<br>
                 <strong>Requester</strong>: {receiver_name}<br>
                 <strong>phone</strong>: {phone}<br>
-                <strong>query</strong>: {query}<br>
-                Some one from the concerned team would get back to the requester shortly.
+                <strong>query</strong>: {query}
+                <p>Some one from the concerned team would get back to the requester shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
@@ -500,8 +500,8 @@ class Utils:
                 A request for support has been raised with PetonicAI with following details:<br>
                 <strong>Requester</strong>: {receiver_name}<br>
                 <strong>phone</strong>: {phone}<br>
-                <strong>query</strong>: {query}<br>
-                Some one from the concerned team would get back to the requester shortly.
+                <strong>query</strong>: {query}
+                <p>Some one from the concerned team would get back to the requester shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
