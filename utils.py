@@ -421,18 +421,18 @@ class Utils:
             return False
 
 
-    def solvai_demo(self, to_email, receiver_name, company_name):             # pylint: disable=too-many-arguments
+    def solvai_demo(self, to_email, receiver_name, company_name, details):             # pylint: disable=too-many-arguments
         """mail sender trigger function for verifying
            email entered during subscription
         """
 
-        subject = "Welcome Onboard !!"
+        subject = "SolvAI Demo booked !!"
         body = (
                 f"""<p>Hello {receiver_name},<br>
                 A demo has been booked for SolvAI feature showcasing. Following are the details of for the demo:<br>
                 <strong>Attendee</strong>: {receiver_name}<br>
                 <strong>Company Name</strong>: {company_name}<br>
-                <strong>Details Requested</strong>: {company_name}<br>
+                <strong>Details Requested</strong>: {details}<br>
                 Some one concerned would get back to the attendee shortly.
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
