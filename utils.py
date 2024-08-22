@@ -427,7 +427,7 @@ class Utils:
         subject = "SolvAI Demo booked !!"
         body = (
                 f"""<p>Hello {receiver_name},<br>
-                A demo has been booked for SolvAI feature showcasing. Following are the details of for the demo:<br>
+                A demo has been booked for SolvAI feature showcasing. Following are the details for the demo:<br>
                 <strong>Attendee</strong>: {receiver_name}<br>
                 <strong>Company Name</strong>: {company_name}<br>
                 <strong>Details Requested</strong>: {details}<br>
