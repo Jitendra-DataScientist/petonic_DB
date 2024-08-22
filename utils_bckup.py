@@ -118,14 +118,30 @@ class Utils:
         """mail sender trigger function"""
 
         subject = "Innovation.ai SignUp"
-        body = (
-                f"""<p>Hello,<br>
-                An account with <strong>{role}</strong> role has been created on Innovation.ai,
-                the user ID for which is your mail ID and password for which is <strong>
-                {first_password}</strong>.<br> Please log in using these credentials.</p>
-                <p>If you do not recognise this activity, please ignore this email.</p>
-                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-            )
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    An account with <strong>{role}</strong> role has been created on Innovation.ai,
+                    the user ID for which is your mail ID and password for which is <strong>
+                    {first_password}</strong>.<br> Please log in using these credentials.</p>
+                    <p>If you do not recognise this activity, please ignore this email.</p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    An account with <strong>{role}</strong> role has been created on Innovation.ai,
+                    the user ID for which is your mail ID and password for which is <strong>
+                    {first_password}</strong>.<br> Please log in using these credentials.</p>
+                    <p>If you do not recognise this activity, please ignore this email.</p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
@@ -150,12 +166,26 @@ class Utils:
         """mail sender trigger function"""
 
         subject = "Password Reset"
-        body = (
-                f"""<p>Hello,<br>
-                Your password has been reset to <strong>{new_password}</strong>.<br>
-                Please log in using this password to reset your password.</p>
-                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-            )
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    Your password has been reset to <strong>{new_password}</strong>.<br>
+                    Please log in using this password to reset your password.</p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    Your password has been reset to <strong>{new_password}</strong>.<br>
+                    Please log in using this password to reset your password.</p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
@@ -180,15 +210,32 @@ class Utils:
         """mail sender trigger function"""
 
         subject = "Password Reset"
-        body = (
-                f"""<p>Hello,<br>
-                Your password has been changed to <strong>{new_password}
-                </strong> successfully.<br>
-                Please log in using this password now.
-                If you do not recognize this activity, contact your admin.
-                </p>
-                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-            )
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    Your password has been changed to <strong>{new_password}
+                    </strong> successfully.<br>
+                    Please log in using this password now.
+                    If you do not recognize this activity, contact your admin.
+                    </p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    Your password has been changed to <strong>{new_password}
+                    </strong> successfully.<br>
+                    Please log in using this password now.
+                    If you do not recognize this activity, contact your admin.
+                    </p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
@@ -213,11 +260,24 @@ class Utils:
         """mail sender trigger function"""
 
         subject = "Change of Role"
-        body = (
-                f"""<p>Hello,<br>
-                Your role for Innovation.ai has now been set to <strong>{role}</strong>.<br></p>
-                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-            )
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    Your role for Innovation.ai has now been set to <strong>{role}</strong>.<br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    Your role for Innovation.ai has now been set to <strong>{role}</strong>.<br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
@@ -243,18 +303,44 @@ class Utils:
 
         if status:
             subject = "Account Activated"
-            body = (
-                    """<p>Hello,<br>
-                    Your account for Innovation.ai has now been activated.<br></p>
-                    <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-                )
+            try:
+                logo_url = os.getenv("logo_url")
+                body = (
+                        f"""<p>Hello,<br>
+                        Your account for Innovation.ai has now been activated.<br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>
+                        <img src={logo_url} alt="Petonic Company Logo">"""
+                    )
+
+            except FileNotFoundError as file_error:
+                logger.critical("Failed to load logo_url from .env: %s", file_error)
+                body = (
+                        """<p>Hello,<br>
+                        Your account for Innovation.ai has now been activated.<br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>"""
+                    )
         else:
             subject = "Account Deactivated"
-            body = (
-                    """<p>Hello,<br>
-                    Your account for Innovation.ai has now been deactivated.<br></p>
-                    <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-                )
+            try:
+                logo_url = os.getenv("logo_url")
+                body = (
+                        f"""<p>Hello,<br>
+                        Your account for Innovation.ai has now been deactivated.<br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>
+                        <img src={logo_url} alt="Petonic Company Logo">"""
+                    )
+
+            except FileNotFoundError as file_error:
+                logger.critical("Failed to load logo_url from .env: %s", file_error)
+                body = (
+                        """<p>Hello,<br>
+                        Your account for Innovation.ai has now been deactivated.<br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>"""
+                    )
         # SMTP server details
         smtp_server = "smtp.gmail.com"
         try:
@@ -278,17 +364,36 @@ class Utils:
         """mail sender trigger function for challenge initiation"""
 
         subject = "Challenge Initiated !!"
-        body = (
-                f"""<p>Hello,<br>
-                You have successfully initiated a challenge. Please find the details
-                of the challenge below:<br>
-                <strong>Challenge ID: </strong>{challenge_id}<br>
-                <strong>Industry: </strong>{industry}<br>
-                <strong>Domain: </strong>{domain}<br>
-                <strong>Process: </strong>{process}<br>
-                <br></p>
-                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-            )
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    You have successfully initiated a challenge. Please find the details
+                    of the challenge below:<br>
+                    <strong>Challenge ID: </strong>{challenge_id}<br>
+                    <strong>Industry: </strong>{industry}<br>
+                    <strong>Domain: </strong>{domain}<br>
+                    <strong>Process: </strong>{process}<br>
+                    <br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    You have successfully initiated a challenge. Please find the details
+                    of the challenge below:<br>
+                    <strong>Challenge ID: </strong>{challenge_id}<br>
+                    <strong>Industry: </strong>{industry}<br>
+                    <strong>Domain: </strong>{domain}<br>
+                    <strong>Process: </strong>{process}<br>
+                    <br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
@@ -313,16 +418,34 @@ class Utils:
         """mail sender trigger function for challenge submission (initiator mail)"""
 
         subject = "Challenge Submitted !!"
-        body = (
-                f"""<p>Hello,<br>
-                You have successfully submitted a challenge. Please find the details
-                of the challenge below:<br>
-                <strong>Challenge ID: </strong>{challenge_id}<br>
-                <strong>Challenge Name: </strong>{name}<br>
-                <strong>Challenge Description: </strong>{description}<br>
-                <br></p>
-                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-            )
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    You have successfully submitted a challenge. Please find the details
+                    of the challenge below:<br>
+                    <strong>Challenge ID: </strong>{challenge_id}<br>
+                    <strong>Challenge Name: </strong>{name}<br>
+                    <strong>Challenge Description: </strong>{description}<br>
+                    <br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    You have successfully submitted a challenge. Please find the details
+                    of the challenge below:<br>
+                    <strong>Challenge ID: </strong>{challenge_id}<br>
+                    <strong>Challenge Name: </strong>{name}<br>
+                    <strong>Challenge Description: </strong>{description}<br>
+                    <br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
@@ -357,14 +480,29 @@ class Utils:
     def send_mail_trigger_ch_sub_cont(self, challenge_id, name, description, cont_list):
         """mail sender trigger function for challenge submission (contributor mail)"""
         subject = "New Challenge in list !!"
-        body = f"""<p>Hello,<br>
-                    A new challenge has been created that awaits your solution. Please find the details
-                    of the challenge below:<br>
-                    <strong>Challenge ID: </strong>{challenge_id}<br>
-                    <strong>Challenge Name: </strong>{name}<br>
-                    <strong>Challenge Description: </strong>{description}<br>
-                    <br></p>
-                    <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
+        try:
+            logo_url = os.getenv("logo_url")
+            body = f"""<p>Hello,<br>
+                        A new challenge has been created that awaits your solution. Please find the details
+                        of the challenge below:<br>
+                        <strong>Challenge ID: </strong>{challenge_id}<br>
+                        <strong>Challenge Name: </strong>{name}<br>
+                        <strong>Challenge Description: </strong>{description}<br>
+                        <br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>
+                        <img src={logo_url} alt="Petonic Company Logo">"""
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = f"""<p>Hello,<br>
+                        A new challenge has been created that awaits your solution. Please find the details
+                        of the challenge below:<br>
+                        <strong>Challenge ID: </strong>{challenge_id}<br>
+                        <strong>Challenge Name: </strong>{name}<br>
+                        <strong>Challenge Description: </strong>{description}<br>
+                        <br></p>
+                        <p>Best regards,<br>
+                        Petonic Team</p>"""
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
@@ -391,14 +529,30 @@ class Utils:
         """
 
         subject = "Welcome Onboard !!"
-        body = (
-                f"""<p>Hello,<br>
-                An account is being created with PetonicAI, and the associated email is yours.
-                To verify this action, use this OTP:<br>
-                <strong>{otp}</strong><br>
-                <br></p>
-                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-            )
+        try:
+            logo_url = os.getenv("logo_url")
+            body = (
+                    f"""<p>Hello,<br>
+                    An account is being created with PetonicAI, and the associated email is yours.
+                    To verify this action, use this OTP:<br>
+                    <strong>{otp}</strong><br>
+                    <br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>
+                    <img src={logo_url} alt="Petonic Company Logo">"""
+                )
+
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to load logo_url from .env: %s", file_error)
+            body = (
+                    f"""<p>Hello,<br>
+                    An account is being created with PetonicAI, and the associated email is yours.
+                    To verify this action, use this OTP:<br>
+                    <strong>{otp}</strong><br>
+                    <br></p>
+                    <p>Best regards,<br>
+                    Petonic Team</p>"""
+                )
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
