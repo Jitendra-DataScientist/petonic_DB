@@ -4,6 +4,7 @@
 """
 import os
 import sys
+import time
 import logging
 from db_no_return import db_no_return
 
@@ -50,14 +51,15 @@ class Demo:
         try:
             # Queries Formation
             query = ["""INSERT INTO solvai_demo
-                     (email, name, company_name, details)
-                     VALUES (%s, %s,%s,%s);""",]
+                     (email, name, company_name, details, API_hit_timestamp)
+                     VALUES (%s, %s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
                                 req_body["name"],
                                 req_body["company_name"],
                                 req_body["details"],
+                                time.time(),
                             ),
                         ]
 
