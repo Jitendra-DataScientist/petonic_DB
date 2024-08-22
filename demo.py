@@ -6,6 +6,7 @@ import os
 import sys
 import time
 import logging
+import threading
 from db_no_return import db_no_return
 
 
@@ -66,6 +67,14 @@ class Demo:
             res = db_no_return(query, query_data)
 
             if res == "success":   # pylint: disable=no-else-return
+                threading.Thread(
+                    target=self.solvai_demo, args=(
+                                req_body["email"],
+                                req_body["name"],
+                                req_body["company_name"],
+                                req_body["details"]
+                                )
+                    ).start()
                 return {"update": True}, 201
 
             else:
