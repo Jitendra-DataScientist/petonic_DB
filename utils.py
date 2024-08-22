@@ -421,8 +421,7 @@ class Utils:
 
 
     def solvai_demo(self, to_email, receiver_name, company_name, details):             # pylint: disable=too-many-arguments
-        """mail sender trigger function for verifying
-           email entered during subscription
+        """mail sender trigger function for solvai demo book functionality
         """
 
         subject = "SolvAI Demo booked !!"
@@ -432,7 +431,7 @@ class Utils:
                 <strong>Attendee</strong>: {receiver_name}<br>
                 <strong>Company Name</strong>: {company_name}<br>
                 <strong>Details Requested</strong>: {details}<br>
-                Some one concerned would get back to the attendee shortly.
+                Some one from the concerned team would get back to the attendee shortly.
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
@@ -451,7 +450,75 @@ class Utils:
                             sender_password, smtp_server)
             logger.info("mail sent !!")
             print ("sent!!")
-            return True
         except Exception as mail_error:             # pylint: disable=broad-exception-caught
             logger.critical("Mail sending error: %s", mail_error)
             return False
+
+
+    def solvai_support(self, to_email, receiver_name, phone, query):             # pylint: disable=too-many-arguments
+        """mail sender trigger function for solvai support ticket book functionality
+        """
+
+        subject = "SolvAI support ticket created !!"
+        body = (
+                f"""<p>Hello {receiver_name},<br>
+                A request for support has been raised on SolvAI with following details:<br>
+                <strong>Requester</strong>: {receiver_name}<br>
+                <strong>phone</strong>: {phone}<br>
+                <strong>query</strong>: {query}<br>
+                Some one from the concerned team would get back to the requester shortly.
+                <br></p>
+                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
+            )
+
+        # SMTP server details
+        smtp_server = "smtp.gmail.com"
+        try:
+            sender_email = os.getenv("sender_email")
+            sender_password = os.getenv("sender_password")
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
+
+        try:
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
+            logger.info("mail sent !!")
+            print ("sent!!")
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
+            return False
+
+
+    def petonicai_support(self, to_email, receiver_name, phone, query):             # pylint: disable=too-many-arguments
+        """mail sender trigger function for petonicai support ticket book functionality
+        """
+
+        subject = "PetonicAI support ticket created !!"
+        body = (
+                f"""<p>Hello {receiver_name},<br>
+                A request for support has been raised with PetonicAI with following details:<br>
+                <strong>Requester</strong>: {receiver_name}<br>
+                <strong>phone</strong>: {phone}<br>
+                <strong>query</strong>: {query}<br>
+                Some one from the concerned team would get back to the requester shortly.
+                <br></p>
+                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
+            )
+
+        # SMTP server details
+        smtp_server = "smtp.gmail.com"
+        try:
+            sender_email = os.getenv("sender_email")
+            sender_password = os.getenv("sender_password")
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
+
+        try:
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
+            logger.info("mail sent !!")
+            print ("sent!!")
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
