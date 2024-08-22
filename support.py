@@ -5,6 +5,7 @@
 import os
 import sys
 import logging
+import time
 from db_no_return import db_no_return
 
 
@@ -50,8 +51,8 @@ class Support:
         try:
             # Queries Formation
             query = ["""INSERT INTO solvai_support
-                     (email, name, phone, query, subscription_id)
-                     VALUES (%s, %s,%s,%s,%s);""",]
+                     (email, name, phone, query, subscription_id, API_hit_timestamp)
+                     VALUES (%s, %s,%s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
@@ -59,6 +60,7 @@ class Support:
                                 req_body["phone"],
                                 req_body["query"],
                                 req_body["subscription_id"],
+                                time.time(),
                             ),
                         ]
 
@@ -87,14 +89,15 @@ class Support:
         try:
             # Queries Formation
             query = ["""INSERT INTO petonicai_support
-                     (email, name, phone, query)
-                     VALUES (%s, %s,%s,%s);""",]
+                     (email, name, phone, query, API_hit_timestamp)
+                     VALUES (%s, %s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
                                 req_body["name"],
                                 req_body["phone"],
                                 req_body["query"],
+                                time.time(),
                             ),
                         ]
 
