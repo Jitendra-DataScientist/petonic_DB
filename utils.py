@@ -464,8 +464,8 @@ class Utils:
                 f"""<p>Hello {receiver_name},<br>
                 A request for support has been raised on SolvAI with following details:<br>
                 <strong>Requester</strong>: {receiver_name}<br>
-                <strong>phone</strong>: {phone}<br>
-                <strong>query</strong>: {query}
+                <strong>Contact</strong>: {phone}<br>
+                <strong>Query</strong>: {query}
                 <p>Some one from the concerned team would get back to the requester shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
@@ -499,8 +499,8 @@ class Utils:
                 f"""<p>Hello {receiver_name},<br>
                 A request for support has been raised with PetonicAI with following details:<br>
                 <strong>Requester</strong>: {receiver_name}<br>
-                <strong>phone</strong>: {phone}<br>
-                <strong>query</strong>: {query}
+                <strong>Contact</strong>: {phone}<br>
+                <strong>Query</strong>: {query}
                 <p>Some one from the concerned team would get back to the requester shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
