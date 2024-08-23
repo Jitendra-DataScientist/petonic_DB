@@ -431,7 +431,7 @@ class Utils:
                 <strong>Attendee</strong>: {receiver_name}<br>
                 <strong>Company Name</strong>: {company_name}<br>
                 <strong>Details Requested</strong>: {details}
-                <p>Some one from the concerned team would get back to the attendee shortly.</p>
+                <p>Some one from the concerned team would get back to you shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
@@ -466,7 +466,7 @@ class Utils:
                 <strong>Requester</strong>: {receiver_name}<br>
                 <strong>Contact</strong>: {phone}<br>
                 <strong>Query</strong>: {query}
-                <p>Some one from the concerned team would get back to the requester shortly.</p>
+                <p>Some one from the concerned team would get back to you shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
@@ -501,7 +501,7 @@ class Utils:
                 <strong>Requester</strong>: {receiver_name}<br>
                 <strong>Contact</strong>: {phone}<br>
                 <strong>Query</strong>: {query}
-                <p>Some one from the concerned team would get back to the requester shortly.</p>
+                <p>Some one from the concerned team would get back to you shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
