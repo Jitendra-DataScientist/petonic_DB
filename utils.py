@@ -117,10 +117,10 @@ class Utils:
     def send_mail_trigger_signup(self, to_email, first_password, role):
         """mail sender trigger function"""
 
-        subject = "Innovation.ai SignUp"
+        subject = "SolvAI SignUp"
         body = (
                 f"""<p>Hello,<br>
-                An account with <strong>{role}</strong> role has been created on Innovation.ai,
+                An account with <strong>{role}</strong> role has been created on SolvAI,
                 the user ID for which is your mail ID and password for which is <strong>
                 {first_password}</strong>.<br> Please log in using these credentials.</p>
                 <p>If you do not recognise this activity, please ignore this email.</p>
@@ -215,7 +215,7 @@ class Utils:
         subject = "Change of Role"
         body = (
                 f"""<p>Hello,<br>
-                Your role for Innovation.ai has now been set to <strong>{role}</strong>.<br></p>
+                Your role for SolvAI has now been set to <strong>{role}</strong>.<br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
 
@@ -245,14 +245,14 @@ class Utils:
             subject = "Account Activated"
             body = (
                     """<p>Hello,<br>
-                    Your account for Innovation.ai has now been activated.<br></p>
+                    Your account for SolvAI has now been activated.<br></p>
                     <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
                 )
         else:
             subject = "Account Deactivated"
             body = (
                     """<p>Hello,<br>
-                    Your account for Innovation.ai has now been deactivated.<br></p>
+                    Your account for SolvAI has now been deactivated.<br></p>
                     <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
                 )
         # SMTP server details

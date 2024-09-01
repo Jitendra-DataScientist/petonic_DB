@@ -117,12 +117,12 @@ class Utils:
     def send_mail_trigger_signup(self, to_email, first_password, role):
         """mail sender trigger function"""
 
-        subject = "Innovation.ai SignUp"
+        subject = "SolvAI SignUp"
         try:
             logo_url = os.getenv("logo_url")
             body = (
                     f"""<p>Hello,<br>
-                    An account with <strong>{role}</strong> role has been created on Innovation.ai,
+                    An account with <strong>{role}</strong> role has been created on SolvAI,
                     the user ID for which is your mail ID and password for which is <strong>
                     {first_password}</strong>.<br> Please log in using these credentials.</p>
                     <p>If you do not recognise this activity, please ignore this email.</p>
@@ -135,7 +135,7 @@ class Utils:
             logger.critical("Failed to load logo_url from .env: %s", file_error)
             body = (
                     f"""<p>Hello,<br>
-                    An account with <strong>{role}</strong> role has been created on Innovation.ai,
+                    An account with <strong>{role}</strong> role has been created on SolvAI,
                     the user ID for which is your mail ID and password for which is <strong>
                     {first_password}</strong>.<br> Please log in using these credentials.</p>
                     <p>If you do not recognise this activity, please ignore this email.</p>
@@ -264,7 +264,7 @@ class Utils:
             logo_url = os.getenv("logo_url")
             body = (
                     f"""<p>Hello,<br>
-                    Your role for Innovation.ai has now been set to <strong>{role}</strong>.<br></p>
+                    Your role for SolvAI has now been set to <strong>{role}</strong>.<br></p>
                     <p>Best regards,<br>
                     Petonic Team</p>
                     <img src={logo_url} alt="Petonic Company Logo">"""
@@ -274,7 +274,7 @@ class Utils:
             logger.critical("Failed to load logo_url from .env: %s", file_error)
             body = (
                     f"""<p>Hello,<br>
-                    Your role for Innovation.ai has now been set to <strong>{role}</strong>.<br></p>
+                    Your role for SolvAI has now been set to <strong>{role}</strong>.<br></p>
                     <p>Best regards,<br>
                     Petonic Team</p>"""
                 )
@@ -307,7 +307,7 @@ class Utils:
                 logo_url = os.getenv("logo_url")
                 body = (
                         f"""<p>Hello,<br>
-                        Your account for Innovation.ai has now been activated.<br></p>
+                        Your account for SolvAI has now been activated.<br></p>
                         <p>Best regards,<br>
                         Petonic Team</p>
                         <img src={logo_url} alt="Petonic Company Logo">"""
@@ -317,7 +317,7 @@ class Utils:
                 logger.critical("Failed to load logo_url from .env: %s", file_error)
                 body = (
                         """<p>Hello,<br>
-                        Your account for Innovation.ai has now been activated.<br></p>
+                        Your account for SolvAI has now been activated.<br></p>
                         <p>Best regards,<br>
                         Petonic Team</p>"""
                     )
@@ -327,7 +327,7 @@ class Utils:
                 logo_url = os.getenv("logo_url")
                 body = (
                         f"""<p>Hello,<br>
-                        Your account for Innovation.ai has now been deactivated.<br></p>
+                        Your account for SolvAI has now been deactivated.<br></p>
                         <p>Best regards,<br>
                         Petonic Team</p>
                         <img src={logo_url} alt="Petonic Company Logo">"""
@@ -337,7 +337,7 @@ class Utils:
                 logger.critical("Failed to load logo_url from .env: %s", file_error)
                 body = (
                         """<p>Hello,<br>
-                        Your account for Innovation.ai has now been deactivated.<br></p>
+                        Your account for SolvAI has now been deactivated.<br></p>
                         <p>Best regards,<br>
                         Petonic Team</p>"""
                     )
