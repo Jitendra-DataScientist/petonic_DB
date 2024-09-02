@@ -5,9 +5,10 @@
 import os
 import logging
 from typing import List, Dict
-from fastapi import FastAPI, Request, Depends, File, UploadFile, Form, Body
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Request, Depends, File, UploadFile, Form, Body, BackgroundTasks
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
+import pandas as pd
 # from db_main import DBMain
 from user_profile import UserProfile
 from forgot_password import ForgotPassword
@@ -609,3 +610,25 @@ async def solvai_demo(payload: pydantic_check.SolvaiDemo):
     response, status_code = demo_instance.solvai_demo(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+def delete_file(file_path: str):
+    try:
+        os.remove(file_path)
+    except Exception as e:
+        print(f"Error deleting file: {e}")
+
+@app.post("/data-api/csv-file-download/")
+async def generate_csv(background_tasks: BackgroundTasks, payload: dict = Body(...)):
+
+    # Creating a pandas DataFrame
+    df = pd.DataFrame(payload["data"], columns=payload["column_names"])
+
+    # Saving the DataFrame to a CSV file
+    df.to_csv(payload["filename"], index=False)
+
+    # Add the file deletion to background tasks to run after the response is sent
+    background_tasks.add_task(delete_file, payload["filename"])
+
+    # Return the CSV file as a downloadable file
+    return FileResponse(payload["filename"], media_type="text/csv", filename=payload["filename"])
