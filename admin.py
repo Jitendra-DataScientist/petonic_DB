@@ -198,7 +198,7 @@ class Admin:
                 req_body["email"],
             )
             role_ret_data = db_return(role_query, role_query_data)
-            print (f"\n\n{role_ret_data}\n\n")
+            logger.info("%s", role_ret_data)
             if role_ret_data[0][0] == 'admin':
                 role_query = "select count(*) \
                             from user_login ul\
@@ -210,7 +210,7 @@ class Admin:
                     "admin",
                 )
                 role_ret_data = db_return(role_query, role_query_data)
-                print (f"\n\n{role_ret_data}\n\n")
+                logger.info("%s", role_ret_data)
                 if role_ret_data[0][0] == 1:
                     return {"update":False,
                             "helpText": "This is the only admin account for this subscription_id"}, 400
