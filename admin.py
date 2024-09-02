@@ -188,6 +188,31 @@ class Admin:
                     "helpText": "at least one of f_name, l_name,\
                         role or employee_id must be passed in payload"}, 400
 
+        if req_body['role']:
+            role_query = "select us.role, ul.subscription_id \
+                    from user_signup us\
+                    join user_login ul\
+                    on ul.email=us.email\
+                    where us.email = %s"
+            role_query_data = (
+                req_body["email"],
+            )
+            role_ret_data = db_return(role_query, role_query_data)
+            if role_ret_data[0][0] == 'admin':
+                role_query = "select count(*) \
+                            from user_login ul\
+                            join user_signup us\
+                            on ul.email = us.email\
+                            where ul.subscription_id = %s and us.role = %s"
+                role_query_data = (
+                    role_ret_data[0][1],
+                    "admin",
+                )
+                role_ret_data = db_return(role_query, role_query_data)
+                if role_ret_data[0][0] == 1:
+                    return {"update":False,
+                            "helpText": "This is the only admin account for this subscription_id"}, 400
+
         try:   # pylint: disable=too-many-nested-blocks
             ## first check if mail-id present in DB
             query = "select count(*) \
