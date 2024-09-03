@@ -455,7 +455,7 @@ class Utils:
             return False
 
 
-    def solvai_support(self, to_email, receiver_name, phone, query):             # pylint: disable=too-many-arguments
+    def solvai_support(self, to_email, receiver_name, query):             # pylint: disable=too-many-arguments
         """mail sender trigger function for solvai support ticket book functionality
         """
 
@@ -464,7 +464,6 @@ class Utils:
                 f"""<p>Hello {receiver_name},<br>
                 A request for support has been raised on SolvAI with following details:<br>
                 <strong>Requester</strong>: {receiver_name}<br>
-                <strong>Contact</strong>: {phone}<br>
                 <strong>Query</strong>: {query}
                 <p>Some one from the concerned team would get back to you shortly.</p>
                 <br></p>
@@ -490,7 +489,7 @@ class Utils:
             return False
 
 
-    def petonicai_support(self, to_email, receiver_name, phone, query):             # pylint: disable=too-many-arguments
+    def petonicai_support(self, to_email, receiver_name, query):             # pylint: disable=too-many-arguments
         """mail sender trigger function for petonicai support ticket book functionality
         """
 
@@ -499,7 +498,6 @@ class Utils:
                 f"""<p>Hello {receiver_name},<br>
                 A request for support has been raised with PetonicAI with following details:<br>
                 <strong>Requester</strong>: {receiver_name}<br>
-                <strong>Contact</strong>: {phone}<br>
                 <strong>Query</strong>: {query}
                 <p>Some one from the concerned team would get back to you shortly.</p>
                 <br></p>
