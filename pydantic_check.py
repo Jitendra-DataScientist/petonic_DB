@@ -628,7 +628,7 @@ class SolvaiSupport(BaseModel):
     subscription_id: str
     email: EmailStr
     name: str
-    phone: Optional[str] = None
+    # phone: Optional[str] = None
     query: str
 
 
@@ -636,7 +636,7 @@ class PetonicaiSupport(BaseModel):
     """Pydantic model for petonicai-support request payload."""
     email: EmailStr
     name: str
-    phone: str
+    # phone: str
     query: str
 
 

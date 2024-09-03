@@ -55,13 +55,12 @@ class Support:
         try:
             # Queries Formation
             query = ["""INSERT INTO solvai_support
-                     (email, name, phone, query, subscription_id, API_hit_timestamp)
+                     (email, name, query, subscription_id, API_hit_timestamp)
                      VALUES (%s, %s,%s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
                                 req_body["name"],
-                                req_body["phone"],
                                 req_body["query"],
                                 req_body["subscription_id"],
                                 time.time(),
@@ -75,7 +74,6 @@ class Support:
                     target=utils_instance.solvai_support, args=(
                                 req_body["email"],
                                 req_body["name"],
-                                req_body["phone"],
                                 req_body["query"]
                                 )
                     ).start()
@@ -101,13 +99,12 @@ class Support:
         try:
             # Queries Formation
             query = ["""INSERT INTO petonicai_support
-                     (email, name, phone, query, API_hit_timestamp)
+                     (email, name, query, API_hit_timestamp)
                      VALUES (%s, %s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
                                 req_body["name"],
-                                req_body["phone"],
                                 req_body["query"],
                                 time.time(),
                             ),
@@ -120,7 +117,6 @@ class Support:
                     target=utils_instance.petonicai_support, args=(
                                 req_body["email"],
                                 req_body["name"],
-                                req_body["phone"],
                                 req_body["query"]
                                 )
                     ).start()
