@@ -56,7 +56,7 @@ class Support:
             # Queries Formation
             query = ["""INSERT INTO solvai_support
                      (email, name, query, subscription_id, API_hit_timestamp)
-                     VALUES (%s, %s,%s,%s,%s,%s);""",]
+                     VALUES (%s,%s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
@@ -100,7 +100,7 @@ class Support:
             # Queries Formation
             query = ["""INSERT INTO petonicai_support
                      (email, name, query, API_hit_timestamp)
-                     VALUES (%s, %s,%s,%s,%s);""",]
+                     VALUES (%s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
