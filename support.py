@@ -99,12 +99,15 @@ class Support:
         try:
             # Queries Formation
             query = ["""INSERT INTO petonicai_support
-                     (email, name, query, API_hit_timestamp)
-                     VALUES (%s,%s,%s,%s);""",]
+                     (email, first_name, last_name, service, company, query, API_hit_timestamp)
+                     VALUES (%s,%s,%s,%s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
-                                req_body["name"],
+                                req_body["first_name"],
+                                req_body["last_name"],
+                                req_body["service"],
+                                req_body["company"],
                                 req_body["query"],
                                 time.time(),
                             ),
@@ -116,7 +119,10 @@ class Support:
                 threading.Thread(
                     target=utils_instance.petonicai_support, args=(
                                 req_body["email"],
-                                req_body["name"],
+                                req_body["first_name"],
+                                req_body["last_name"],
+                                req_body["service"],
+                                req_body["company"],
                                 req_body["query"]
                                 )
                     ).start()
