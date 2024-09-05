@@ -497,7 +497,7 @@ class Utils:
         body = (
                 f"""<p>Hello {receiver_first_name},<br>
                 A request for support has been raised with PetonicAI with following details:<br>
-                <strong>Requester</strong>: {receiver_first_name}<br>
+                <strong>Requester</strong>: {receiver_first_name} {receiver_last_name}<br>
                 <strong>Service</strong>: {service}<br>
                 <strong>Company</strong>: {company}<br>
                 <strong>Query</strong>: {query}
