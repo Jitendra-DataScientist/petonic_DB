@@ -635,7 +635,10 @@ class SolvaiSupport(BaseModel):
 class PetonicaiSupport(BaseModel):
     """Pydantic model for petonicai-support request payload."""
     email: EmailStr
-    name: str
+    last_name: str
+    first_name: str
+    service: str
+    company: str
     # phone: str
     query: str
 
