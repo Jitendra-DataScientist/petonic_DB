@@ -597,7 +597,7 @@ async def petonicai_support(payload: pydantic_check.PetonicaiSupport):
     """Route function for PetonicAI support feature.
     """
 
-    response, status_code = support_instance.petonicai_support(vars(payload))
+    response, status_code = support_instance.petonicai_support(vars(payload), "petonicai_support")
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
 
@@ -632,3 +632,13 @@ async def generate_csv(background_tasks: BackgroundTasks, payload: dict = Body(.
 
     # Return the CSV file as a downloadable file
     return FileResponse(payload["filename"], media_type="text/csv", filename=payload["filename"])
+
+
+@app.post("/data-api/plannex-support")
+async def plannex_support(payload: pydantic_check.PetonicaiSupport):
+    """Route function for Plannex support feature.
+    """
+
+    response, status_code = support_instance.petonicai_support(vars(payload), "plannex_support")
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
