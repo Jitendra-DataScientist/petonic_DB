@@ -94,11 +94,11 @@ class Support:
             }, 500
 
 
-    def petonicai_support(self, req_body):  # pylint: disable=too-many-locals
-        """Function to insert data into the petonicai_support table."""
+    def petonicai_support(self, req_body, table_name):  # pylint: disable=too-many-locals
+        """Function to insert data into the petonicai_support / plannex_support table."""
         try:
             # Queries Formation
-            query = ["""INSERT INTO petonicai_support
+            query = [f"""INSERT INTO {table_name}
                      (email, first_name, last_name, service, company, query, API_hit_timestamp)
                      VALUES (%s,%s,%s,%s,%s,%s,%s);""",]
             query_data = [
@@ -117,7 +117,7 @@ class Support:
 
             if res == "success":   # pylint: disable=no-else-return
                 threading.Thread(
-                    target=utils_instance.petonicai_support, args=(
+                    target=utils_instance.support, args=(
                                 req_body["email"],
                                 req_body["first_name"],
                                 req_body["last_name"],

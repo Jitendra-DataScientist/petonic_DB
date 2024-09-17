@@ -489,14 +489,17 @@ class Utils:
             return False
 
 
-    def petonicai_support(self, to_email, receiver_first_name, receiver_last_name, service, company, query):             # pylint: disable=too-many-arguments
-        """mail sender trigger function for petonicai support ticket book functionality
+    def support(self, to_email, receiver_first_name, receiver_last_name, service, company, query, table_name):             # pylint: disable=too-many-arguments
+        """mail sender trigger function for petonicai / plannex support ticket book functionality
         """
-
-        subject = "PetonicAI support ticket created !!"
+        if table_name == "petonicai_support":
+            site = "PetonicAI"
+        elif table_name == "plannex_support":
+            site = "Plannex"
+        subject = f"{site} support ticket created !!"
         body = (
                 f"""<p>Hello {receiver_first_name},<br>
-                A request for support has been raised with PetonicAI with following details:<br>
+                A request for support has been raised with {site} with following details:<br>
                 <strong>Requester</strong>: {receiver_first_name} {receiver_last_name}<br>
                 <strong>Service</strong>: {service}<br>
                 <strong>Company</strong>: {company}<br>
