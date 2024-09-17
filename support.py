@@ -123,7 +123,8 @@ class Support:
                                 req_body["last_name"],
                                 req_body["service"],
                                 req_body["company"],
-                                req_body["query"]
+                                req_body["query"],
+                                table_name,
                                 )
                     ).start()
                 return {"update": True}, 201
