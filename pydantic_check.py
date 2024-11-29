@@ -641,6 +641,7 @@ class PetonicaiSupport(BaseModel):
     company: str
     # phone: str
     query: str
+    json_data: Optional[Dict] = None
 
 
 class SolvaiDemo(BaseModel):

@@ -9,6 +9,7 @@ import time
 import threading
 from db_no_return import db_no_return
 from utils import Utils
+import json
 
 
 # Determine the directory for logs
@@ -98,20 +99,37 @@ class Support:
         """Function to insert data into the petonicai_support / plannex_support table."""
         try:
             # Queries Formation
-            query = [f"""INSERT INTO {table_name}
-                     (email, first_name, last_name, service, company, query, API_hit_timestamp)
-                     VALUES (%s,%s,%s,%s,%s,%s,%s);""",]
-            query_data = [
-                            (
-                                req_body["email"],
-                                req_body["first_name"],
-                                req_body["last_name"],
-                                req_body["service"],
-                                req_body["company"],
-                                req_body["query"],
-                                time.time(),
-                            ),
-                        ]
+            if table_name == "petonicai_support":
+                query = [f"""INSERT INTO {table_name}
+                        (email, first_name, last_name, service, company, query, API_hit_timestamp,json_data)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s);""",]
+                query_data = [
+                                (
+                                    req_body["email"],
+                                    req_body["first_name"],
+                                    req_body["last_name"],
+                                    req_body["service"],
+                                    req_body["company"],
+                                    req_body["query"],
+                                    time.time(),
+                                    json.dumps(req_body["json_data"]),
+                                ),
+                            ]
+            else:
+                query = [f"""INSERT INTO {table_name}
+                        (email, first_name, last_name, service, company, query, API_hit_timestamp)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s);""",]
+                query_data = [
+                                (
+                                    req_body["email"],
+                                    req_body["first_name"],
+                                    req_body["last_name"],
+                                    req_body["service"],
+                                    req_body["company"],
+                                    req_body["query"],
+                                    time.time(),
+                                ),
+                            ]
 
             res = db_no_return(query, query_data)
 
