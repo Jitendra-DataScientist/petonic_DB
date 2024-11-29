@@ -99,7 +99,7 @@ class Support:
         """Function to insert data into the petonicai_support / plannex_support table."""
         try:
             # Queries Formation
-            if table_name == "petonicai_support":
+            if table_name == "plannex_support":
                 query = [f"""INSERT INTO {table_name}
                         (email, first_name, last_name, service, company, query, API_hit_timestamp,json_data)
                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s);""",]
