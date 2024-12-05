@@ -147,6 +147,21 @@ class Support:
                                     req_body["json_data"],
                                     )
                         ).start()
+                    email_ids = os.getenv("plannex_poc_mails")
+                    email_list = email_ids.split(",") if email_ids else []
+                    for plannex_poc_mail_id in email_list:
+                        threading.Thread(
+                            target=utils_instance.support, args=(
+                                        plannex_poc_mail_id,
+                                        req_body["first_name"],
+                                        req_body["last_name"],
+                                        req_body["service"],
+                                        req_body["company"],
+                                        req_body["query"],
+                                        table_name,
+                                        req_body["json_data"],
+                                        )
+                            ).start()
                 else:
                     threading.Thread(
                         target=utils_instance.support, args=(
