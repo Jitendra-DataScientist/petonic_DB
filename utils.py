@@ -507,6 +507,8 @@ class Utils:
                 )
         elif table_name == "plannex_support":
             site = "Plannex"
+            appointment_date = json_data.get('appointment_date', 'N/A')
+            appointment_time = json_data.get('appointment_time', 'N/A')
             body = (
                     f"""<p>Hello {receiver_first_name},<br>
                     A request for support has been raised with {site} with following details:<br>
@@ -514,8 +516,8 @@ class Utils:
                     <strong>Service</strong>: {service}<br>
                     <strong>Company</strong>: {company}<br>
                     <strong>Query</strong>: {query}<br>
-                    <strong>Appointment Date</strong>: {json_data['appointment_date']}<br>
-                    <strong>Appointment Time</strong>: {json_data['appointment_time']}
+                    <strong>Appointment Date</strong>: {appointment_date}<br>
+                    <strong>Appointment Time</strong>: {appointment_time}
                     <p>Some one from the concerned team would get back to you shortly.</p>
                     <br></p>
                     <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
