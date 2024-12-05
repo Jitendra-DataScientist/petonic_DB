@@ -505,6 +505,7 @@ class Utils:
                     <br></p>
                     <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
                 )
+            subject = f"{site} support ticket created !!"
         elif table_name == "plannex_support":
             site = "Plannex"
             appointment_date = json_data.get('appointment_date', 'N/A')
@@ -522,7 +523,7 @@ class Utils:
                     <br></p>
                     <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
                 )
-        subject = f"{site} support ticket created !!"
+            subject = f"{site} Appointment Booked !!"
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
@@ -550,7 +551,7 @@ class Utils:
         appointment_time = json_data.get('appointment_time', 'N/A')
         body = (
                 f"""<p>Hello,<br>
-                An appointment has been booked for {site} with following details:<br>
+                An appointment has been booked for Plannex with following details:<br>
                 <strong>Requester</strong>: {requestor_first_name} {requestor_last_name}<br>
                 <strong>Service</strong>: {service}<br>
                 <strong>Company</strong>: {company}<br>
@@ -561,7 +562,7 @@ class Utils:
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
-        subject = f"{site} support ticket created !!"
+        subject = f"Plannex Appointment Booked !!"
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"
