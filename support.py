@@ -144,6 +144,7 @@ class Support:
                                     req_body["company"],
                                     req_body["query"],
                                     table_name,
+                                    req_body["json_data"],
                                     )
                         ).start()
                 else:
