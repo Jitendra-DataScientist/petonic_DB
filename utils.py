@@ -543,7 +543,7 @@ class Utils:
             logger.critical("Mail sending error: %s", mail_error)
 
 
-    def poc_support(self, to_email, requestor_first_name, requestor_last_name, service, company, query, json_data):             # pylint: disable=too-many-arguments
+    def poc_support(self, to_email, requestor_first_name, requestor_last_name, service, company, query, json_data, requestor_email):             # pylint: disable=too-many-arguments
         """mail sender trigger function for plannex support ticket book functionality to POCs
         """
         site = "Plannex"
@@ -552,7 +552,8 @@ class Utils:
         body = (
                 f"""<p>Hello,<br>
                 An appointment has been booked for Plannex with following details:<br>
-                <strong>Requester</strong>: {requestor_first_name} {requestor_last_name}<br>
+                <strong>Requester Name</strong>: {requestor_first_name} {requestor_last_name}<br>
+                <strong>Requester Email ID</strong>: {requestor_email}<br>
                 <strong>Service</strong>: {service}<br>
                 <strong>Company</strong>: {company}<br>
                 <strong>Query</strong>: {query}<br>
