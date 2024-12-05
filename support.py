@@ -151,14 +151,13 @@ class Support:
                     plannex_poc_email_ids_list = plannex_poc_email_ids.split(",") if plannex_poc_email_ids else []
                     for plannex_poc_mail_id in plannex_poc_email_ids_list:
                         threading.Thread(
-                            target=utils_instance.support, args=(
+                            target=utils_instance.poc_support, args=(
                                         plannex_poc_mail_id,
                                         req_body["first_name"],
                                         req_body["last_name"],
                                         req_body["service"],
                                         req_body["company"],
                                         req_body["query"],
-                                        table_name,
                                         req_body["json_data"],
                                         )
                             ).start()

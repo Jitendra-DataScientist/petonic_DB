@@ -540,3 +540,42 @@ class Utils:
             print ("sent!!")
         except Exception as mail_error:             # pylint: disable=broad-exception-caught
             logger.critical("Mail sending error: %s", mail_error)
+
+
+    def poc_support(self, to_email, requestor_first_name, requestor_last_name, service, company, query, json_data):             # pylint: disable=too-many-arguments
+        """mail sender trigger function for plannex support ticket book functionality to POCs
+        """
+        site = "Plannex"
+        appointment_date = json_data.get('appointment_date', 'N/A')
+        appointment_time = json_data.get('appointment_time', 'N/A')
+        body = (
+                f"""<p>Hello,<br>
+                An appointment has been booked for {site} with following details:<br>
+                <strong>Requester</strong>: {requestor_first_name} {requestor_last_name}<br>
+                <strong>Service</strong>: {service}<br>
+                <strong>Company</strong>: {company}<br>
+                <strong>Query</strong>: {query}<br>
+                <strong>Appointment Date</strong>: {appointment_date}<br>
+                <strong>Appointment Time</strong>: {appointment_time}
+                <p>Some one from the concerned team would get back to you shortly.</p>
+                <br></p>
+                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
+            )
+        subject = f"{site} support ticket created !!"
+
+        # SMTP server details
+        smtp_server = "smtp.gmail.com"
+        try:
+            sender_email = os.getenv("sender_email")
+            sender_password = os.getenv("sender_password")
+        except FileNotFoundError as file_error:
+            logger.critical("Failed to fetch auto-mail creds from env: %s", file_error)
+            sys.exit()
+
+        try:
+            self.send_email(subject, body, to_email, sender_email,
+                            sender_password, smtp_server)
+            logger.info("mail sent !!")
+            print ("sent!!")
+        except Exception as mail_error:             # pylint: disable=broad-exception-caught
+            logger.critical("Mail sending error: %s", mail_error)
