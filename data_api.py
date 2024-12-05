@@ -28,6 +28,7 @@ from subscription import Subscription
 from leaderboard import Leaderboard
 from support import Support
 from demo import Demo
+from sensitive import Sensitive
 
 
 # Determine the directory for logs
@@ -78,6 +79,7 @@ subscription_instance = Subscription()
 leaderboard_instance = Leaderboard()
 support_instance = Support()
 demo_instance = Demo()
+sensitive_inst = Sensitive()
 
 
 # Create a FastAPI instance
@@ -641,4 +643,18 @@ async def plannex_support(payload: pydantic_check.PetonicaiSupport):
 
     response, status_code = support_instance.petonicai_support(vars(payload), "plannex_support")
     logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.get("/data-api/sensitive/tables")
+async def tables():
+    """Route fetching table names"""
+    response, status_code = sensitive_inst.tables()
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.get("/data-api/sensitive/table-data/{table_name}")
+async def table_data(table_name: str):
+    """Route fetching table data"""
+    response, status_code = sensitive_inst.table_data(table_name)
     return JSONResponse(content=response, status_code=status_code)
