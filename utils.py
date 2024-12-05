@@ -558,7 +558,6 @@ class Utils:
                 <strong>Query</strong>: {query}<br>
                 <strong>Appointment Date</strong>: {appointment_date}<br>
                 <strong>Appointment Time</strong>: {appointment_time}
-                <p>Some one from the concerned team would get back to you shortly.</p>
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
