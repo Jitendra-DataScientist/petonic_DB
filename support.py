@@ -159,6 +159,7 @@ class Support:
                                         req_body["company"],
                                         req_body["query"],
                                         req_body["json_data"],
+                                        req_body["email"],
                                         )
                             ).start()
                 else:
