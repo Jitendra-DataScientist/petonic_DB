@@ -147,9 +147,9 @@ class Support:
                                     req_body["json_data"],
                                     )
                         ).start()
-                    email_ids = os.getenv("plannex_poc_mails")
-                    email_list = email_ids.split(",") if email_ids else []
-                    for plannex_poc_mail_id in email_list:
+                    plannex_poc_email_ids = os.getenv("plannex_poc_mails")
+                    plannex_poc_email_ids_list = plannex_poc_email_ids.split(",") if plannex_poc_email_ids else []
+                    for plannex_poc_mail_id in plannex_poc_email_ids_list:
                         threading.Thread(
                             target=utils_instance.support, args=(
                                         plannex_poc_mail_id,
