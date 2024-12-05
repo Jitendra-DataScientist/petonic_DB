@@ -4,15 +4,9 @@
 """
 import os
 import sys
-import re
-import time
 import logging
-import threading
-import jd_meta as jd_meta_func
 from db_return import db_return
-from db_no_return import db_no_return
 from dotenv import load_dotenv
-import json
 
 # Determine the directory for logs
 log_directory = os.path.join(os.getcwd(), 'logs')
