@@ -489,25 +489,38 @@ class Utils:
             return False
 
 
-    def support(self, to_email, receiver_first_name, receiver_last_name, service, company, query, table_name):             # pylint: disable=too-many-arguments
+    def support(self, to_email, receiver_first_name, receiver_last_name, service, company, query, table_name,json_data=None):             # pylint: disable=too-many-arguments
         """mail sender trigger function for petonicai / plannex support ticket book functionality
         """
         if table_name == "petonicai_support":
             site = "PetonicAI"
+            body = (
+                    f"""<p>Hello {receiver_first_name},<br>
+                    A request for support has been raised with {site} with following details:<br>
+                    <strong>Requester</strong>: {receiver_first_name} {receiver_last_name}<br>
+                    <strong>Service</strong>: {service}<br>
+                    <strong>Company</strong>: {company}<br>
+                    <strong>Query</strong>: {query}
+                    <p>Some one from the concerned team would get back to you shortly.</p>
+                    <br></p>
+                    <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
+                )
         elif table_name == "plannex_support":
             site = "Plannex"
+            body = (
+                    f"""<p>Hello {receiver_first_name},<br>
+                    A request for support has been raised with {site} with following details:<br>
+                    <strong>Requester</strong>: {receiver_first_name} {receiver_last_name}<br>
+                    <strong>Service</strong>: {service}<br>
+                    <strong>Company</strong>: {company}<br>
+                    <strong>Query</strong>: {query}<br>
+                    <strong>Appointment Date</strong>: {json_data['appointment_date']}<br>
+                    <strong>Appointment Time</strong>: {json_data['appointment_time']}
+                    <p>Some one from the concerned team would get back to you shortly.</p>
+                    <br></p>
+                    <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
+                )
         subject = f"{site} support ticket created !!"
-        body = (
-                f"""<p>Hello {receiver_first_name},<br>
-                A request for support has been raised with {site} with following details:<br>
-                <strong>Requester</strong>: {receiver_first_name} {receiver_last_name}<br>
-                <strong>Service</strong>: {service}<br>
-                <strong>Company</strong>: {company}<br>
-                <strong>Query</strong>: {query}
-                <p>Some one from the concerned team would get back to you shortly.</p>
-                <br></p>
-                <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
-            )
 
         # SMTP server details
         smtp_server = "smtp.gmail.com"

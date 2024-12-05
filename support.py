@@ -134,17 +134,30 @@ class Support:
             res = db_no_return(query, query_data)
 
             if res == "success":   # pylint: disable=no-else-return
-                threading.Thread(
-                    target=utils_instance.support, args=(
-                                req_body["email"],
-                                req_body["first_name"],
-                                req_body["last_name"],
-                                req_body["service"],
-                                req_body["company"],
-                                req_body["query"],
-                                table_name,
-                                )
-                    ).start()
+                if table_name == "plannex_support":
+                    threading.Thread(
+                        target=utils_instance.support, args=(
+                                    req_body["email"],
+                                    req_body["first_name"],
+                                    req_body["last_name"],
+                                    req_body["service"],
+                                    req_body["company"],
+                                    req_body["query"],
+                                    table_name,
+                                    )
+                        ).start()
+                else:
+                    threading.Thread(
+                        target=utils_instance.support, args=(
+                                    req_body["email"],
+                                    req_body["first_name"],
+                                    req_body["last_name"],
+                                    req_body["service"],
+                                    req_body["company"],
+                                    req_body["query"],
+                                    table_name,
+                                    )
+                        ).start()
                 return {"update": True}, 201
 
             else:
