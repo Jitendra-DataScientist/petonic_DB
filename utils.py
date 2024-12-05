@@ -511,7 +511,7 @@ class Utils:
             appointment_time = json_data.get('appointment_time', 'N/A')
             body = (
                     f"""<p>Hello {receiver_first_name},<br>
-                    A request for support has been raised with {site} with following details:<br>
+                    An appointment has been booked for {site} with following details:<br>
                     <strong>Requester</strong>: {receiver_first_name} {receiver_last_name}<br>
                     <strong>Service</strong>: {service}<br>
                     <strong>Company</strong>: {company}<br>
