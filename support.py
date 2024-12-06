@@ -197,7 +197,7 @@ class Support:
             # Queries Formation
             query = ["""INSERT INTO plannex_contact_us
                      (email, first_name, last_name, query, company, api_hit_timestamp, json_data)
-                     VALUES (%s,%s,%s,%s,%s);""",]
+                     VALUES (%s,%s,%s,%s,%s,%s,%s);""",]
             query_data = [
                             (
                                 req_body["email"],
