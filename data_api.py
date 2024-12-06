@@ -668,3 +668,13 @@ async def plannex_contact_us(payload: pydantic_check.PlannexContactUs):
     response, status_code = support_instance.plannex_contact_us(vars(payload))
     logger.info(response)
     return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/plannex-login")
+async def plannex_login(payload: pydantic_check.PlannexLogin):
+    """Route function for Plannex website's login page.
+    """
+
+    response, status_code = user_profile_inst.plannex_login(vars(payload))
+    logger.info(response)
+    return JSONResponse(content=response, status_code=status_code)

@@ -660,3 +660,9 @@ class PlannexContactUs(BaseModel):
     company: str
     query: str
     json_data: Optional[Dict] = None
+
+
+class PlannexLogin(BaseModel):
+    """Pydantic model for plannex-login request payload."""
+    email: EmailStr
+    password: str
