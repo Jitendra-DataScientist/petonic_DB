@@ -596,7 +596,7 @@ async def solvai_support(payload: pydantic_check.SolvaiSupport):
 
 @app.post("/data-api/petonicai-support")
 async def petonicai_support(payload: pydantic_check.PetonicaiSupport):
-    """Route function for PetonicAI support feature.
+    """Route function for "Contact Us" page of petonic.ai website.
     """
 
     response, status_code = support_instance.petonicai_support(vars(payload), "petonicai_support")
@@ -638,7 +638,7 @@ async def generate_csv(background_tasks: BackgroundTasks, payload: dict = Body(.
 
 @app.post("/data-api/plannex-support")
 async def plannex_support(payload: pydantic_check.PetonicaiSupport):
-    """Route function for Plannex support feature.
+    """Route function for Plannex website's "Book An Appointment" page.
     """
 
     response, status_code = support_instance.petonicai_support(vars(payload), "plannex_support")
@@ -657,4 +657,14 @@ async def tables():
 async def table_data(table_name: str):
     """Route fetching table data"""
     response, status_code = sensitive_inst.table_data(table_name)
+    return JSONResponse(content=response, status_code=status_code)
+
+
+@app.post("/data-api/plannex-contact-us")
+async def plannex_contact_us(payload: pydantic_check.PlannexContactUs):
+    """Route function for Plannex website's "Contact Us" page.
+    """
+
+    response, status_code = support_instance.plannex_contact_us(vars(payload))
+    logger.info(response)
     return JSONResponse(content=response, status_code=status_code)

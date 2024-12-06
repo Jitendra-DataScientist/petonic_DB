@@ -650,3 +650,13 @@ class SolvaiDemo(BaseModel):
     name: str
     company_name: str
     details: str
+
+
+class PlannexContactUs(BaseModel):
+    """Pydantic model for plannex-contact-us request payload."""
+    email: EmailStr
+    last_name: str
+    first_name: str
+    company: str
+    query: str
+    json_data: Optional[Dict] = None
