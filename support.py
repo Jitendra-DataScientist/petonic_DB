@@ -189,3 +189,42 @@ class Support:
                 "update": False,
                 "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
             }, 500
+
+
+    def plannex_contact_us(self, req_body):  # pylint: disable=too-many-locals
+        """Function to insert data into the plannex_contact_us table."""
+        try:
+            # Queries Formation
+            query = ["""INSERT INTO plannex_contact_us
+                     (email, first_name, last_name, query, company, api_hit_timestamp, json_data)
+                     VALUES (%s,%s,%s,%s,%s);""",]
+            query_data = [
+                            (
+                                req_body["email"],
+                                req_body["first_name"],
+                                req_body["last_name"],
+                                req_body["query"],
+                                req_body["company"],
+                                time.time(),
+                                json.dumps(req_body["json_data"]),
+                            ),
+                        ]
+
+            res = db_no_return(query, query_data)
+
+            if res == "success":   # pylint: disable=no-else-return
+                return {"update": True}, 201
+
+            else:
+                res.update({"update": False})
+                return res, 400
+
+        except Exception as db_error:  # pylint: disable=broad-exception-caught
+            exception_type, _, exception_traceback = sys.exc_info()
+            filename = exception_traceback.tb_frame.f_code.co_filename
+            line_number = exception_traceback.tb_lineno
+            logger.error("%s||||%s||||%d||||%d", exception_type, filename, line_number, db_error)
+            return {
+                "update": False,
+                "helpText": f"Exception: {exception_type}||||{filename}||||{line_number}||||{db_error}",    # pylint: disable=line-too-long
+            }, 500
