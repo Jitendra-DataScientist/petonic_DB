@@ -560,7 +560,7 @@ class Utils:
         phone_no = json_data.get('contact_us', 'N/A')
         body = (
                 f"""<p>Hello,<br>
-                An appointment has been booked for Plannex with following details:<br>
+                An appointment has been booked through Plannex website with following details:<br>
                 <strong>Requester Name</strong>: {requestor_first_name} {requestor_last_name}<br>
                 <strong>Requester Email ID</strong>: {requestor_email}<br>
                 <strong>Service</strong>: {service}<br>
