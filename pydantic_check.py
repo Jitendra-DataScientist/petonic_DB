@@ -639,7 +639,7 @@ class PetonicaiSupport(BaseModel):
     first_name: str
     service: str
     company: str
-    # phone: str
+    phone: Optional[str] = None
     query: str
     json_data: Optional[Dict] = None
 

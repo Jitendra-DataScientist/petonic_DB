@@ -101,8 +101,8 @@ class Support:
             # Queries Formation
             if table_name == "plannex_support":
                 query = [f"""INSERT INTO {table_name}
-                        (email, first_name, last_name, service, company, query, API_hit_timestamp,json_data)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s);""",]
+                        (email, first_name, last_name, service, company, query, API_hit_timestamp, json_data, phone)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);""",]
                 query_data = [
                                 (
                                     req_body["email"],
@@ -113,6 +113,7 @@ class Support:
                                     req_body["query"],
                                     time.time(),
                                     json.dumps(req_body["json_data"]),
+                                    req_body["phone"],
                                 ),
                             ]
             else:
