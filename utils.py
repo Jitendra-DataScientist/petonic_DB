@@ -510,6 +510,9 @@ class Utils:
             site = "Plannex"
             appointment_date = json_data.get('appointment_date', 'N/A')
             appointment_time = json_data.get('appointment_time', 'N/A')
+            state = json_data.get('state', 'N/A')
+            city = json_data.get('city', 'N/A')
+            phone_no = json_data.get('contact_us', 'N/A')
             body = (
                     f"""<p>Hello {receiver_first_name},<br>
                     An appointment has been booked for {site} with following details:<br>
@@ -518,7 +521,10 @@ class Utils:
                     <strong>Company</strong>: {company}<br>
                     <strong>Query</strong>: {query}<br>
                     <strong>Appointment Date</strong>: {appointment_date}<br>
-                    <strong>Appointment Time</strong>: {appointment_time}
+                    <strong>Appointment Time</strong>: {appointment_time}<br>
+                    <strong>State</strong>: {state}<br>
+                    <strong>City</strong>: {city}<br>
+                    <strong>Phone Contact</strong>: {phone_no}
                     <p>Some one from the concerned team would get back to you shortly.</p>
                     <br></p>
                     <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
@@ -549,6 +555,9 @@ class Utils:
         site = "Plannex"
         appointment_date = json_data.get('appointment_date', 'N/A')
         appointment_time = json_data.get('appointment_time', 'N/A')
+        state = json_data.get('state', 'N/A')
+        city = json_data.get('city', 'N/A')
+        phone_no = json_data.get('contact_us', 'N/A')
         body = (
                 f"""<p>Hello,<br>
                 An appointment has been booked for Plannex with following details:<br>
@@ -558,7 +567,10 @@ class Utils:
                 <strong>Company</strong>: {company}<br>
                 <strong>Query</strong>: {query}<br>
                 <strong>Appointment Date</strong>: {appointment_date}<br>
-                <strong>Appointment Time</strong>: {appointment_time}
+                <strong>Appointment Time</strong>: {appointment_time}<br>
+                <strong>State</strong>: {state}<br>
+                <strong>City</strong>: {city}<br>
+                <strong>Phone Contact</strong>: {phone_no}
                 <br></p>
                 <p><small><i>This is a system generated mail and doesn't require any reply or acknowledgement.</i></small></p>"""
             )
